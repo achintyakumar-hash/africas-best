@@ -1,0 +1,129 @@
+{%- comment -%}
+  Retail notice. Replaces the cart page: Africa's Best doesn't sell online, so /cart explains
+  where to buy instead. Can also be used on any page that needs the same message.
+{%- endcomment -%}
+
+{%- liquid
+  assign notice_label = section.settings.button_label | default: settings.ab_wtb_label | default: 'Where to buy'
+  assign notice_url = section.settings.button_link | default: settings.ab_wtb_url | default: '/pages/where-to-buy'
+-%}
+
+<section class="ab-scope ab-retail-notice ab-section ab-bg--{{ section.settings.background }}">
+  <div class="ab-container ab-retail-notice__inner">
+    {%- if section.settings.eyebrow != blank -%}
+      <p class="ab-eyebrow">{{ section.settings.eyebrow }}</p>
+    {%- endif -%}
+    <h1 class="ab-section-heading">{{ section.settings.heading }}</h1>
+    {%- if section.settings.text != blank -%}
+      <div class="ab-retail-notice__text ab-rte">{{ section.settings.text }}</div>
+    {%- endif -%}
+    <div class="ab-retail-notice__actions">
+      {%- render 'ab-button', label: notice_label, url: notice_url, style: 'primary', icon: 'store', full_width_mobile: true -%}
+      {%- if section.settings.secondary_label != blank -%}
+        {%- render 'ab-button',
+          label: section.settings.secondary_label,
+          url: section.settings.secondary_link,
+          style: 'secondary',
+          full_width_mobile: true
+        -%}
+      {%- endif -%}
+    </div>
+  </div>
+</section>
+
+{% stylesheet %}
+  .ab-retail-notice__inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    max-width: calc(720px + 2 * var(--ab-side-padding));
+    text-align: center;
+  }
+
+  .ab-retail-notice__text {
+    font-size: 16px;
+  }
+
+  .ab-retail-notice__actions {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: 100%;
+    margin-top: 8px;
+  }
+
+  @media (min-width: 768px) {
+    .ab-retail-notice__actions {
+      flex-direction: row;
+      justify-content: center;
+      width: auto;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "AB: Retail notice",
+  "tag": "div",
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "Shop in store"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Find Africa's Best at your favorite retailers"
+    },
+    {
+      "type": "richtext",
+      "id": "text",
+      "label": "Text",
+      "default": "<p>We don't sell online. Africa's Best products are available at our retail partners, including Walmart, Target, Family Dollar and your local beauty supply store.</p>"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Button label",
+      "info": "Defaults to the Where to Buy label in theme settings."
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button link",
+      "info": "Defaults to the Where to Buy link in theme settings."
+    },
+    {
+      "type": "text",
+      "id": "secondary_label",
+      "label": "Second button label",
+      "default": "Browse products"
+    },
+    {
+      "type": "url",
+      "id": "secondary_link",
+      "label": "Second button link",
+      "default": "/collections/all"
+    },
+    {
+      "type": "select",
+      "id": "background",
+      "label": "Background",
+      "options": [
+        { "value": "white", "label": "White" },
+        { "value": "cream", "label": "Cream" }
+      ],
+      "default": "cream"
+    }
+  ],
+  "presets": [
+    {
+      "name": "AB: Retail notice"
+    }
+  ]
+}
+{% endschema %}

@@ -235,7 +235,11 @@
                     <div class="ab-drawer__mega">
                       {%- for child in link.links -%}
                         <div class="ab-drawer__mega-group">
-                          <p class="ab-drawer__mega-heading">{{ child.title }}</p>
+                          {%- if child.url != '#' and child.url != blank -%}
+                            <a href="{{ child.url }}" class="ab-drawer__mega-heading">{{ child.title }}</a>
+                          {%- else -%}
+                            <p class="ab-drawer__mega-heading">{{ child.title }}</p>
+                          {%- endif -%}
                           <ul class="ab-drawer__sublist" role="list">
                             {%- for grandchild in child.links -%}
                               <li><a href="{{ grandchild.url }}" class="ab-drawer__sublink">{{ grandchild.title }}</a></li>

@@ -526,13 +526,22 @@
 }
 
 .ab-drawer__mega-heading {
+  display: flex;
+  align-items: center;
+  min-height: 32px;
   margin: 0;
+  text-decoration: none;
   padding-bottom: var(--ab-space-1);
   font-size: 12px;
   font-weight: var(--ab-font-weight-extrabold);
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--ab-color-primary);
+}
+
+a.ab-drawer__mega-heading {
+  min-height: var(--ab-tap-target);
+  padding-bottom: 0;
 }
 
 .ab-drawer__sublist {
