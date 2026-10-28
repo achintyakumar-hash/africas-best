@@ -1,0 +1,61 @@
+{%- comment -%}
+  Responsive image. Renders a Shopify image with image_url/image_tag, or a fallback URL
+  (the approved design's photography) until the client uploads their own image.
+
+  Accepts:
+  - image {Object}: image from a setting (optional)
+  - fallback {String}: absolute URL used when image is blank (optional)
+  - alt {String}: alt text (defaults to the image's own alt; use '' for decorative images)
+  - widths {String}: srcset widths (default '360, 540, 720, 960, 1200')
+  - sizes {String}: sizes attribute (default '100vw')
+  - class {String}: classes for the <img>
+  - eager {Boolean}: load eagerly with fetchpriority high (above-the-fold only)
+  - width / height {Number}: intrinsic size for the fallback image (avoids layout shift)
+
+  Usage:
+  {% render 'ab-image', image: block.settings.image, fallback: 'https://…', sizes: '(min-width: 1024px) 400px, 260px', class: 'ab-tile__image' %}
+{%- endcomment -%}
+
+{%- liquid
+  assign img_widths = widths | default: '360, 540, 720, 960, 1200'
+  assign img_sizes = sizes | default: '100vw'
+  assign img_alt = alt
+  if img_alt == nil
+    assign img_alt = image.alt | default: ''
+  endif
+  if eager
+    assign img_loading = 'eager'
+    assign img_priority = 'high'
+  else
+    assign img_loading = 'lazy'
+    assign img_priority = 'auto'
+  endif
+  assign max_width = img_widths | split: ',' | last | strip | plus: 0
+-%}
+
+{%- if image != blank -%}
+  {{
+    image
+    | image_url: width: max_width
+    | image_tag:
+      class: class,
+      widths: img_widths,
+      sizes: img_sizes,
+      loading: img_loading,
+      fetchpriority: img_priority,
+      alt: img_alt
+  }}
+{%- elsif fallback != blank -%}
+  <img
+    src="{{ fallback }}"
+    class="{{ class }}"
+    alt="{{ img_alt | escape }}"
+    loading="{{ img_loading }}"
+    fetchpriority="{{ img_priority }}"
+    decoding="async"
+    width="{{ width | default: 1200 }}"
+    height="{{ height | default: 1200 }}"
+  >
+{%- else -%}
+  {{ 'lifestyle-1' | placeholder_svg_tag: class }}
+{%- endif -%}

@@ -1,0 +1,38 @@
+{%- comment -%}
+  Outputs the URL of a placeholder photo from the approved design, used until the client
+  uploads their own image in the theme editor. Capture it:
+  {% capture fallback %}{% render 'ab-fallback-url', key: 'lifestyle-2' %}{% endcapture %}
+
+  These are the brand's existing web photos and free stock ingredient shots. Replace them with
+  uploaded images before launch.
+
+  Accepts:
+  - key {String}: lifestyle-1..4 | olive-oil | shea-butter | honey | castor-oil | egg-protein | aloe | clove
+{%- endcomment -%}
+
+{%- liquid
+  case key
+    when 'lifestyle-1'
+      echo 'https://africasbesthair.com/wp-content/uploads/2023/12/image-20.png'
+    when 'lifestyle-2'
+      echo 'https://originalsbyafricasbest.com/cdn/shop/files/2._HomepageHeader_3958x1604_050f905d-b1f4-483f-91c7-8f345328eaf3.jpg?width=2400'
+    when 'lifestyle-3'
+      echo 'https://originalsbyafricasbest.com/cdn/shop/files/homepage_768x768_6cd3420b-b7fa-45eb-ad42-f2de43d5e3cb_1024x1024.jpg'
+    when 'lifestyle-4'
+      echo 'https://originalsbyafricasbest.com/cdn/shop/files/Glamour_Nicole_w_and_wo_Product_0136_80893a15-d2c5-4f1d-858b-41f3739b578e_1024x1024.jpg'
+    when 'olive-oil'
+      echo 'https://images.unsplash.com/photo-1674532090540-6206a6e2f68b?w=600&q=70&auto=format&fit=crop'
+    when 'shea-butter'
+      echo 'https://images.unsplash.com/photo-1573812461383-e5f8b759d12e?w=600&q=70&auto=format&fit=crop'
+    when 'honey'
+      echo 'https://images.unsplash.com/photo-1574009000204-8d793e519de8?w=600&q=70&auto=format&fit=crop'
+    when 'castor-oil'
+      echo 'https://images.unsplash.com/photo-1596470663178-dc2df28026f7?w=600&q=70&auto=format&fit=crop'
+    when 'egg-protein'
+      echo 'https://images.unsplash.com/photo-1498654077810-12c21d4d6dc3?w=600&q=70&auto=format&fit=crop'
+    when 'aloe'
+      echo 'https://images.unsplash.com/photo-1559589249-a865914dc850?w=600&q=70&auto=format&fit=crop'
+    when 'clove'
+      echo 'https://images.unsplash.com/photo-1701191579013-7013090c370e?w=600&q=70&auto=format&fit=crop'
+  endcase
+-%}

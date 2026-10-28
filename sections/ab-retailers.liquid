@@ -1,0 +1,152 @@
+{%- comment -%}
+  Find Us in Your Local Beauty Aisle (FINAL / Homepage section 11).
+  Desktop: centered heading and text, 4 retailer logos in a row (96px tall cells, neutral grey),
+  then the STORE LOCATOR primary button.
+  Mobile/tablet: logos in a 2 x 2 grid (72px cells), full-width button on mobile.
+  Logos without an image show the retailer's name as a grey wordmark.
+{%- endcomment -%}
+
+{%- liquid
+  assign locator_url = section.settings.button_link | default: settings.ab_wtb_url | default: '/pages/where-to-buy'
+-%}
+
+<section class="ab-scope ab-retailers ab-section ab-bg--{{ section.settings.background }}">
+  <div class="ab-container ab-retailers__inner">
+    <div class="ab-section-header ab-section-header--center ab-retailers__header">
+      <h2 class="ab-section-heading">{{ section.settings.heading }}</h2>
+      {%- if section.settings.text != blank -%}
+        <p class="ab-section-subheading">{{ section.settings.text }}</p>
+      {%- endif -%}
+    </div>
+
+    {%- if section.blocks.size > 0 -%}
+      <ul class="ab-retailers__logos{% if section.settings.grey_logos %} ab-retailers__logos--grey{% endif %}" role="list">
+        {%- for block in section.blocks -%}
+          <li class="ab-retailers__logo" {{ block.shopify_attributes }}>
+            {%- capture logo_inner -%}
+              {%- if block.settings.logo != blank -%}
+                {{
+                  block.settings.logo
+                  | image_url: width: 480
+                  | image_tag:
+                    class: 'ab-retailers__image',
+                    widths: '160, 240, 320, 480',
+                    sizes: '(min-width: 1024px) 240px, 160px',
+                    loading: 'lazy',
+                    alt: block.settings.name
+                }}
+              {%- else -%}
+                <span class="ab-retailers__wordmark">{{ block.settings.name }}</span>
+              {%- endif -%}
+            {%- endcapture -%}
+            {%- if block.settings.link != blank -%}
+              <a href="{{ block.settings.link }}" class="ab-retailers__link" target="_blank" rel="noopener">
+                {{- logo_inner -}}
+                <span class="ab-visually-hidden"> (opens in a new tab)</span>
+              </a>
+            {%- else -%}
+              {{ logo_inner }}
+            {%- endif -%}
+          </li>
+        {%- endfor -%}
+      </ul>
+    {%- endif -%}
+
+    {%- if section.settings.button_label != blank -%}
+      {%- render 'ab-button',
+        label: section.settings.button_label,
+        url: locator_url,
+        style: 'primary',
+        full_width_mobile: true
+      -%}
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "AB: Retailers",
+  "tag": "div",
+  "class": "ab-retailers-section",
+  "max_blocks": 8,
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Find us in your local beauty aisle"
+    },
+    {
+      "type": "text",
+      "id": "text",
+      "label": "Text",
+      "default": "Available at your favorite retailers and local beauty supply stores."
+    },
+    {
+      "type": "checkbox",
+      "id": "grey_logos",
+      "label": "Show logos in neutral grey",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Button label",
+      "default": "Store locator"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button link",
+      "info": "Defaults to the Where to Buy link in theme settings."
+    },
+    {
+      "type": "select",
+      "id": "background",
+      "label": "Background",
+      "options": [
+        { "value": "white", "label": "White" },
+        { "value": "cream", "label": "Cream" }
+      ],
+      "default": "cream"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "retailer",
+      "name": "Retailer",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "logo",
+          "label": "Logo",
+          "info": "Transparent PNG or SVG. Without a logo, the name is shown as text."
+        },
+        {
+          "type": "text",
+          "id": "name",
+          "label": "Retailer name",
+          "default": "Walmart"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Link",
+          "info": "Optional. Opens in a new tab."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "AB: Retailers",
+      "blocks": [
+        { "type": "retailer", "settings": { "name": "Walmart" } },
+        { "type": "retailer", "settings": { "name": "Target" } },
+        { "type": "retailer", "settings": { "name": "Family Dollar" } },
+        { "type": "retailer", "settings": { "name": "Local Beauty Supply" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

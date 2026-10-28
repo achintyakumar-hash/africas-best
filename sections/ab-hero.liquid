@@ -1,0 +1,262 @@
+{%- comment -%}
+  Hero slideshow (FINAL / Homepage section 1).
+  Desktop: 640px full-bleed photo, dark gradient from the left, left-aligned text, two buttons,
+  dots bottom center, pause button bottom right.
+  Mobile/tablet: portrait crop (560px / 600px) with the text at the bottom over a dark gradient,
+  stacked full-width buttons, dots under the buttons.
+  Autoplay pauses on hover/focus, has a pause button, and is off for prefers-reduced-motion.
+{%- endcomment -%}
+
+{%- liquid
+  assign slide_count = section.blocks.size
+  assign autoplay_ms = 0
+  if section.settings.autoplay and slide_count > 1
+    assign autoplay_ms = section.settings.speed | times: 1000
+  endif
+-%}
+
+<section class="ab-scope ab-hero">
+  <ab-carousel
+    class="ab-hero__carousel ab-carousel--on-image"
+    data-label="{{ section.settings.label | escape }}"
+    data-desktop-dots
+    {% if autoplay_ms > 0 %}
+      data-autoplay="{{ autoplay_ms }}"
+    {% endif %}
+  >
+    <ul class="ab-carousel__track ab-hero__track" role="list">
+      {%- for block in section.blocks -%}
+        {%- liquid
+          assign desktop_image = block.settings.image
+          assign mobile_image = block.settings.image_mobile | default: desktop_image
+          assign is_first = forloop.first
+
+          case forloop.index
+            when 1
+              assign fallback_key = 'lifestyle-2'
+            when 2
+              assign fallback_key = 'lifestyle-3'
+            else
+              assign fallback_key = 'lifestyle-4'
+          endcase
+          capture fallback_url
+            render 'ab-fallback-url', key: fallback_key
+          endcapture
+
+          assign desktop_position = desktop_image.presentation.focal_point | default: 'center 30%'
+          assign mobile_position = mobile_image.presentation.focal_point | default: '72% 30%'
+          if forloop.index > 1 and desktop_image == blank
+            assign desktop_position = 'center 30%'
+            assign mobile_position = 'center 30%'
+          endif
+        -%}
+        <li
+          class="ab-carousel__slide ab-hero__slide"
+          style="--ab-hero-position: {{ desktop_position }}; --ab-hero-position-mobile: {{ mobile_position }};"
+          {{ block.shopify_attributes }}
+        >
+          <div class="ab-hero__media">
+            <picture>
+              {%- if block.settings.image_mobile != blank -%}
+                <source
+                  media="(max-width: 767px)"
+                  srcset="
+                    {%- for w in (1..3) -%}
+                      {%- assign mw = w | times: 400 -%}
+                      {{ mobile_image | image_url: width: mw }} {{ mw }}w{% unless forloop.last %}, {% endunless %}
+                    {%- endfor -%}
+                  "
+                  sizes="100vw"
+                >
+              {%- endif -%}
+              {%- render 'ab-image',
+                image: desktop_image,
+                fallback: fallback_url,
+                alt: block.settings.image_alt,
+                widths: '400, 600, 800, 1200, 1600, 2000, 2400',
+                sizes: '100vw',
+                class: 'ab-hero__image',
+                eager: is_first,
+                width: 2400,
+                height: 970
+              -%}
+            </picture>
+            <div class="ab-hero__overlay"></div>
+          </div>
+
+          <div class="ab-container ab-hero__content-wrap">
+            <div class="ab-hero__content">
+              {%- if block.settings.eyebrow != blank -%}
+                <p class="ab-hero__eyebrow">{{ block.settings.eyebrow }}</p>
+              {%- endif -%}
+              {%- if block.settings.heading != blank -%}
+                {%- if is_first -%}
+                  <h1 class="ab-hero__heading">{{ block.settings.heading }}</h1>
+                {%- else -%}
+                  <h2 class="ab-hero__heading">{{ block.settings.heading }}</h2>
+                {%- endif -%}
+              {%- endif -%}
+              {%- if block.settings.text != blank -%}
+                <p class="ab-hero__text">{{ block.settings.text }}</p>
+              {%- endif -%}
+              {%- if block.settings.primary_label != blank or block.settings.secondary_label != blank -%}
+                <div class="ab-hero__buttons">
+                  {%- if block.settings.primary_label != blank -%}
+                    {%- render 'ab-button',
+                      label: block.settings.primary_label,
+                      url: block.settings.primary_link,
+                      style: 'primary',
+                      full_width_mobile: true
+                    -%}
+                  {%- endif -%}
+                  {%- if block.settings.secondary_label != blank -%}
+                    {%- liquid
+                      assign secondary_url = block.settings.secondary_link
+                      if secondary_url == blank
+                        assign secondary_url = settings.ab_wtb_url | default: '/pages/where-to-buy'
+                      endif
+                    -%}
+                    {%- render 'ab-button',
+                      label: block.settings.secondary_label,
+                      url: secondary_url,
+                      style: 'on-image',
+                      full_width_mobile: true
+                    -%}
+                  {%- endif -%}
+                </div>
+              {%- endif -%}
+            </div>
+          </div>
+        </li>
+      {%- endfor -%}
+    </ul>
+
+    {%- if slide_count > 1 -%}
+      <div class="ab-carousel__dots ab-hero__dots" data-ab-dots></div>
+      {%- if autoplay_ms > 0 -%}
+        <button
+          type="button"
+          class="ab-hero__toggle"
+          data-ab-autoplay-toggle
+          data-playing="true"
+          aria-label="Pause slideshow"
+        >
+          {%- render 'ab-icon', name: 'pause', size: 20, class: 'ab-hero__icon-pause' -%}
+          {%- render 'ab-icon', name: 'play', size: 20, class: 'ab-hero__icon-play' -%}
+        </button>
+      {%- endif -%}
+    {%- endif -%}
+  </ab-carousel>
+</section>
+
+{% schema %}
+{
+  "name": "AB: Hero slideshow",
+  "tag": "div",
+  "class": "ab-hero-section",
+  "max_blocks": 3,
+  "settings": [
+    {
+      "type": "text",
+      "id": "label",
+      "label": "Slideshow name for screen readers",
+      "default": "Featured"
+    },
+    {
+      "type": "checkbox",
+      "id": "autoplay",
+      "label": "Autoplay",
+      "info": "Only with 2 or more slides. Turned off for visitors who prefer reduced motion.",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "speed",
+      "label": "Time per slide",
+      "min": 3,
+      "max": 10,
+      "step": 1,
+      "unit": "s",
+      "default": 6
+    }
+  ],
+  "blocks": [
+    {
+      "type": "slide",
+      "name": "Slide",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Desktop image",
+          "info": "Landscape, at least 2400 x 1070px. Set the focal point so faces stay in view."
+        },
+        {
+          "type": "image_picker",
+          "id": "image_mobile",
+          "label": "Mobile image",
+          "info": "Portrait, at least 800 x 1120px. Defaults to the desktop image."
+        },
+        {
+          "type": "text",
+          "id": "image_alt",
+          "label": "Image description (alt text)",
+          "default": "Woman with healthy natural hair"
+        },
+        {
+          "type": "text",
+          "id": "eyebrow",
+          "label": "Eyebrow",
+          "default": "Over 20 years of excellence"
+        },
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Heading",
+          "default": "When only the best will do"
+        },
+        {
+          "type": "textarea",
+          "id": "text",
+          "label": "Text",
+          "default": "Moisturizing, nourishing hair care for every hair care need and growth goal."
+        },
+        {
+          "type": "text",
+          "id": "primary_label",
+          "label": "Primary button label",
+          "default": "Shop best sellers"
+        },
+        {
+          "type": "url",
+          "id": "primary_link",
+          "label": "Primary button link",
+          "default": "/collections/all"
+        },
+        {
+          "type": "text",
+          "id": "secondary_label",
+          "label": "Secondary button label",
+          "default": "Where to buy"
+        },
+        {
+          "type": "url",
+          "id": "secondary_link",
+          "label": "Secondary button link",
+          "info": "Defaults to the Where to Buy link in theme settings."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "AB: Hero slideshow",
+      "blocks": [
+        { "type": "slide" },
+        { "type": "slide" },
+        { "type": "slide" }
+      ]
+    }
+  ]
+}
+{% endschema %}

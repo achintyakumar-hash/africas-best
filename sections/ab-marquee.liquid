@@ -1,0 +1,75 @@
+{%- comment -%}
+  Scrolling text band (FINAL / Homepage section 10).
+  Very large uppercase text in primary green on the light green tint, scrolling continuously.
+  96px desktop / 40px mobile. Pauses on hover and with its pause button, which appears on
+  keyboard focus. Static (no motion) for prefers-reduced-motion.
+  The text is repeated for the loop; screen readers hear it once.
+{%- endcomment -%}
+
+{%- liquid
+  assign marquee_text = section.settings.text | strip
+  assign marquee_separator = section.settings.separator | strip
+-%}
+
+{%- capture marquee_run -%}
+  {%- for i in (1..4) -%}
+    <span class="ab-marquee__item">{{ marquee_text }}</span>
+    {%- if marquee_separator != blank -%}<span class="ab-marquee__separator">{{ marquee_separator }}</span>{%- endif -%}
+  {%- endfor -%}
+{%- endcapture -%}
+
+<section
+  class="ab-scope ab-marquee"
+  style="--ab-marquee-duration: {{ section.settings.speed }}s;"
+  data-ab-marquee
+>
+  <p class="ab-visually-hidden">{{ marquee_text }}</p>
+  <div class="ab-marquee__viewport" aria-hidden="true">
+    <div class="ab-marquee__track">
+      <div class="ab-marquee__run">{{ marquee_run }}</div>
+      <div class="ab-marquee__run">{{ marquee_run }}</div>
+    </div>
+  </div>
+  <button type="button" class="ab-marquee__toggle ab-visually-hidden-until-focus" data-ab-marquee-toggle aria-pressed="false">
+    Pause scrolling text
+  </button>
+</section>
+
+{% schema %}
+{
+  "name": "AB: Scrolling text",
+  "tag": "div",
+  "class": "ab-marquee-section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "text",
+      "label": "Text",
+      "info": "Separate phrases with the separator below.",
+      "default": "Over 20 years + Quality ingredients + Healthier hair"
+    },
+    {
+      "type": "text",
+      "id": "separator",
+      "label": "Separator between repeats",
+      "default": "+"
+    },
+    {
+      "type": "range",
+      "id": "speed",
+      "label": "Time for one loop",
+      "info": "Higher is slower.",
+      "min": 10,
+      "max": 90,
+      "step": 5,
+      "unit": "s",
+      "default": 40
+    }
+  ],
+  "presets": [
+    {
+      "name": "AB: Scrolling text"
+    }
+  ]
+}
+{% endschema %}

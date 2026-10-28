@@ -146,6 +146,21 @@
       this.setActive(target);
     }
 
+    /** Scroll so that the given slide element is the first visible one (theme editor). */
+    scrollToSlide(slide) {
+      const index = this.slides.indexOf(slide);
+      if (index === -1) return;
+      this.stopAutoplay(true);
+      const paddingStart = parseFloat(getComputedStyle(this.track).scrollPaddingInlineStart) || 0;
+      const offset =
+        this.track.scrollLeft + slide.getBoundingClientRect().left - this.track.getBoundingClientRect().left - paddingStart;
+      let closest = 0;
+      this.positions.forEach((position, i) => {
+        if (Math.abs(position - offset) < Math.abs(this.positions[closest] - offset)) closest = i;
+      });
+      this.goTo(closest);
+    }
+
     onKeydown(event) {
       if (event.target !== this.track) return;
       const keyMap = {
