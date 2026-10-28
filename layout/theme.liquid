@@ -23,6 +23,7 @@
     {%- render 'scripts' -%}
     {%- render 'theme-styles-variables' -%}
     {%- render 'color-palette' -%}
+    {%- render 'ab-head' -%}
 
     {% if request.design_mode %}
       {%- render 'theme-editor' -%}
@@ -37,8 +38,8 @@
     {% render 'chat-drawer' %}
 
     <div class="page-wrapper">
-      <div id="header-group">
-        {% sections 'header-group' %}
+      <div id="header-group" class="ab-header-group">
+        {% sections 'ab-header-group' %}
       </div>
 
       <script>
@@ -159,18 +160,12 @@
         {{ content_for_layout }}
       </main>
 
-      <footer>
-        {% sections 'footer-group' %}
-      </footer>
+      <div class="ab-footer-group">
+        {% sections 'ab-footer-group' %}
+      </div>
     </div>
 
-    {% render 'cart-drawer', render_wrapper: true %}
     {% render 'theme-drawer' %}
 
-    {% render 'search-modal' %}
-
-    {% if settings.quick_add or settings.mobile_quick_add %}
-      {% render 'quick-add-modal' %}
-    {% endif %}
   </body>
 </html>

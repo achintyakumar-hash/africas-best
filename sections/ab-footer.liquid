@@ -1,0 +1,162 @@
+{%- comment -%}
+  Footer. Solid primary green, white text.
+  Desktop (1024px+): brand column (logo, blurb, social icons) + menu columns, then a centered
+  copyright line above a thin divider.
+  Mobile/tablet: stacked. Brand first, then each menu column as a collapsible row (closed),
+  then the copyright line.
+  Menus come from Online Store > Navigation (one block per column).
+{%- endcomment -%}
+
+{%- liquid
+  assign current_year = 'now' | date: '%Y'
+  assign copyright_text = section.settings.copyright | replace: '[year]', current_year
+-%}
+
+<footer class="ab-scope ab-footer ab-on-dark">
+  <div class="ab-container ab-footer__inner">
+    <div class="ab-footer__top">
+      <div class="ab-footer__brand">
+        {%- render 'ab-logo',
+          image: section.settings.logo,
+          variant: 'footer',
+          height: section.settings.logo_height,
+          url: routes.root_url
+        -%}
+        {%- if section.settings.blurb != blank -%}
+          <p class="ab-footer__blurb">{{ section.settings.blurb }}</p>
+        {%- endif -%}
+        {%- render 'ab-social-links', tone: 'light' -%}
+      </div>
+
+      {%- for block in section.blocks -%}
+        {%- liquid
+          assign column_menu = block.settings.menu
+          assign column_heading = block.settings.heading | default: column_menu.title
+          assign column_id = 'AbFooterColumn-' | append: block.id
+        -%}
+        <div class="ab-footer__column" data-ab-footer-column {{ block.shopify_attributes }}>
+          <h2 class="ab-footer__heading">
+            <button
+              type="button"
+              class="ab-footer__toggle"
+              aria-expanded="false"
+              aria-controls="{{ column_id }}"
+              data-ab-footer-toggle
+            >
+              <span>{{ column_heading }}</span>
+              <span class="ab-accordion__icon">
+                {%- render 'ab-icon', name: 'add', size: 22 -%}
+                {%- render 'ab-icon', name: 'remove', size: 22 -%}
+              </span>
+            </button>
+            <span class="ab-footer__heading-text">{{ column_heading }}</span>
+          </h2>
+          <ul id="{{ column_id }}" class="ab-footer__links" role="list">
+            {%- for link in column_menu.links -%}
+              <li>
+                <a
+                  href="{{ link.url }}"
+                  class="ab-footer__link"
+                  {% if link.current %}
+                    aria-current="page"
+                  {% endif %}
+                >
+                  {{- link.title -}}
+                </a>
+              </li>
+            {%- endfor -%}
+          </ul>
+        </div>
+      {%- endfor -%}
+    </div>
+
+    {%- if copyright_text != blank -%}
+      <p class="ab-footer__copyright">{{ copyright_text }}</p>
+    {%- endif -%}
+  </div>
+</footer>
+
+{% schema %}
+{
+  "name": "AB: Footer",
+  "tag": "div",
+  "class": "ab-footer-section",
+  "enabled_on": {
+    "groups": ["footer"]
+  },
+  "max_blocks": 4,
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "logo",
+      "label": "Logo (white version)",
+      "info": "Without an image, the AFRICA'S BEST / HAIR CARE wordmark is shown."
+    },
+    {
+      "type": "range",
+      "id": "logo_height",
+      "label": "Logo height",
+      "min": 24,
+      "max": 72,
+      "step": 2,
+      "unit": "px",
+      "default": 48
+    },
+    {
+      "type": "textarea",
+      "id": "blurb",
+      "label": "Brand text",
+      "default": "Moisturizing, nourishing hair care for every hair care need and growth goal, for over 20 years."
+    },
+    {
+      "type": "text",
+      "id": "copyright",
+      "label": "Copyright line",
+      "info": "[year] is replaced with the current year.",
+      "default": "© [year] Africa's Best. All rights reserved."
+    },
+    {
+      "type": "paragraph",
+      "content": "Social links are in Theme settings > Africa's Best: brand."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "menu",
+      "name": "Menu column",
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Heading",
+          "info": "Defaults to the menu's name."
+        },
+        {
+          "type": "link_list",
+          "id": "menu",
+          "label": "Menu"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "AB: Footer",
+      "blocks": [
+        {
+          "type": "menu",
+          "settings": {
+            "heading": "Collections"
+          }
+        },
+        {
+          "type": "menu",
+          "settings": {
+            "heading": "Information"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

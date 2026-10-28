@@ -1,0 +1,56 @@
+{
+  "sections": {
+    "library": {
+      "type": "ab-component-library",
+      "settings": {}
+    },
+    "faq": {
+      "type": "ab-faq",
+      "blocks": {
+        "q1": {
+          "type": "question",
+          "settings": {
+            "question": "Which growth oil is right for my hair?",
+            "answer": "<p>For daily shine and softness, try Argan Growth Oil. For dry, brittle hair, choose Black Castor Growth Oil or Super Gro Max.</p>"
+          }
+        },
+        "q2": {
+          "type": "question",
+          "settings": {
+            "question": "How often should I use a growth oil?",
+            "answer": "<p>Most growth oils can be used 3 to 4 times a week, or daily on dry areas and ends.</p>"
+          }
+        },
+        "q3": {
+          "type": "question",
+          "settings": {
+            "question": "Can I use these oils on my scalp?",
+            "answer": "<p>Yes. Part your hair and massage a small amount directly into the scalp.</p>"
+          }
+        },
+        "q4": {
+          "type": "question",
+          "settings": {
+            "question": "Are these products safe for color-treated hair?",
+            "answer": "<p>Our growth oils are gentle and suitable for color-treated hair.</p>"
+          }
+        },
+        "q5": {
+          "type": "question",
+          "settings": {
+            "question": "Can I use growth oils on protective styles?",
+            "answer": "<p>Yes. Apply to the scalp between braids, twists or locs to keep it moisturized.</p>"
+          }
+        }
+      },
+      "block_order": ["q1", "q2", "q3", "q4", "q5"],
+      "settings": {
+        "heading": "Frequently asked questions",
+        "background": "cream",
+        "open_first": true,
+        "structured_data": false
+      }
+    }
+  },
+  "order": ["library", "faq"]
+}

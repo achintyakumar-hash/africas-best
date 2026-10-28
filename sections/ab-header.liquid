@@ -1,0 +1,494 @@
+{%- comment -%}
+  Header (sticky). Replaces Horizon's header. No cart and no account.
+  Desktop (1024px+): 88px, logo left, nav (Shop mega menu, dropdowns, plain links),
+  then "WHERE TO BUY" (primary, 48px) and the search icon.
+  Mobile/tablet: 64px, hamburger left, logo centered, search, then a compact 36px
+  "WHERE TO BUY" pill.
+  Also renders the mobile menu drawer and the search overlay.
+
+  Menu structure (Online Store > Navigation, default "main-menu"):
+  - A top-level link whose children have their own children becomes a mega menu:
+    each child is a column (e.g. Collections, Categories, Benefits), plus the promo card.
+  - A top-level link with children only becomes a dropdown.
+  - A top-level link without children is a plain link.
+{%- endcomment -%}
+
+{%- liquid
+  assign menu = section.settings.menu
+  assign wtb_label = settings.ab_wtb_label | default: 'Where to buy'
+  assign wtb_url = settings.ab_wtb_url | default: '/pages/where-to-buy'
+-%}
+
+<header class="ab-scope ab-header" data-ab-header>
+  <div class="ab-header__bar">
+    <button
+      type="button"
+      class="ab-icon-btn ab-header__menu-toggle"
+      data-ab-open="AbMenuDrawer"
+      aria-controls="AbMenuDrawer"
+      aria-expanded="false"
+      aria-label="Open menu"
+    >
+      {%- render 'ab-icon', name: 'menu', size: 26 -%}
+    </button>
+
+    <div class="ab-header__logo">
+      {%- render 'ab-logo',
+        image: section.settings.logo,
+        variant: 'header',
+        height: section.settings.logo_height,
+        url: routes.root_url,
+        eager: true
+      -%}
+    </div>
+
+    {%- if menu != blank and menu.links.size > 0 -%}
+      <nav class="ab-nav" aria-label="Main">
+        <ul class="ab-nav__list" role="list">
+          {%- for link in menu.links -%}
+            {%- liquid
+              assign is_mega = false
+              for child in link.links
+                if child.links.size > 0
+                  assign is_mega = true
+                  break
+                endif
+              endfor
+              assign panel_id = 'AbNavPanel-' | append: section.id | append: '-' | append: forloop.index
+            -%}
+            <li class="ab-nav__item{% if link.links.size > 0 %} ab-nav__item--has-panel{% endif %}{% if is_mega %} ab-nav__item--mega{% endif %}" data-ab-nav-item>
+              {%- if link.links.size > 0 -%}
+                <button
+                  type="button"
+                  class="ab-nav__trigger{% if link.active or link.child_active %} is-active{% endif %}"
+                  aria-expanded="false"
+                  aria-controls="{{ panel_id }}"
+                  data-ab-nav-trigger
+                >
+                  {{- link.title -}}
+                  {%- render 'ab-icon', name: 'chevron-down', size: 18, class: 'ab-nav__chevron' -%}
+                </button>
+
+                {%- if is_mega -%}
+                  <div id="{{ panel_id }}" class="ab-mega" data-ab-nav-panel hidden>
+                    <div class="ab-container ab-mega__inner">
+                      <div class="ab-mega__columns">
+                        {%- for child in link.links -%}
+                          <div class="ab-mega__column">
+                            {%- if child.url != '#' and child.url != blank -%}
+                              <a href="{{ child.url }}" class="ab-mega__heading">{{ child.title }}</a>
+                            {%- else -%}
+                              <p class="ab-mega__heading">{{ child.title }}</p>
+                            {%- endif -%}
+                            {%- if child.links.size > 0 -%}
+                              <ul class="ab-mega__links" role="list">
+                                {%- for grandchild in child.links -%}
+                                  <li>
+                                    <a
+                                      href="{{ grandchild.url }}"
+                                      class="ab-mega__link"
+                                      {% if grandchild.current %}
+                                        aria-current="page"
+                                      {% endif %}
+                                    >
+                                      {{- grandchild.title -}}
+                                    </a>
+                                  </li>
+                                {%- endfor -%}
+                              </ul>
+                            {%- endif -%}
+                          </div>
+                        {%- endfor -%}
+                      </div>
+
+                      {%- if section.settings.promo_image != blank or section.settings.promo_heading != blank -%}
+                        <a
+                          href="{{ section.settings.promo_link | default: link.url }}"
+                          class="ab-mega__promo"
+                        >
+                          {%- if section.settings.promo_image != blank -%}
+                            {{
+                              section.settings.promo_image
+                              | image_url: width: 760
+                              | image_tag:
+                                class: 'ab-mega__promo-image',
+                                widths: '380, 570, 760',
+                                sizes: '380px',
+                                loading: 'lazy',
+                                alt: section.settings.promo_image.alt
+                            }}
+                          {%- endif -%}
+                          {%- if section.settings.promo_heading != blank -%}
+                            <span class="ab-mega__promo-heading">{{ section.settings.promo_heading }}</span>
+                          {%- endif -%}
+                          {%- if section.settings.promo_link_label != blank -%}
+                            <span class="ab-link ab-mega__promo-link">
+                              {{- section.settings.promo_link_label -}}
+                              {%- render 'ab-icon', name: 'arrow-forward', size: 18 -%}
+                            </span>
+                          {%- endif -%}
+                        </a>
+                      {%- endif -%}
+                    </div>
+                  </div>
+                {%- else -%}
+                  <div id="{{ panel_id }}" class="ab-dropdown" data-ab-nav-panel hidden>
+                    <ul class="ab-dropdown__list" role="list">
+                      {%- for child in link.links -%}
+                        <li>
+                          <a
+                            href="{{ child.url }}"
+                            class="ab-dropdown__link"
+                            {% if child.current %}
+                              aria-current="page"
+                            {% endif %}
+                          >
+                            {{- child.title -}}
+                          </a>
+                        </li>
+                      {%- endfor -%}
+                    </ul>
+                  </div>
+                {%- endif -%}
+              {%- else -%}
+                <a
+                  href="{{ link.url }}"
+                  class="ab-nav__link{% if link.active %} is-active{% endif %}"
+                  {% if link.current %}
+                    aria-current="page"
+                  {% endif %}
+                >
+                  {{- link.title -}}
+                </a>
+              {%- endif -%}
+            </li>
+          {%- endfor -%}
+        </ul>
+      </nav>
+    {%- endif -%}
+
+    <div class="ab-header__actions">
+      {%- render 'ab-button', label: wtb_label, url: wtb_url, style: 'primary', class: 'ab-header__wtb' -%}
+      {%- if section.settings.show_search -%}
+        <button
+          type="button"
+          class="ab-icon-btn ab-header__search"
+          data-ab-open="AbSearch"
+          aria-controls="AbSearch"
+          aria-expanded="false"
+          aria-label="Search"
+        >
+          {%- render 'ab-icon', name: 'search', size: 26 -%}
+        </button>
+      {%- endif -%}
+    </div>
+  </div>
+</header>
+
+{%- comment -%} Mobile/tablet menu drawer (MOBILE STATES: Menu - Open) {%- endcomment -%}
+<div
+  id="AbMenuDrawer"
+  class="ab-scope ab-drawer"
+  role="dialog"
+  aria-modal="true"
+  aria-label="Menu"
+  hidden
+>
+  <div class="ab-drawer__backdrop" data-ab-close></div>
+  <div class="ab-drawer__panel">
+    <div class="ab-drawer__top">
+      {%- render 'ab-logo', image: section.settings.logo, variant: 'header-mobile', height: section.settings.logo_height_mobile, url: routes.root_url -%}
+      <button type="button" class="ab-icon-btn" data-ab-close aria-label="Close menu" data-ab-initial-focus>
+        {%- render 'ab-icon', name: 'close', size: 26 -%}
+      </button>
+    </div>
+
+    <nav class="ab-drawer__body" aria-label="Main">
+      {%- if menu != blank -%}
+        <ul class="ab-drawer__list" role="list">
+          {%- for link in menu.links -%}
+            <li class="ab-drawer__item">
+              {%- if link.links.size > 0 -%}
+                {%- liquid
+                  assign is_mega = false
+                  for child in link.links
+                    if child.links.size > 0
+                      assign is_mega = true
+                      break
+                    endif
+                  endfor
+                -%}
+                <details
+                  class="ab-drawer__group"
+                  {% if forloop.first and section.settings.drawer_expand_first %}
+                    open
+                  {% endif %}
+                >
+                  <summary class="ab-drawer__row">
+                    <span>{{ link.title }}</span>
+                    <span class="ab-accordion__icon">
+                      {%- render 'ab-icon', name: 'add' -%}
+                      {%- render 'ab-icon', name: 'remove' -%}
+                    </span>
+                  </summary>
+                  {%- if is_mega -%}
+                    <div class="ab-drawer__mega">
+                      {%- for child in link.links -%}
+                        <div class="ab-drawer__mega-group">
+                          <p class="ab-drawer__mega-heading">{{ child.title }}</p>
+                          <ul class="ab-drawer__sublist" role="list">
+                            {%- for grandchild in child.links -%}
+                              <li><a href="{{ grandchild.url }}" class="ab-drawer__sublink">{{ grandchild.title }}</a></li>
+                            {%- endfor -%}
+                          </ul>
+                        </div>
+                      {%- endfor -%}
+                    </div>
+                  {%- else -%}
+                    <ul class="ab-drawer__sublist ab-drawer__sublist--single" role="list">
+                      {%- for child in link.links -%}
+                        <li><a href="{{ child.url }}" class="ab-drawer__sublink">{{ child.title }}</a></li>
+                      {%- endfor -%}
+                    </ul>
+                  {%- endif -%}
+                </details>
+              {%- else -%}
+                <a href="{{ link.url }}" class="ab-drawer__row">
+                  <span>{{ link.title }}</span>
+                  {%- render 'ab-icon', name: 'chevron-right' -%}
+                </a>
+              {%- endif -%}
+            </li>
+          {%- endfor -%}
+        </ul>
+      {%- endif -%}
+    </nav>
+
+    <div class="ab-drawer__footer">
+      {%- render 'ab-button', label: wtb_label, url: wtb_url, style: 'primary', full_width: true -%}
+      {%- render 'ab-social-links', tone: 'dark' -%}
+    </div>
+  </div>
+</div>
+
+{%- comment -%} Search overlay (MOBILE STATES: Search - Open) {%- endcomment -%}
+{%- if section.settings.show_search -%}
+  <div
+    id="AbSearch"
+    class="ab-scope ab-search"
+    role="dialog"
+    aria-modal="true"
+    aria-label="Search"
+    hidden
+    data-ab-search
+    data-predictive-url="{{ routes.predictive_search_url }}"
+  >
+    <div class="ab-search__backdrop" data-ab-close></div>
+    <div class="ab-search__panel">
+      <div class="ab-search__inner">
+        <form action="{{ routes.search_url }}" method="get" role="search" class="ab-search__form">
+          <label class="ab-search__field">
+            <span class="ab-visually-hidden">Search products and articles</span>
+            {%- render 'ab-icon', name: 'search', size: 22 -%}
+            <input
+              type="search"
+              name="q"
+              class="ab-search__input"
+              placeholder="{{ section.settings.search_placeholder | escape }}"
+              autocomplete="off"
+              autocapitalize="off"
+              spellcheck="false"
+              aria-controls="AbSearchResults"
+              data-ab-search-input
+              data-ab-initial-focus
+            >
+          </label>
+          <button type="button" class="ab-search__cancel" data-ab-close>Cancel</button>
+        </form>
+
+        <div id="AbSearchResults" class="ab-search__results" aria-live="polite">
+          <div class="ab-search__default" data-ab-search-default>
+            {%- assign popular_terms = section.settings.popular_searches | split: ',' -%}
+            {%- if popular_terms.size > 0 -%}
+              <div class="ab-search__block">
+                <p class="ab-search__label">Popular searches</p>
+                <ul class="ab-search__chips" role="list">
+                  {%- for term in popular_terms -%}
+                    {%- assign term_clean = term | strip -%}
+                    {%- if term_clean != blank -%}
+                      <li>
+                        <a href="{{ routes.search_url }}?q={{ term_clean | url_encode }}" class="ab-search__chip">
+                          {{- term_clean -}}
+                        </a>
+                      </li>
+                    {%- endif -%}
+                  {%- endfor -%}
+                </ul>
+              </div>
+            {%- endif -%}
+
+            {%- assign suggested_collection = section.settings.suggested_collection -%}
+            {%- if suggested_collection != blank and suggested_collection.products_count > 0 -%}
+              <div class="ab-search__block">
+                <p class="ab-search__label">Suggested products</p>
+                <ul class="ab-search__products" role="list">
+                  {%- for product in suggested_collection.products limit: 4 -%}
+                    <li>
+                      <a href="{{ product.url }}" class="ab-search__product">
+                        <span class="ab-search__thumb">
+                          {%- if product.featured_media -%}
+                            {{
+                              product.featured_media.preview_image
+                              | image_url: width: 128
+                              | image_tag: widths: '64, 128', sizes: '64px', loading: 'lazy', alt: ''
+                            }}
+                          {%- endif -%}
+                        </span>
+                        <span class="ab-search__product-title">{{ product.title }}</span>
+                        {%- render 'ab-icon', name: 'chevron-right', size: 20 -%}
+                      </a>
+                    </li>
+                  {%- endfor -%}
+                </ul>
+              </div>
+            {%- endif -%}
+          </div>
+
+          <div class="ab-search__block" data-ab-search-live hidden>
+            <p class="ab-search__label">Products</p>
+            <ul class="ab-search__products" role="list" data-ab-search-list></ul>
+            <a href="{{ routes.search_url }}" class="ab-link ab-search__all" data-ab-search-all>
+              View all results
+              {%- render 'ab-icon', name: 'arrow-forward', size: 18 -%}
+            </a>
+          </div>
+          <p class="ab-search__empty" data-ab-search-empty hidden></p>
+        </div>
+      </div>
+    </div>
+  </div>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "AB: Header",
+  "tag": "div",
+  "class": "ab-header-section",
+  "enabled_on": {
+    "groups": ["header"]
+  },
+  "settings": [
+    {
+      "type": "header",
+      "content": "Logo"
+    },
+    {
+      "type": "image_picker",
+      "id": "logo",
+      "label": "Logo (dark version)",
+      "info": "Without an image, the AFRICA'S BEST / HAIR CARE wordmark is shown."
+    },
+    {
+      "type": "range",
+      "id": "logo_height",
+      "label": "Desktop logo height",
+      "min": 24,
+      "max": 72,
+      "step": 2,
+      "unit": "px",
+      "default": 48
+    },
+    {
+      "type": "range",
+      "id": "logo_height_mobile",
+      "label": "Mobile logo height",
+      "min": 20,
+      "max": 48,
+      "step": 2,
+      "unit": "px",
+      "default": 32
+    },
+    {
+      "type": "header",
+      "content": "Navigation"
+    },
+    {
+      "type": "link_list",
+      "id": "menu",
+      "label": "Menu",
+      "default": "main-menu",
+      "info": "Links with sub-links open a dropdown. Links whose sub-links have their own links open the mega menu (columns such as Collections, Categories, Benefits)."
+    },
+    {
+      "type": "checkbox",
+      "id": "drawer_expand_first",
+      "label": "Expand the first menu item in the mobile menu",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Mega menu promo"
+    },
+    {
+      "type": "image_picker",
+      "id": "promo_image",
+      "label": "Image"
+    },
+    {
+      "type": "text",
+      "id": "promo_heading",
+      "label": "Heading",
+      "default": "Shop best sellers"
+    },
+    {
+      "type": "text",
+      "id": "promo_link_label",
+      "label": "Link label",
+      "default": "Shop now"
+    },
+    {
+      "type": "url",
+      "id": "promo_link",
+      "label": "Link"
+    },
+    {
+      "type": "header",
+      "content": "Search"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_search",
+      "label": "Show search",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "search_placeholder",
+      "label": "Placeholder",
+      "default": "Search products"
+    },
+    {
+      "type": "text",
+      "id": "popular_searches",
+      "label": "Popular searches",
+      "info": "Separate with commas.",
+      "default": "Growth oil, Castor oil, Hair Mayonnaise, Edges, Scalp care, Kids"
+    },
+    {
+      "type": "collection",
+      "id": "suggested_collection",
+      "label": "Suggested products",
+      "info": "The first 4 products are shown before the visitor types."
+    },
+    {
+      "type": "paragraph",
+      "content": "The Where to Buy button label and link, and the social links, are in Theme settings > Africa's Best: brand."
+    }
+  ],
+  "presets": [
+    {
+      "name": "AB: Header"
+    }
+  ]
+}
+{% endschema %}

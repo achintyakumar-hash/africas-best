@@ -1,0 +1,133 @@
+{%- comment -%}
+  Dev handoff preview: shows the global components on one page for review.
+  Used by templates/page.ab-components.json. Not meant for customer-facing pages.
+{%- endcomment -%}
+
+{%- liquid
+  assign library_collection = section.settings.collection
+  if library_collection == blank
+    assign library_collection = collections.all
+  endif
+-%}
+
+<div class="ab-scope ab-library">
+  <section class="ab-section ab-bg--white">
+    <div class="ab-container">
+      <div class="ab-section-header">
+        <h1 class="ab-section-heading">Component library</h1>
+        <p class="ab-section-subheading">Global components for review. Resize the window to check mobile (below 768px), tablet (768-1023px) and desktop (1024px and up).</p>
+      </div>
+
+      <h2 class="ab-library__label">Buttons: large (48px)</h2>
+      <div class="ab-library__row">
+        {%- render 'ab-button', label: 'Where to buy', url: '#', style: 'primary' -%}
+        {%- render 'ab-button', label: 'Load more', style: 'secondary' -%}
+        {%- render 'ab-button', label: 'Disabled', style: 'primary', disabled: true -%}
+        {%- render 'ab-button', label: 'Where to buy', url: '#', style: 'primary', icon: 'store' -%}
+      </div>
+
+      <h2 class="ab-library__label">Buttons: small (40px mobile, 44px tablet and desktop)</h2>
+      <div class="ab-library__row">
+        {%- render 'ab-button', label: 'Buy now', url: '#', style: 'primary', size: 'small' -%}
+        {%- render 'ab-button', label: 'View', url: '#', style: 'secondary', size: 'small' -%}
+        {%- render 'ab-button', label: 'Disabled', style: 'secondary', size: 'small', disabled: true -%}
+      </div>
+
+      <h2 class="ab-library__label">Secondary on image</h2>
+      <div class="ab-library__row ab-library__row--dark">
+        {%- render 'ab-button', label: 'Learn more', url: '#', style: 'on-image' -%}
+        {%- render 'ab-button', label: 'View', url: '#', style: 'on-image', size: 'small' -%}
+      </div>
+
+      <h2 class="ab-library__label">Text links</h2>
+      <div class="ab-library__row">
+        {%- render 'ab-button', label: 'View all', url: '#', style: 'link' -%}
+        {%- render 'ab-button', label: 'View', url: '#', style: 'link', icon_after: 'arrow-forward' -%}
+        {%- render 'ab-button', label: 'Read more', url: '#', style: 'link' -%}
+      </div>
+
+      <h2 class="ab-library__label">Badges and rating</h2>
+      <div class="ab-library__row">
+        <span class="ab-badge">Best seller</span>
+        <span class="ab-badge ab-badge--new">New</span>
+        {%- render 'ab-stars', rating: 4.8, count: 2314, show_value: true -%}
+        {%- render 'ab-stars', rating: 4.4, count: 126 -%}
+      </div>
+    </div>
+  </section>
+
+  <section class="ab-section ab-bg--white">
+    <div class="ab-container">
+      <div class="ab-section-header ab-section-header--center">
+        <h2 class="ab-section-heading">Product carousel</h2>
+        <p class="ab-section-subheading">Arrows on desktop, swipe with dots on mobile and tablet.</p>
+      </div>
+      <ab-carousel class="ab-carousel--products" data-label="Products" style="--ab-arrow-top: 34%;">
+        <ul class="ab-carousel__track" role="list">
+          {%- for product in library_collection.products limit: 8 -%}
+            <li class="ab-carousel__slide">{% render 'ab-product-card', product: product %}</li>
+          {%- else -%}
+            <li class="ab-carousel__slide"><p>Add products to the store to preview the card.</p></li>
+          {%- endfor -%}
+        </ul>
+        {%- render 'ab-carousel-controls', label: 'products' -%}
+      </ab-carousel>
+    </div>
+  </section>
+
+  <section class="ab-section ab-bg--white">
+    <div class="ab-container">
+      <div class="ab-section-header ab-section-header--center">
+        <h2 class="ab-section-heading">Product grid</h2>
+      </div>
+      <ul class="ab-product-grid" role="list">
+        {%- for product in library_collection.products limit: 8 -%}
+          <li>{% render 'ab-product-card', product: product %}</li>
+        {%- endfor -%}
+      </ul>
+    </div>
+  </section>
+</div>
+
+{% stylesheet %}
+  .ab-library__label {
+    margin: 32px 0 16px;
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ab-color-muted);
+  }
+
+  .ab-library__row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .ab-library__row--dark {
+    padding: 16px;
+    border-radius: var(--ab-radius-card);
+    background: #3a302a;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "AB: Component library",
+  "settings": [
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "Products to preview",
+      "info": "Defaults to all products."
+    }
+  ],
+  "presets": [
+    {
+      "name": "AB: Component library"
+    }
+  ]
+}
+{% endschema %}

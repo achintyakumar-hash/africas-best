@@ -33,13 +33,37 @@ body {
   color: var(--ab-color-text);
 }
 
-.ab-scope img {
+/* Neutralise Horizon's global element rules (img width: 100%, heading presets,
+   link and summary hover colors) inside our components. */
+.ab-scope :where(img) {
+  width: auto;
   max-width: 100%;
   height: auto;
 }
 
 .ab-scope :where(h1, h2, h3, h4, h5, h6, p, ul, ol, figure) {
   margin: 0;
+}
+
+.ab-scope :where(h1, h2, h3, h4, h5, h6) {
+  font-family: var(--ab-font-family);
+  font-style: normal;
+  font-weight: var(--ab-font-weight-extrabold);
+  font-size: inherit;
+  line-height: inherit;
+  letter-spacing: inherit;
+  text-transform: none;
+  color: inherit;
+}
+
+.ab-scope summary {
+  padding-block: 0;
+}
+
+.ab-scope summary:hover,
+.ab-scope p a:where(:not(.ab-link)):hover,
+.ab-scope :is(h1, h2, h3, h4, h5, h6, p) > a:where(:not(.ab-link)):hover {
+  color: inherit;
 }
 
 .ab-scope :where(ul[role='list'], ol[role='list']) {
@@ -192,7 +216,7 @@ html.ab-scroll-locked body {
   text-underline-offset: 3px;
 }
 
-.ab-rte a:hover {
+.ab-scope .ab-rte a:hover {
   color: var(--ab-color-button);
 }
 

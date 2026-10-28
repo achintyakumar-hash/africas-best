@@ -1,0 +1,47 @@
+{%- comment -%}
+  Facebook / Instagram / TikTok circle links from the "Africa's Best: brand" theme settings.
+
+  Accepts:
+  - tone {String}: 'light' (white icons on dark, footer) | 'dark' (dark icons on white, menu drawer)
+  - class {String}: extra classes
+
+  Usage:
+  {% render 'ab-social-links', tone: 'light' %}
+{%- endcomment -%}
+
+{%- liquid
+  assign social_tone = tone | default: 'light'
+  assign has_social = false
+  if settings.ab_social_facebook != blank or settings.ab_social_instagram != blank or settings.ab_social_tiktok != blank
+    assign has_social = true
+  endif
+-%}
+
+{%- if has_social -%}
+  <ul class="ab-social ab-social--{{ social_tone }}{% if class %} {{ class }}{% endif %}" role="list">
+    {%- if settings.ab_social_facebook != blank -%}
+      <li>
+        <a href="{{ settings.ab_social_facebook }}" class="ab-social__link" target="_blank" rel="noopener">
+          {%- render 'ab-icon', name: 'facebook', size: 18 -%}
+          <span class="ab-visually-hidden">Facebook (opens in a new tab)</span>
+        </a>
+      </li>
+    {%- endif -%}
+    {%- if settings.ab_social_instagram != blank -%}
+      <li>
+        <a href="{{ settings.ab_social_instagram }}" class="ab-social__link" target="_blank" rel="noopener">
+          {%- render 'ab-icon', name: 'instagram', size: 18 -%}
+          <span class="ab-visually-hidden">Instagram (opens in a new tab)</span>
+        </a>
+      </li>
+    {%- endif -%}
+    {%- if settings.ab_social_tiktok != blank -%}
+      <li>
+        <a href="{{ settings.ab_social_tiktok }}" class="ab-social__link" target="_blank" rel="noopener">
+          {%- render 'ab-icon', name: 'tiktok', size: 18 -%}
+          <span class="ab-visually-hidden">TikTok (opens in a new tab)</span>
+        </a>
+      </li>
+    {%- endif -%}
+  </ul>
+{%- endif -%}

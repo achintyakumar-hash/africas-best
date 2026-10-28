@@ -1,0 +1,31 @@
+{
+  "type": "header",
+  "name": "Africa's Best header",
+  "sections": {
+    "announcement": {
+      "type": "ab-announcement-bar",
+      "settings": {
+        "text": "Now one brand: Africa's Best. Find your favorites at Walmart, Target and your local beauty supply store.",
+        "link": "",
+        "dismissible": true,
+        "background": "#123D2E",
+        "text_color": "#FFFFFF"
+      }
+    },
+    "header": {
+      "type": "ab-header",
+      "settings": {
+        "logo_height": 48,
+        "logo_height_mobile": 32,
+        "menu": "main-menu",
+        "drawer_expand_first": true,
+        "promo_heading": "Shop best sellers",
+        "promo_link_label": "Shop now",
+        "show_search": true,
+        "search_placeholder": "Search products",
+        "popular_searches": "Growth oil, Castor oil, Hair Mayonnaise, Edges, Scalp care, Kids"
+      }
+    }
+  },
+  "order": ["announcement", "header"]
+}

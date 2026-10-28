@@ -1,0 +1,32 @@
+{
+  "type": "footer",
+  "name": "Africa's Best footer",
+  "sections": {
+    "footer": {
+      "type": "ab-footer",
+      "blocks": {
+        "collections": {
+          "type": "menu",
+          "settings": {
+            "heading": "Collections",
+            "menu": "footer-collections"
+          }
+        },
+        "information": {
+          "type": "menu",
+          "settings": {
+            "heading": "Information",
+            "menu": "footer-information"
+          }
+        }
+      },
+      "block_order": ["collections", "information"],
+      "settings": {
+        "logo_height": 48,
+        "blurb": "Moisturizing, nourishing hair care for every hair care need and growth goal, for over 20 years.",
+        "copyright": "© [year] Africa's Best. All rights reserved."
+      }
+    }
+  },
+  "order": ["footer"]
+}
