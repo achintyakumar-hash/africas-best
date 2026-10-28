@@ -52,7 +52,7 @@
 
     disconnectedCallback() {
       this.resizeObserver?.disconnect();
-      this.stopAutoplay();
+      clearInterval(this.autoplayTimer);
     }
 
     get slides() {
@@ -174,7 +174,10 @@
       this.goTo(keyMap[event.key], true);
     }
 
-    /* ---------- Autoplay ---------- */
+    /* ---------- Autoplay ----------
+     * Two separate reasons to pause: the visitor paused it (button, arrows, dots, keys), or the
+     * pointer/focus is inside. The toggle button only reflects the visitor's choice.
+     */
     setupAutoplay() {
       const delay = parseInt(this.dataset.autoplay, 10);
       if (!delay || reducedMotion.matches) {
@@ -183,42 +186,58 @@
       }
       this.autoplayDelay = delay;
       this.autoplayPausedByUser = false;
+      this.autoplayInteracting = false;
 
       this.toggleButton?.addEventListener('click', () => {
-        if (this.autoplayTimer) {
-          this.stopAutoplay(true);
-        } else {
-          this.autoplayPausedByUser = false;
-          this.startAutoplay();
-        }
+        this.autoplayPausedByUser = !this.autoplayPausedByUser;
+        this.syncAutoplay();
       });
 
-      const pause = () => this.stopAutoplay();
-      const resume = () => {
-        if (!this.autoplayPausedByUser && !this.contains(document.activeElement)) this.startAutoplay();
-      };
-      this.addEventListener('mouseenter', pause);
-      this.addEventListener('mouseleave', resume);
-      this.addEventListener('focusin', pause);
-      this.addEventListener('focusout', () => setTimeout(resume, 0));
+      this.addEventListener('mouseenter', () => {
+        this.autoplayInteracting = true;
+        this.syncAutoplay();
+      });
+      // Keyboard focus inside pauses; focus left behind by a mouse click doesn't.
+      const keyboardFocusInside = () => !!this.querySelector(':focus-visible');
+      this.addEventListener('mouseleave', () => {
+        this.autoplayInteracting = keyboardFocusInside();
+        this.syncAutoplay();
+      });
+      this.addEventListener('focusin', () => {
+        if (!keyboardFocusInside()) return;
+        this.autoplayInteracting = true;
+        this.syncAutoplay();
+      });
+      this.addEventListener('focusout', () => {
+        setTimeout(() => {
+          this.autoplayInteracting = this.matches(':hover') || keyboardFocusInside();
+          this.syncAutoplay();
+        }, 0);
+      });
 
-      this.startAutoplay();
+      this.syncAutoplay();
     }
 
-    startAutoplay() {
-      if (!this.autoplayDelay || this.autoplayTimer) return;
-      this.autoplayTimer = setInterval(() => {
-        const next = this.activeIndex >= this.positions.length - 1 ? 0 : this.activeIndex + 1;
-        this.goTo(next);
-      }, this.autoplayDelay);
-      this.updateToggle(true);
+    syncAutoplay() {
+      if (!this.autoplayDelay) return;
+      const shouldPlay = !this.autoplayPausedByUser && !this.autoplayInteracting;
+      if (shouldPlay && !this.autoplayTimer) {
+        this.autoplayTimer = setInterval(() => {
+          const next = this.activeIndex >= this.positions.length - 1 ? 0 : this.activeIndex + 1;
+          this.goTo(next);
+        }, this.autoplayDelay);
+      } else if (!shouldPlay && this.autoplayTimer) {
+        clearInterval(this.autoplayTimer);
+        this.autoplayTimer = null;
+      }
+      this.updateToggle(!this.autoplayPausedByUser);
     }
 
     stopAutoplay(byUser = false) {
+      if (!this.autoplayDelay) return;
       if (byUser) this.autoplayPausedByUser = true;
-      clearInterval(this.autoplayTimer);
-      this.autoplayTimer = null;
-      this.updateToggle(false);
+      else this.autoplayInteracting = true;
+      this.syncAutoplay();
     }
 
     updateToggle(playing) {

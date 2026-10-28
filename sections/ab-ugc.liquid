@@ -34,6 +34,9 @@
             if tag_product == blank
               assign tag_product = tag_source.products[forloop.index0]
             endif
+            if tag_product == blank
+              assign tag_product = collections.all.products[forloop.index0]
+            endif
 
             assign mod = forloop.index0 | modulo: 4
             case mod

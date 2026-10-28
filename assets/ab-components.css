@@ -381,6 +381,7 @@ ab-carousel {
 }
 
 .ab-carousel__slide {
+  position: relative; /* keeps absolutely positioned children (e.g. screen-reader text) clipped by the track */
   flex: 0 0 var(--ab-slide-width-mobile);
   min-width: 0;
   scroll-snap-align: start;

@@ -44,6 +44,9 @@
                 if review_product == blank
                   assign review_product = link_source.products[forloop.index0]
                 endif
+                if review_product == blank
+                  assign review_product = collections.all.products[forloop.index0]
+                endif
                 assign review_mod = forloop.index0 | modulo: 4
                 case review_mod
                   when 0

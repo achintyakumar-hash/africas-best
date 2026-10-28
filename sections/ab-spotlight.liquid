@@ -62,6 +62,9 @@
             if spot_product == blank
               assign spot_product = fallback_source.products[forloop.index0]
             endif
+            if spot_product == blank
+              assign spot_product = collections.all.products[forloop.index0]
+            endif
             assign spot_title = block.settings.title | default: spot_product.title
           -%}
           {%- if spot_product != blank or spot_title != blank -%}
