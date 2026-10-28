@@ -4,7 +4,7 @@
   Accepts:
   - rating {Number}: 0-5 (decimals allowed)
   - count {Number}: number of reviews (optional)
-  - size {Number}: star size in px (default 14)
+  - size {Number}: star size in px (default 14, or whatever the parent sets via --ab-star-size)
   - show_value {Boolean}: show the numeric rating before the count, e.g. "4.8 (2,314)"
   - class {String}: extra classes
 
@@ -40,7 +40,7 @@
   endif
 -%}
 
-<span class="ab-stars{% if class %} {{ class }}{% endif %}" style="--ab-star-size: {{ star_size }}px;">
+<span class="ab-stars{% if class %} {{ class }}{% endif %}"{% if size %} style="--ab-star-size: {{ size }}px;"{% endif %}>
   <span class="ab-stars__icons" aria-hidden="true">
     <span class="ab-stars__base">
       {%- for i in (1..5) -%}{% render 'ab-icon', name: 'star', size: star_size %}{%- endfor -%}

@@ -1,0 +1,249 @@
+/*
+ * Product card (snippets/ab-product-card.liquid).
+ * Mobile/tablet follow the Mobile Components sheet: 169 x 316 at a 390px viewport.
+ * Desktop follows the FINAL artboards: square image, 16px gaps, 44px button.
+ */
+
+.ab-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 316px;
+  height: 100%;
+  background: var(--ab-color-white);
+  color: var(--ab-color-text);
+  text-align: center;
+}
+
+/* ---------- Media ---------- */
+.ab-card__media {
+  position: relative;
+  flex-shrink: 0;
+  aspect-ratio: 1 / 1;
+  border-radius: var(--ab-radius-image-frame);
+  background: var(--ab-color-white);
+  overflow: hidden;
+}
+
+.ab-card__frame {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Product contained, never cropped: max 120w x 132h inside the 169px frame. */
+.ab-card__image {
+  display: block;
+  width: auto;
+  height: auto;
+  max-width: 71%;
+  max-height: 78%;
+  object-fit: contain;
+}
+
+.ab-card__image--placeholder {
+  width: 71%;
+  height: 78%;
+  fill: var(--ab-color-muted);
+  opacity: 0.25;
+}
+
+.ab-card__hover-media {
+  display: none;
+}
+
+.ab-card__badge {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  z-index: 1;
+}
+
+/* ---------- Body ---------- */
+.ab-card__body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 12px;
+  margin-bottom: 12px;
+  padding: 0 8px;
+}
+
+.ab-card__eyebrow {
+  height: 14px;
+  margin: 0;
+  font-size: 11px;
+  font-weight: var(--ab-font-weight-semibold);
+  line-height: 14px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ab-color-muted);
+}
+
+.ab-card__title {
+  display: -webkit-box;
+  height: 40px;
+  margin: 4px 0 0;
+  overflow: hidden;
+  font-family: var(--ab-font-family);
+  font-size: 14px;
+  font-weight: var(--ab-font-weight-semibold);
+  line-height: 20px;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--ab-color-text);
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.ab-card__benefit {
+  display: none;
+}
+
+.ab-card__rating {
+  display: flex;
+  align-items: center;
+  height: 16px;
+  margin-top: 6px;
+  --ab-star-size: 12px;
+}
+
+/* ---------- Button: pinned to the bottom, whole card is the link target ---------- */
+.ab-card__cta {
+  position: static;
+  margin-top: auto;
+}
+
+.ab-card__cta::before {
+  display: none;
+}
+
+.ab-card__cta::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+}
+
+/* ---------- Desktop ---------- */
+@media (min-width: 1024px) {
+  .ab-card {
+    gap: 16px;
+    min-height: 0;
+  }
+
+  .ab-card__media {
+    border-radius: 0;
+  }
+
+  .ab-card__frame {
+    padding: 14%;
+  }
+
+  .ab-card__image,
+  .ab-card__image--placeholder {
+    max-width: 100%;
+    max-height: 100%;
+  }
+
+  .ab-card__badge {
+    top: 12px;
+    left: 12px;
+  }
+
+  .ab-card__body {
+    gap: 6px;
+    margin: 0;
+    padding: 0 4px;
+  }
+
+  .ab-card__eyebrow {
+    height: auto;
+    line-height: 1.2;
+  }
+
+  .ab-card__title {
+    height: auto;
+    min-height: 42px;
+    margin: 0;
+    font-size: 15px;
+    line-height: 1.4;
+  }
+
+  .ab-card__benefit {
+    display: block;
+    max-width: 100%;
+    margin: 0;
+    overflow: hidden;
+    font-size: 13px;
+    line-height: 1.4;
+    color: var(--ab-color-muted);
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  .ab-card__rating {
+    height: auto;
+    margin-top: 2px;
+    --ab-star-size: 14px;
+  }
+
+  /* Hover: swap to the lifestyle photo (pointer devices only). */
+  .ab-card__hover-media {
+    position: absolute;
+    inset: 0;
+    display: block;
+    opacity: 0;
+    transition: opacity var(--ab-transition-base);
+  }
+
+  .ab-card__hover-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+}
+
+@media (min-width: 1024px) and (hover: hover) {
+  .ab-card--has-hover-image:hover .ab-card__hover-media {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ab-card__hover-media {
+    transition: none;
+  }
+}
+
+/* Carousels of product cards: 169px slides on mobile (2 cards + the edge of a third). */
+.ab-carousel--products {
+  --ab-slide-width-mobile: 169px;
+  --ab-slide-width-tablet: 200px;
+  --ab-slides-desktop: 4;
+}
+
+/* Product grids: 2 columns mobile, 3 tablet, 4 (or 3) desktop. */
+.ab-product-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--ab-grid-row-gap) var(--ab-grid-gap);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+@media (min-width: 768px) {
+  .ab-product-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1024px) {
+  .ab-product-grid {
+    grid-template-columns: repeat(var(--ab-grid-columns-desktop, 4), minmax(0, 1fr));
+  }
+}

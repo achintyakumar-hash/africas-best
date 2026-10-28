@@ -1,0 +1,181 @@
+{%- comment -%}
+  FAQ accordion. Reused on the collection page, product page and blog article.
+  Desktop: centered 800px column, 40px heading, 17px questions with 24px row padding.
+  Mobile: full width inside 20px padding, 26px heading, 56px minimum rows.
+  Uses native <details>/<summary>, so it works from the keyboard without JavaScript.
+{%- endcomment -%}
+
+{%- liquid
+  assign faq_heading_id = 'AbFaqHeading-' | append: section.id
+-%}
+
+<section
+  class="ab-scope ab-faq ab-section ab-bg--{{ section.settings.background }}"
+  {% if section.settings.heading != blank %}
+    aria-labelledby="{{ faq_heading_id }}"
+  {% endif %}
+>
+  <div class="ab-container ab-container--narrow">
+    {%- if section.settings.heading != blank -%}
+      <h2 id="{{ faq_heading_id }}" class="ab-section-heading ab-section-heading--center ab-faq__heading">
+        {{- section.settings.heading -}}
+      </h2>
+    {%- endif -%}
+
+    <div class="ab-accordion">
+      {%- for block in section.blocks -%}
+        <details
+          class="ab-accordion__item"
+          {% if forloop.first and section.settings.open_first %}
+            open
+          {% endif %}
+          {{ block.shopify_attributes }}
+        >
+          <summary class="ab-accordion__summary">
+            <span>{{ block.settings.question }}</span>
+            <span class="ab-accordion__icon">
+              {%- render 'ab-icon', name: 'add' -%}
+              {%- render 'ab-icon', name: 'remove' -%}
+            </span>
+          </summary>
+          <div class="ab-accordion__content ab-rte">{{ block.settings.answer }}</div>
+        </details>
+      {%- endfor -%}
+    </div>
+  </div>
+
+  {%- if section.settings.structured_data and section.blocks.size > 0 -%}
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+          {%- for block in section.blocks -%}
+            {
+              "@type": "Question",
+              "name": {{ block.settings.question | strip_html | json }},
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": {{ block.settings.answer | strip_html | json }}
+              }
+            }{% unless forloop.last %},{% endunless %}
+          {%- endfor -%}
+        ]
+      }
+    </script>
+  {%- endif -%}
+</section>
+
+{% stylesheet %}
+  .ab-faq__heading {
+    margin-bottom: 24px;
+  }
+
+  @media (min-width: 1024px) {
+    .ab-faq__heading {
+      margin-bottom: 32px;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "AB: FAQ",
+  "tag": "div",
+  "class": "ab-faq-section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Frequently asked questions"
+    },
+    {
+      "type": "select",
+      "id": "background",
+      "label": "Background",
+      "info": "Alternate white and cream so neighbouring sections differ.",
+      "options": [
+        { "value": "white", "label": "White" },
+        { "value": "cream", "label": "Cream" }
+      ],
+      "default": "white"
+    },
+    {
+      "type": "checkbox",
+      "id": "open_first",
+      "label": "Open the first question",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "structured_data",
+      "label": "Add FAQ structured data for search engines",
+      "info": "Use on one FAQ per page only.",
+      "default": true
+    }
+  ],
+  "blocks": [
+    {
+      "type": "question",
+      "name": "Question",
+      "settings": [
+        {
+          "type": "text",
+          "id": "question",
+          "label": "Question",
+          "default": "Which growth oil is right for my hair?"
+        },
+        {
+          "type": "richtext",
+          "id": "answer",
+          "label": "Answer",
+          "default": "<p>For daily shine and softness, try Argan Growth Oil. For dry, brittle hair, choose Black Castor Growth Oil or Super Gro Max.</p>"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "AB: FAQ",
+      "blocks": [
+        {
+          "type": "question",
+          "settings": {
+            "question": "Which growth oil is right for my hair?",
+            "answer": "<p>For daily shine and softness, try Argan Growth Oil. For dry, brittle hair, choose Black Castor Growth Oil or Super Gro Max.</p>"
+          }
+        },
+        {
+          "type": "question",
+          "settings": {
+            "question": "How often should I use a growth oil?",
+            "answer": "<p>Most growth oils can be used 3 to 4 times a week, or daily on dry areas and ends.</p>"
+          }
+        },
+        {
+          "type": "question",
+          "settings": {
+            "question": "Can I use these oils on my scalp?",
+            "answer": "<p>Yes. Part your hair and massage a small amount directly into the scalp.</p>"
+          }
+        },
+        {
+          "type": "question",
+          "settings": {
+            "question": "Are these products safe for color-treated hair?",
+            "answer": "<p>Our growth oils are gentle and suitable for color-treated hair.</p>"
+          }
+        },
+        {
+          "type": "question",
+          "settings": {
+            "question": "Can I use growth oils on protective styles?",
+            "answer": "<p>Yes. Apply to the scalp between braids, twists or locs to keep it moisturized.</p>"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

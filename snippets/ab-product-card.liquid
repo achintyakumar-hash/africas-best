@@ -1,0 +1,151 @@
+{%- comment -%}
+  The single product card, used everywhere products appear (Best Sellers, Moisture That Lasts,
+  collection grid, PDP "Our Best Sellers", blog "Our Best Sellers", search).
+  Retail-only: no price and no add to cart. The whole card links to the product page through
+  its "VIEW" button.
+
+  Desktop (1024px+): square image, product contained with 14% padding, badge 12px from the corner,
+  eyebrow / 2-line name / 1-line benefit / stars, 44px full-width outline button.
+  On hover the button fills #B4532A and the image swaps to the lifestyle photo, if there is one.
+  Mobile/tablet: Mobile Components spec, a 169 x 316 card at 390px. Fixed square frame (4px radius),
+  product contained at max 120w x 132h, badge 8px from the corner, benefit hidden, 40px button
+  pinned to the bottom.
+
+  Product data:
+  - badge: metafield custom.badge, or a tag like "badge:Best Seller" / "badge:New"
+  - benefit: metafield custom.benefit
+  - hover image: metafield custom.card_hover_image
+  - rating: metafields reviews.rating and reviews.rating_count
+
+  Accepts:
+  - product {Object}: the product (required)
+  - badge {String}: overrides the product's badge. Pass 'none' to hide it.
+  - heading_tag {String}: tag for the product name (default 'h3')
+  - lazy {Boolean}: lazy-load the image (default true)
+  - sizes {String}: image sizes attribute override
+  - class {String}: extra classes
+
+  Usage:
+  {% render 'ab-product-card', product: product %}
+{%- endcomment -%}
+
+{%- liquid
+  assign card_heading_tag = heading_tag | default: 'h3'
+  assign card_button_label = settings.ab_card_button_label | default: 'View'
+
+  if lazy == false
+    assign card_loading = 'eager'
+  else
+    assign card_loading = 'lazy'
+  endif
+
+  assign card_sizes = sizes | default: '(min-width: 1024px) 220px, (min-width: 768px) 180px, 120px'
+
+  comment
+    Badge
+  endcomment
+  assign card_badge = badge
+  if card_badge == blank
+    assign card_badge = product.metafields.custom.badge.value
+  endif
+  if card_badge == blank
+    for tag in product.tags
+      assign tag_lower = tag | downcase
+      if tag_lower contains 'badge:'
+        assign card_badge = tag | split: ':' | last | strip
+        break
+      endif
+    endfor
+  endif
+  if card_badge == 'none'
+    assign card_badge = blank
+  endif
+  assign card_badge_class = 'ab-badge ab-card__badge'
+  assign badge_lower = card_badge | downcase
+  if badge_lower == 'new'
+    assign card_badge_class = card_badge_class | append: ' ab-badge--new'
+  endif
+
+  comment
+    Rating, normalised to a 5-point scale
+  endcomment
+  assign card_rating = blank
+  assign card_rating_count = blank
+  if settings.ab_card_show_rating
+    assign rating_metafield = product.metafields.reviews.rating.value
+    if rating_metafield != blank
+      assign rating_scale = rating_metafield.scale_max | default: 5 | times: 1.0
+      assign card_rating = rating_metafield.rating | times: 5.0 | divided_by: rating_scale
+      assign card_rating_count = product.metafields.reviews.rating_count.value
+    endif
+  endif
+
+  assign card_image = product.featured_media.preview_image
+  assign card_hover_image = product.metafields.custom.card_hover_image.value
+  assign card_benefit = product.metafields.custom.benefit.value
+-%}
+
+<article class="ab-card ab-is-hover-target{% if card_hover_image != blank %} ab-card--has-hover-image{% endif %}{% if class %} {{ class }}{% endif %}">
+  <div class="ab-card__media">
+    <div class="ab-card__frame">
+      {%- if card_image != blank -%}
+        {{
+          card_image
+          | image_url: width: 480
+          | image_tag:
+            class: 'ab-card__image',
+            widths: '120, 180, 240, 320, 400, 480',
+            sizes: card_sizes,
+            loading: card_loading,
+            alt: product.title
+        }}
+      {%- else -%}
+        {{ 'product-1' | placeholder_svg_tag: 'ab-card__image ab-card__image--placeholder' }}
+      {%- endif -%}
+    </div>
+
+    {%- if card_hover_image != blank -%}
+      <div class="ab-card__hover-media">
+        {{
+          card_hover_image
+          | image_url: width: 640
+          | image_tag:
+            class: 'ab-card__hover-image',
+            widths: '320, 480, 640',
+            sizes: '(min-width: 1024px) 300px, 1px',
+            loading: 'lazy',
+            alt: ''
+        }}
+      </div>
+    {%- endif -%}
+
+    {%- if card_badge != blank -%}
+      <span class="{{ card_badge_class }}">{{ card_badge }}</span>
+    {%- endif -%}
+  </div>
+
+  <div class="ab-card__body">
+    {%- if settings.ab_card_eyebrow != blank -%}
+      <p class="ab-card__eyebrow">{{ settings.ab_card_eyebrow }}</p>
+    {%- endif -%}
+    <{{ card_heading_tag }} class="ab-card__title">{{ product.title }}</{{ card_heading_tag }}>
+    {%- if card_benefit != blank -%}
+      <p class="ab-card__benefit">{{ card_benefit }}</p>
+    {%- endif -%}
+    {%- if card_rating != blank -%}
+      <div class="ab-card__rating">
+        {%- render 'ab-stars', rating: card_rating, count: card_rating_count -%}
+      </div>
+    {%- endif -%}
+  </div>
+
+  {%- render 'ab-button',
+    label: card_button_label,
+    url: product.url,
+    style: 'secondary',
+    size: 'small',
+    full_width: true,
+    visually_hidden_suffix: product.title,
+    class: 'ab-card__cta'
+  -%}
+</article>

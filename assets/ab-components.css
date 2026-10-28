@@ -239,6 +239,7 @@
 
 /* ---------- Star rating ---------- */
 .ab-stars {
+  --ab-star-size: 14px;
   display: inline-flex;
   align-items: center;
   gap: var(--ab-space-1);
