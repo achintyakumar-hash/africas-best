@@ -1,0 +1,499 @@
+/*
+ * Africa's Best shared components: icons, buttons, text links, icon buttons, carousel arrows,
+ * badges, star ratings, accordions and the carousel.
+ * Mobile-first: base = 0-767px, then 768px (tablet) and 1024px (desktop).
+ */
+
+.ab-icon {
+  display: block;
+  flex-shrink: 0;
+}
+
+/* ---------- Buttons ---------- */
+.ab-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--ab-space-2);
+  height: var(--ab-button-height-lg);
+  padding: 0 var(--ab-button-padding-lg);
+  border: var(--ab-button-border) solid transparent;
+  border-radius: var(--ab-radius-pill);
+  background: transparent;
+  font-family: var(--ab-font-family);
+  font-size: var(--ab-text-button-lg);
+  font-weight: var(--ab-font-weight-bold);
+  line-height: 1;
+  letter-spacing: var(--ab-letter-spacing-button);
+  text-transform: uppercase;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    background-color var(--ab-transition-fast),
+    border-color var(--ab-transition-fast),
+    color var(--ab-transition-fast);
+  -webkit-tap-highlight-color: transparent;
+}
+
+.ab-btn:hover {
+  text-decoration: none;
+}
+
+.ab-btn:focus-visible {
+  outline: var(--ab-focus-ring);
+  outline-offset: var(--ab-focus-offset);
+}
+
+.ab-btn--primary {
+  background: var(--ab-color-button);
+  border-color: var(--ab-color-button);
+  color: var(--ab-color-white);
+}
+
+.ab-btn--primary:hover,
+.ab-btn--primary:active {
+  background: var(--ab-color-button-hover);
+  border-color: var(--ab-color-button-hover);
+  color: var(--ab-color-white);
+}
+
+.ab-btn--secondary {
+  border-color: var(--ab-color-text);
+  color: var(--ab-color-text);
+}
+
+.ab-btn--on-image {
+  border-color: var(--ab-color-white);
+  color: var(--ab-color-white);
+}
+
+.ab-btn--secondary:hover,
+.ab-btn--secondary:active,
+.ab-btn--on-image:hover,
+.ab-btn--on-image:active,
+.ab-is-hover-target:hover .ab-btn--secondary,
+.ab-is-hover-target:focus-within .ab-btn--secondary {
+  background: var(--ab-color-button);
+  border-color: var(--ab-color-button);
+  color: var(--ab-color-white);
+}
+
+.ab-btn--sm {
+  height: var(--ab-button-height-sm);
+  padding: 0 var(--ab-button-padding-sm);
+  font-size: var(--ab-text-button-sm);
+}
+
+.ab-btn--block {
+  display: flex;
+  width: 100%;
+}
+
+.ab-btn:disabled,
+.ab-btn[aria-disabled='true'] {
+  opacity: 0.45;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* Small buttons are drawn 40px tall on mobile; extend the hit area to 44px. */
+@media (max-width: 767px) {
+  .ab-btn--sm::before {
+    content: '';
+    position: absolute;
+    inset: -2px 0;
+  }
+
+  .ab-btn--block-mobile {
+    display: flex;
+    width: 100%;
+  }
+}
+
+/* ---------- Text links ---------- */
+.ab-link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ab-space-1);
+  min-height: var(--ab-tap-target);
+  padding: 0;
+  border: 0;
+  background: none;
+  font-family: var(--ab-font-family);
+  font-size: 13px;
+  font-weight: var(--ab-font-weight-bold);
+  letter-spacing: var(--ab-letter-spacing-button);
+  text-transform: uppercase;
+  color: var(--ab-color-text);
+  text-decoration: underline;
+  text-decoration-thickness: 1.5px;
+  text-underline-offset: 4px;
+  cursor: pointer;
+  transition: color var(--ab-transition-fast);
+}
+
+.ab-link:hover,
+.ab-link:active {
+  color: var(--ab-color-button);
+}
+
+.ab-on-dark .ab-link,
+.ab-bg--primary .ab-link {
+  color: var(--ab-color-white);
+}
+
+@media (min-width: 1024px) {
+  .ab-link {
+    min-height: 0;
+  }
+}
+
+/* ---------- Icon buttons (header, drawers) ---------- */
+.ab-icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--ab-tap-target);
+  height: var(--ab-tap-target);
+  padding: 0;
+  border: 0;
+  border-radius: var(--ab-radius-pill);
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  transition: background-color var(--ab-transition-fast);
+}
+
+.ab-icon-btn:hover {
+  background: rgb(0 0 0 / 0.05);
+}
+
+.ab-on-dark .ab-icon-btn:hover {
+  background: rgb(255 255 255 / 0.12);
+}
+
+/* ---------- Carousel arrows ---------- */
+.ab-arrow {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  padding: 0;
+  border: 1px solid var(--ab-color-border);
+  border-radius: var(--ab-radius-pill);
+  background: var(--ab-color-white);
+  color: var(--ab-color-text);
+  cursor: pointer;
+  transition:
+    background-color var(--ab-transition-fast),
+    border-color var(--ab-transition-fast),
+    color var(--ab-transition-fast),
+    opacity var(--ab-transition-fast);
+}
+
+.ab-arrow--outline {
+  border: var(--ab-button-border) solid var(--ab-color-text);
+  background: transparent;
+}
+
+.ab-arrow:hover {
+  background: var(--ab-color-button);
+  border-color: var(--ab-color-button);
+  color: var(--ab-color-white);
+}
+
+.ab-arrow:disabled {
+  opacity: 0.35;
+  cursor: default;
+  pointer-events: none;
+}
+
+/* ---------- Badges ---------- */
+.ab-badge {
+  display: inline-block;
+  padding: 4px 8px;
+  border-radius: var(--ab-radius-badge);
+  background: var(--ab-color-primary);
+  color: var(--ab-color-white);
+  font-size: 11px;
+  font-weight: var(--ab-font-weight-bold);
+  line-height: 1.2;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.ab-badge--new {
+  background: var(--ab-color-button);
+}
+
+@media (min-width: 1024px) {
+  .ab-badge {
+    padding: 6px 8px;
+    line-height: 1;
+  }
+}
+
+/* ---------- Star rating ---------- */
+.ab-stars {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ab-space-1);
+  line-height: 1;
+}
+
+.ab-stars__icons {
+  position: relative;
+  display: inline-flex;
+}
+
+.ab-stars__base,
+.ab-stars__fill {
+  display: inline-flex;
+  color: var(--ab-color-accent);
+}
+
+.ab-stars__base {
+  opacity: 0.3;
+}
+
+.ab-stars__fill {
+  position: absolute;
+  inset: 0 auto 0 0;
+  overflow: hidden;
+}
+
+.ab-stars .ab-icon {
+  width: var(--ab-star-size);
+  height: var(--ab-star-size);
+}
+
+.ab-stars__count {
+  font-size: 12px;
+  line-height: 16px;
+  color: var(--ab-color-muted);
+  white-space: nowrap;
+}
+
+@media (min-width: 1024px) {
+  .ab-stars {
+    gap: 6px;
+  }
+}
+
+/* ---------- Accordion (details/summary) ---------- */
+.ab-accordion {
+  border-top: 1px solid var(--ab-color-border-strong);
+}
+
+.ab-accordion__item {
+  border-bottom: 1px solid var(--ab-color-border-strong);
+}
+
+.ab-accordion__summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--ab-space-4);
+  min-height: 56px;
+  padding: var(--ab-space-3) 0;
+  font-size: 15px;
+  font-weight: var(--ab-font-weight-bold);
+  line-height: 1.4;
+  list-style: none;
+  cursor: pointer;
+}
+
+.ab-accordion__summary::-webkit-details-marker {
+  display: none;
+}
+
+.ab-accordion__icon {
+  position: relative;
+  display: inline-flex;
+  flex-shrink: 0;
+}
+
+.ab-accordion__icon .ab-icon--remove,
+.ab-accordion__item[open] > .ab-accordion__summary .ab-icon--add {
+  display: none;
+}
+
+.ab-accordion__item[open] > .ab-accordion__summary .ab-icon--remove {
+  display: block;
+}
+
+.ab-accordion__content {
+  padding: 0 0 20px;
+  font-size: 15px;
+  line-height: 1.6;
+  color: #56524c;
+}
+
+@media (min-width: 1024px) {
+  .ab-accordion__summary {
+    gap: var(--ab-space-6);
+    padding: var(--ab-space-6) 0;
+    font-size: 17px;
+  }
+
+  .ab-accordion__content {
+    padding: 0 48px 24px 0;
+    font-size: 16px;
+    color: var(--ab-color-text);
+  }
+}
+
+/* ---------- Carousel ---------- */
+ab-carousel {
+  position: relative;
+  display: block;
+  --ab-slide-width-mobile: 80%;
+  --ab-slide-width-tablet: var(--ab-slide-width-mobile);
+  --ab-slides-desktop: 4;
+  --ab-arrow-top: 50%;
+}
+
+.ab-carousel__track {
+  display: flex;
+  gap: var(--ab-carousel-gap);
+  margin: 0 calc(-1 * var(--ab-side-padding));
+  padding: 0 var(--ab-side-padding);
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  scroll-padding-inline: var(--ab-side-padding);
+  scrollbar-width: none;
+  list-style: none;
+}
+
+.ab-carousel__track::-webkit-scrollbar {
+  display: none;
+}
+
+.ab-carousel__track:focus-visible {
+  outline: var(--ab-focus-ring);
+  outline-offset: var(--ab-focus-offset);
+}
+
+.ab-carousel__slide {
+  flex: 0 0 var(--ab-slide-width-mobile);
+  min-width: 0;
+  scroll-snap-align: start;
+}
+
+.ab-carousel__arrow {
+  display: none;
+}
+
+.ab-carousel__dots {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+  margin-top: var(--ab-space-4);
+}
+
+.ab-carousel__dot {
+  position: relative;
+  width: 6px;
+  height: 6px;
+  padding: 0;
+  border: 0;
+  border-radius: var(--ab-radius-pill);
+  background: var(--ab-color-dot);
+  cursor: pointer;
+  transition:
+    width var(--ab-transition-base),
+    background-color var(--ab-transition-base);
+}
+
+/* 44px tall hit area without changing the drawn size */
+.ab-carousel__dot::before {
+  content: '';
+  position: absolute;
+  inset: -19px -3px;
+}
+
+.ab-carousel__dot[aria-current='true'] {
+  width: 20px;
+  background: var(--ab-color-text);
+}
+
+.ab-carousel--on-image .ab-carousel__dot {
+  background: rgb(255 255 255 / 0.6);
+}
+
+.ab-carousel--on-image .ab-carousel__dot[aria-current='true'] {
+  background: var(--ab-color-white);
+}
+
+ab-carousel[data-overflow='false'] .ab-carousel__dots,
+ab-carousel[data-overflow='false'] .ab-carousel__arrow {
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .ab-carousel__slide {
+    flex-basis: var(--ab-slide-width-tablet);
+  }
+}
+
+@media (min-width: 1024px) {
+  .ab-carousel__track {
+    margin: 0;
+    padding: 0;
+    scroll-padding-inline: 0;
+  }
+
+  .ab-carousel__slide {
+    flex-basis: calc(
+      (100% - (var(--ab-slides-desktop) - 1) * var(--ab-carousel-gap)) / var(--ab-slides-desktop)
+    );
+  }
+
+  .ab-carousel__dots {
+    display: none;
+  }
+
+  .ab-carousel__arrow {
+    position: absolute;
+    top: var(--ab-arrow-top);
+    z-index: 2;
+    display: inline-flex;
+    transform: translateY(-50%);
+  }
+
+  .ab-carousel__arrow--prev {
+    left: -64px;
+  }
+
+  .ab-carousel__arrow--next {
+    right: -64px;
+  }
+
+  /* Not enough room outside the content column: overlap the slide edges instead. */
+  @media (max-width: 1407px) {
+    .ab-carousel__arrow--prev {
+      left: -24px;
+    }
+
+    .ab-carousel__arrow--next {
+      right: -24px;
+    }
+  }
+
+  /* Carousels that keep dots on desktop (hero) */
+  ab-carousel[data-desktop-dots] .ab-carousel__dots {
+    display: flex;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ab-carousel__track {
+    scroll-behavior: auto;
+  }
+}

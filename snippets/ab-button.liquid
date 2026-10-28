@@ -1,0 +1,89 @@
+{%- comment -%}
+  The single button component. There are three button types plus text links:
+  - primary: solid #B4532A, hover #8F3F1F
+  - secondary: 1.5px #1E1E1C outline on light backgrounds, hover fills #B4532A
+  - on-image: 1.5px white outline on photos/dark backgrounds, hover fills #B4532A
+  - link: uppercase underlined text link, hover #B4532A
+
+  Accepts:
+  - label {String}: visible text (required)
+  - url {String}: renders an <a>. Without a url, a <button> is rendered.
+  - style {String}: 'primary' (default) | 'secondary' | 'on-image' | 'link'
+  - size {String}: 'large' (default, 48px) | 'small' (40px mobile, 44px from tablet up)
+  - full_width {Boolean}: stretch to the container width
+  - full_width_mobile {Boolean}: stretch below 768px only
+  - icon {String}: ab-icon name shown before the label
+  - icon_after {String}: ab-icon name shown after the label
+  - type {String}: button type attribute (default 'button')
+  - disabled {Boolean}
+  - new_tab {Boolean}: open the link in a new tab
+  - visually_hidden_suffix {String}: extra text for screen readers, e.g. the product name
+  - class {String}: extra classes
+  - attributes {String}: extra raw attributes, e.g. 'data-ab-open="search" aria-controls="AbSearch"'
+
+  Usage:
+  {% render 'ab-button', label: 'Where to buy', url: settings.ab_wtb_url %}
+  {% render 'ab-button', label: 'View', url: product.url, style: 'secondary', size: 'small', full_width: true %}
+{%- endcomment -%}
+
+{%- liquid
+  assign button_style = style | default: 'primary'
+  assign button_size = size | default: 'large'
+
+  if button_style == 'link'
+    assign classes = 'ab-link'
+  else
+    assign classes = 'ab-btn ab-btn--' | append: button_style
+    if button_size == 'small'
+      assign classes = classes | append: ' ab-btn--sm'
+    endif
+    if full_width
+      assign classes = classes | append: ' ab-btn--block'
+    elsif full_width_mobile
+      assign classes = classes | append: ' ab-btn--block-mobile'
+    endif
+  endif
+
+  if class != blank
+    assign classes = classes | append: ' ' | append: class
+  endif
+
+  assign icon_size = 20
+  if button_style == 'link'
+    assign icon_size = 18
+  endif
+-%}
+
+{%- capture inner -%}
+  {%- if icon != blank -%}{% render 'ab-icon', name: icon, size: icon_size %}{%- endif -%}
+  <span class="ab-btn__label">{{ label }}</span>
+  {%- if visually_hidden_suffix != blank -%}
+    <span class="ab-visually-hidden">: {{ visually_hidden_suffix }}</span>
+  {%- endif -%}
+  {%- if icon_after != blank -%}{% render 'ab-icon', name: icon_after, size: icon_size %}{%- endif -%}
+{%- endcapture -%}
+
+{%- if url != blank and disabled != true -%}
+  <a
+    href="{{ url }}"
+    class="{{ classes }}"
+    {% if new_tab %}
+      target="_blank" rel="noopener"
+    {% endif %}
+    {{ attributes }}
+  >
+    {{- inner -}}
+    {%- if new_tab -%}<span class="ab-visually-hidden"> (opens in a new tab)</span>{%- endif -%}
+  </a>
+{%- else -%}
+  <button
+    type="{{ type | default: 'button' }}"
+    class="{{ classes }}"
+    {% if disabled %}
+      disabled
+    {% endif %}
+    {{ attributes }}
+  >
+    {{- inner -}}
+  </button>
+{%- endif -%}

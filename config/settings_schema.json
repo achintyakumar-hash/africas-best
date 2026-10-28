@@ -2116,5 +2116,79 @@
         "default": "equal-width-buttons"
       }
     ]
+  },
+  {
+    "name": "Africa's Best: brand",
+    "settings": [
+      {
+        "type": "paragraph",
+        "content": "Shared settings for the Africa's Best design. Colors, spacing and type sizes are fixed design tokens in assets/ab-tokens.css."
+      },
+      {
+        "type": "font_picker",
+        "id": "ab_font",
+        "label": "Font",
+        "info": "Montserrat in the approved design. Regular, Medium, SemiBold, Bold and ExtraBold weights are loaded.",
+        "default": "montserrat_n4"
+      },
+      {
+        "type": "header",
+        "content": "Where to Buy"
+      },
+      {
+        "type": "text",
+        "id": "ab_wtb_label",
+        "label": "Button label",
+        "default": "Where to buy"
+      },
+      {
+        "type": "url",
+        "id": "ab_wtb_url",
+        "label": "Button link",
+        "info": "Used by the header, mobile header and menu drawer buttons."
+      },
+      {
+        "type": "header",
+        "content": "Product cards"
+      },
+      {
+        "type": "text",
+        "id": "ab_card_eyebrow",
+        "label": "Eyebrow above the product name",
+        "default": "Africa's Best"
+      },
+      {
+        "type": "text",
+        "id": "ab_card_button_label",
+        "label": "Button label",
+        "default": "View"
+      },
+      {
+        "type": "checkbox",
+        "id": "ab_card_show_rating",
+        "label": "Show star rating",
+        "info": "Uses the reviews.rating and reviews.rating_count metafields written by review apps.",
+        "default": true
+      },
+      {
+        "type": "header",
+        "content": "Social links"
+      },
+      {
+        "type": "url",
+        "id": "ab_social_facebook",
+        "label": "Facebook"
+      },
+      {
+        "type": "url",
+        "id": "ab_social_instagram",
+        "label": "Instagram"
+      },
+      {
+        "type": "url",
+        "id": "ab_social_tiktok",
+        "label": "TikTok"
+      }
+    ]
   }
 ]

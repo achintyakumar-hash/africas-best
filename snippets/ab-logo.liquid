@@ -1,0 +1,58 @@
+{%- comment -%}
+  Brand logo. Uses the uploaded logo image, or the text wordmark from the design.
+
+  Accepts:
+  - image {Object}: logo image from a section setting (optional)
+  - variant {String}: 'header' | 'header-mobile' | 'footer' | 'footer-mobile' (sets the wordmark size)
+  - height {Number}: image height in px (default 48)
+  - url {String}: wrap in a link (optional)
+  - eager {Boolean}: load the image eagerly (header)
+
+  Usage:
+  {% render 'ab-logo', image: section.settings.logo, variant: 'header', url: routes.root_url, eager: true %}
+{%- endcomment -%}
+
+{%- liquid
+  assign logo_height = height | default: 48
+  assign logo_variant = variant | default: 'header'
+-%}
+
+{%- capture logo_inner -%}
+  {%- if image != blank -%}
+    {%- liquid
+      assign logo_width = logo_height | times: image.aspect_ratio | round
+      assign logo_width_2x = logo_width | times: 2
+      assign logo_width_3x = logo_width | times: 3
+      assign logo_widths = logo_width | append: ', ' | append: logo_width_2x | append: ', ' | append: logo_width_3x
+      if eager
+        assign logo_loading = 'eager'
+      else
+        assign logo_loading = 'lazy'
+      endif
+    -%}
+    {{
+      image
+      | image_url: width: logo_width_3x
+      | image_tag:
+        class: 'ab-logo__image',
+        widths: logo_widths,
+        sizes: logo_width | append: 'px',
+        height: logo_height,
+        width: logo_width,
+        loading: logo_loading,
+        alt: shop.name
+    }}
+  {%- else -%}
+    <span class="ab-logo__wordmark" aria-hidden="true">
+      <span class="ab-logo__name">AFRICA'S BEST</span>
+      <span class="ab-logo__tagline">HAIR CARE</span>
+    </span>
+    <span class="ab-visually-hidden">{{ shop.name }}</span>
+  {%- endif -%}
+{%- endcapture -%}
+
+{%- if url != blank -%}
+  <a href="{{ url }}" class="ab-logo ab-logo--{{ logo_variant }}">{{ logo_inner }}</a>
+{%- else -%}
+  <span class="ab-logo ab-logo--{{ logo_variant }}">{{ logo_inner }}</span>
+{%- endif -%}

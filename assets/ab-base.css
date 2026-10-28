@@ -1,0 +1,230 @@
+/*
+ * Africa's Best base styles: element defaults, layout helpers, section backgrounds,
+ * shared typography, and the global safety net that hides Horizon's commerce UI.
+ * Mobile-first: base = 0-767px, then 768px (tablet) and 1024px (desktop).
+ */
+
+/* ---------- Base ---------- */
+body {
+  font-family: var(--ab-font-family);
+  font-size: var(--ab-text-body);
+  line-height: var(--ab-line-height-body);
+  color: var(--ab-color-text);
+  background: var(--ab-color-white);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Horizon's section group wrappers must not trap the sticky header. */
+#header-group.ab-header-group,
+.ab-footer-group {
+  display: contents;
+}
+
+.ab-scope,
+.ab-scope *,
+.ab-scope *::before,
+.ab-scope *::after {
+  box-sizing: border-box;
+}
+
+.ab-scope {
+  font-family: var(--ab-font-family);
+  color: var(--ab-color-text);
+}
+
+.ab-scope img {
+  max-width: 100%;
+  height: auto;
+}
+
+.ab-scope :where(h1, h2, h3, h4, h5, h6, p, ul, ol, figure) {
+  margin: 0;
+}
+
+.ab-scope :where(ul[role='list'], ol[role='list']) {
+  list-style: none;
+  padding: 0;
+}
+
+.ab-scope :where(a) {
+  color: inherit;
+}
+
+.ab-scope :where(button) {
+  font: inherit;
+  color: inherit;
+}
+
+/* Focus ring: 2px primary, 2px offset. White on dark green backgrounds. */
+.ab-scope :focus-visible {
+  outline: var(--ab-focus-ring);
+  outline-offset: var(--ab-focus-offset);
+}
+
+.ab-scope :focus:not(:focus-visible) {
+  outline: none;
+}
+
+.ab-on-dark {
+  --ab-color-focus: var(--ab-color-white);
+}
+
+.ab-visually-hidden {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0 0 0 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
+.ab-skip-link:focus {
+  position: fixed !important;
+  top: 8px;
+  left: 8px;
+  z-index: calc(var(--ab-z-overlay) + 10);
+  width: auto !important;
+  height: auto !important;
+  margin: 0 !important;
+  clip: auto !important;
+  padding: 12px 20px !important;
+  background: var(--ab-color-white);
+  color: var(--ab-color-text);
+  font-weight: var(--ab-font-weight-bold);
+}
+
+html.ab-scroll-locked,
+html.ab-scroll-locked body {
+  overflow: hidden;
+}
+
+/* ---------- Layout ---------- */
+.ab-container {
+  width: 100%;
+  max-width: calc(var(--ab-content-max-width) + 2 * var(--ab-side-padding));
+  margin-inline: auto;
+  padding-inline: var(--ab-side-padding);
+}
+
+.ab-container--narrow {
+  max-width: calc(800px + 2 * var(--ab-side-padding));
+}
+
+.ab-section {
+  padding-block: var(--ab-section-padding);
+}
+
+.ab-section--flush-top {
+  padding-block-start: 0;
+}
+
+.ab-section--flush-bottom {
+  padding-block-end: 0;
+}
+
+/* Section backgrounds: alternate white and cream so neighbouring sections differ. */
+.ab-bg--white {
+  background: var(--ab-color-white);
+}
+
+.ab-bg--cream {
+  background: var(--ab-color-cream);
+}
+
+.ab-bg--sage {
+  background: var(--ab-color-sage);
+}
+
+.ab-bg--primary {
+  background: var(--ab-color-primary);
+  color: var(--ab-color-white);
+  --ab-color-focus: var(--ab-color-white);
+}
+
+/* ---------- Shared typography ---------- */
+.ab-section-heading {
+  font-size: var(--ab-text-section-heading);
+  line-height: var(--ab-line-height-heading);
+  font-weight: var(--ab-font-weight-extrabold);
+  letter-spacing: var(--ab-letter-spacing-heading);
+  text-transform: uppercase;
+  text-wrap: balance;
+}
+
+.ab-section-heading--center {
+  text-align: center;
+}
+
+.ab-section-header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ab-subheading-gap);
+  margin-block-end: var(--ab-heading-gap);
+}
+
+.ab-section-header--center {
+  text-align: center;
+  align-items: center;
+}
+
+.ab-section-subheading {
+  font-size: 15px;
+}
+
+.ab-eyebrow {
+  font-size: var(--ab-text-eyebrow);
+  font-weight: var(--ab-font-weight-bold);
+  letter-spacing: var(--ab-letter-spacing-eyebrow);
+  text-transform: uppercase;
+  color: var(--ab-color-primary);
+}
+
+.ab-rte > * + * {
+  margin-block-start: 1em;
+}
+
+.ab-rte a {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.ab-rte a:hover {
+  color: var(--ab-color-button);
+}
+
+@media (min-width: 1024px) {
+  .ab-section-subheading {
+    font-size: 16px;
+  }
+}
+
+/* ---------- Retail-only safety net ----------
+ * The site never sells directly. Hide Horizon's prices, buy buttons, cart and account UI
+ * anywhere a Horizon section is still in use.
+ */
+product-price,
+.price,
+.price-item__group,
+price-per-item,
+.price-per-item,
+volume-pricing,
+volume-pricing-info,
+add-to-cart-component,
+.add-to-cart-button,
+.buy-buttons-block,
+.shopify-payment-button,
+shopify-accelerated-checkout,
+shopify-accelerated-checkout-cart,
+quick-add-component,
+.quick-add,
+cart-icon,
+.cart-bubble,
+cart-drawer-component,
+shopify-account,
+.header-actions__cart-icon {
+  display: none !important;
+}

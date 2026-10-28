@@ -1,0 +1,59 @@
+{%- comment -%}
+  Star rating. Five accent-colored stars, filled to the rating, with an optional count.
+
+  Accepts:
+  - rating {Number}: 0-5 (decimals allowed)
+  - count {Number}: number of reviews (optional)
+  - size {Number}: star size in px (default 14)
+  - show_value {Boolean}: show the numeric rating before the count, e.g. "4.8 (2,314)"
+  - class {String}: extra classes
+
+  Usage:
+  {% render 'ab-stars', rating: 4.8, count: 2314, show_value: true %}
+{%- endcomment -%}
+
+{%- liquid
+  assign star_size = size | default: 14
+  assign rating_value = rating | default: 0 | times: 1.0
+  assign fill_percent = rating_value | divided_by: 5.0 | times: 100 | round: 1
+  if fill_percent > 100
+    assign fill_percent = 100
+  endif
+  assign rating_display = rating_value | round: 1
+
+  comment
+    Format the review count with thousands separators: 2314 -> 2,314
+  endcomment
+  assign count_display = ''
+  if count
+    assign count_digits = count | round | append: ''
+    assign count_chars = count_digits | split: ''
+    assign count_length = count_chars.size
+    for char in count_chars
+      assign remaining = count_length | minus: forloop.index0
+      assign remaining_mod = remaining | modulo: 3
+      if forloop.index0 > 0 and remaining_mod == 0
+        assign count_display = count_display | append: ','
+      endif
+      assign count_display = count_display | append: char
+    endfor
+  endif
+-%}
+
+<span class="ab-stars{% if class %} {{ class }}{% endif %}" style="--ab-star-size: {{ star_size }}px;">
+  <span class="ab-stars__icons" aria-hidden="true">
+    <span class="ab-stars__base">
+      {%- for i in (1..5) -%}{% render 'ab-icon', name: 'star', size: star_size %}{%- endfor -%}
+    </span>
+    <span class="ab-stars__fill" style="width: {{ fill_percent }}%;">
+      {%- for i in (1..5) -%}{% render 'ab-icon', name: 'star', size: star_size %}{%- endfor -%}
+    </span>
+  </span>
+  <span class="ab-visually-hidden">Rated {{ rating_display }} out of 5{% if count %}, {{ count_display }} reviews{% endif %}</span>
+  {%- if count or show_value -%}
+    <span class="ab-stars__count" aria-hidden="true">
+      {%- if show_value %}{{ rating_display }} {% endif -%}
+      {%- if count %}({{ count_display }}){% endif -%}
+    </span>
+  {%- endif -%}
+</span>

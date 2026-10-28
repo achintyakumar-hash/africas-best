@@ -1,0 +1,31 @@
+{%- comment -%}
+  Previous/next arrows (desktop) and the dot indicator row (mobile/tablet) for <ab-carousel>.
+  Render inside <ab-carousel>, after the track.
+
+  Accepts:
+  - arrow_style {String}: 'default' (white circle) | 'outline' (1.5px dark outline)
+  - arrows {Boolean}: render the floating arrows (default true). Use false when the section
+    renders its own arrow buttons elsewhere (they still need data-ab-prev / data-ab-next).
+  - label {String}: what the arrows move through, e.g. 'products' (default 'slides')
+
+  Usage:
+  {% render 'ab-carousel-controls', label: 'products' %}
+{%- endcomment -%}
+
+{%- liquid
+  assign arrow_class = 'ab-arrow ab-carousel__arrow'
+  if arrow_style == 'outline'
+    assign arrow_class = arrow_class | append: ' ab-arrow--outline'
+  endif
+  assign items_label = label | default: 'slides'
+-%}
+
+{%- unless arrows == false -%}
+  <button type="button" class="{{ arrow_class }} ab-carousel__arrow--prev" data-ab-prev aria-label="Previous {{ items_label }}">
+    {%- render 'ab-icon', name: 'chevron-left' -%}
+  </button>
+  <button type="button" class="{{ arrow_class }} ab-carousel__arrow--next" data-ab-next aria-label="Next {{ items_label }}">
+    {%- render 'ab-icon', name: 'chevron-right' -%}
+  </button>
+{%- endunless -%}
+<div class="ab-carousel__dots" data-ab-dots></div>

@@ -1,0 +1,150 @@
+/*
+ * Africa's Best design tokens.
+ * Source: FINAL artboards, Mobile Components sheet and Responsive Spec.
+ *
+ * Breakpoints (literal values in media queries; custom properties can't be used there):
+ *   mobile  0-767px    -> base styles
+ *   tablet  768-1023px -> @media (min-width: 768px)
+ *   desktop 1024px+    -> @media (min-width: 1024px)
+ */
+:root {
+  /* Colors */
+  --ab-color-primary: #123d2e;
+  --ab-color-cream: #f5efe4;
+  --ab-color-white: #ffffff;
+  --ab-color-button: #b4532a;
+  --ab-color-button-hover: #8f3f1f;
+  --ab-color-accent: #c9a24d; /* stars and icons only, never text */
+  --ab-color-text: #1e1e1c;
+  --ab-color-muted: #6b6b66;
+  --ab-color-muted-strong: #5f5f5a; /* muted text on cream, for contrast */
+  --ab-color-sage: #e4ece6;
+  --ab-color-sage-tint: #dce6df; /* category tags, soft green banners */
+  --ab-color-primary-tint: #dde7e1; /* scrolling band */
+  --ab-color-in-stock: #1e7a45;
+  --ab-color-dot: #c9c3b8;
+  --ab-color-border: rgb(0 0 0 / 0.12);
+  --ab-color-border-strong: rgb(0 0 0 / 0.14);
+  --ab-color-border-on-dark: rgb(255 255 255 / 0.25);
+  --ab-color-overlay: rgb(12 10 8 / 0.62);
+  --ab-color-backdrop: rgb(0 0 0 / 0.4);
+  --ab-color-focus: var(--ab-color-primary);
+
+  /* Typography */
+  --ab-font-family: 'Montserrat', 'Helvetica Neue', Arial, sans-serif;
+  --ab-font-weight-regular: 400;
+  --ab-font-weight-medium: 500;
+  --ab-font-weight-semibold: 600;
+  --ab-font-weight-bold: 700;
+  --ab-font-weight-extrabold: 800;
+
+  /* Type scale: mobile values (also used on tablet), overridden for desktop below */
+  --ab-text-hero: 36px;
+  --ab-text-section-heading: 26px;
+  --ab-text-article-h2: 22px;
+  --ab-text-body: 16px;
+  --ab-text-article-body: 16px;
+  --ab-text-small: 13px;
+  --ab-text-eyebrow: 13px;
+  --ab-text-button-lg: 14px;
+  --ab-text-button-sm: 13px;
+  --ab-line-height-body: 1.6;
+  --ab-line-height-article: 1.7;
+  --ab-line-height-heading: 1.15;
+  --ab-letter-spacing-heading: 0.04em;
+  --ab-letter-spacing-button: 0.06em;
+  --ab-letter-spacing-eyebrow: 0.16em;
+
+  /* Spacing: 8px grid */
+  --ab-space-1: 4px;
+  --ab-space-2: 8px;
+  --ab-space-3: 12px;
+  --ab-space-4: 16px;
+  --ab-space-5: 20px;
+  --ab-space-6: 24px;
+  --ab-space-8: 32px;
+  --ab-space-10: 40px;
+  --ab-space-12: 48px;
+  --ab-space-14: 56px;
+  --ab-space-16: 64px;
+  --ab-space-20: 80px;
+  --ab-space-24: 96px;
+
+  /* Layout: mobile values, overridden per breakpoint below */
+  --ab-section-padding: 56px;
+  --ab-side-padding: 20px;
+  --ab-content-max-width: 1280px;
+  --ab-heading-gap: 24px; /* section heading to content */
+  --ab-subheading-gap: 8px; /* heading to subheading */
+  --ab-grid-gap: 12px;
+  --ab-grid-row-gap: 24px;
+  --ab-carousel-gap: 12px;
+
+  /* Radii */
+  --ab-radius-pill: 999px;
+  --ab-radius-card: 12px;
+  --ab-radius-tile: 12px;
+  --ab-radius-badge: 4px;
+  --ab-radius-image-frame: 4px;
+
+  /* Controls */
+  --ab-button-height-lg: 48px;
+  --ab-button-height-sm: 40px; /* 44px from tablet up */
+  --ab-button-padding-lg: 32px;
+  --ab-button-padding-sm: 24px;
+  --ab-button-border: 1.5px;
+  --ab-tap-target: 44px;
+  --ab-focus-ring: 2px solid var(--ab-color-focus);
+  --ab-focus-offset: 2px;
+
+  /* Header */
+  --ab-header-height: 64px;
+  --ab-announcement-min-height: 40px;
+
+  /* Breakpoints (reference only) */
+  --ab-bp-tablet: 768px;
+  --ab-bp-desktop: 1024px;
+
+  /* Elevation and motion */
+  --ab-shadow-card: 0 1px 2px rgb(0 0 0 / 0.04);
+  --ab-shadow-raised: 0 4px 16px rgb(0 0 0 / 0.12);
+  --ab-shadow-modal: 0 24px 60px rgb(0 0 0 / 0.25);
+  --ab-shadow-sticky-bar: 0 -4px 16px rgb(0 0 0 / 0.08);
+  --ab-transition-fast: 150ms ease;
+  --ab-transition-base: 250ms ease;
+
+  /* Layering */
+  --ab-z-header: 20;
+  --ab-z-dropdown: 30;
+  --ab-z-overlay: 100;
+}
+
+@media (min-width: 768px) {
+  :root {
+    --ab-section-padding: 72px;
+    --ab-side-padding: 32px;
+    --ab-button-height-sm: 44px;
+  }
+}
+
+@media (min-width: 1024px) {
+  :root {
+    --ab-text-hero: 64px;
+    --ab-text-section-heading: 40px;
+    --ab-text-article-h2: 28px;
+    --ab-text-article-body: 17px;
+    --ab-text-eyebrow: 14px;
+    --ab-line-height-heading: 1.1;
+    --ab-letter-spacing-eyebrow: 0.2em;
+
+    --ab-section-padding: 96px;
+    --ab-side-padding: 40px;
+    --ab-heading-gap: 48px;
+    --ab-subheading-gap: 12px;
+    --ab-grid-gap: 24px;
+    --ab-grid-row-gap: 48px;
+    --ab-carousel-gap: 24px;
+
+    --ab-header-height: 88px;
+  }
+}

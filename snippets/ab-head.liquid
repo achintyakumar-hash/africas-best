@@ -1,0 +1,38 @@
+{%- comment -%}
+  Global <head> assets for the Africa's Best design: font faces, design tokens,
+  base and component CSS, and deferred component scripts.
+  Rendered from layout/theme.liquid after Horizon's own styles so ours take precedence.
+{%- endcomment -%}
+
+{%- liquid
+  assign ab_font = settings.ab_font
+  assign ab_font_500 = ab_font | font_modify: 'weight', '500'
+  assign ab_font_600 = ab_font | font_modify: 'weight', '600'
+  assign ab_font_700 = ab_font | font_modify: 'weight', '700'
+  assign ab_font_800 = ab_font | font_modify: 'weight', '800'
+-%}
+
+{%- if ab_font -%}
+  {{ ab_font_700 | default: ab_font | font_url | preload_tag: as: 'font', type: 'font/woff2', crossorigin: true }}
+  <style>
+    {{ ab_font | font_face: font_display: 'swap' }}
+    {%- if ab_font_500 %}{{ ab_font_500 | font_face: font_display: 'swap' }}{% endif -%}
+    {%- if ab_font_600 %}{{ ab_font_600 | font_face: font_display: 'swap' }}{% endif -%}
+    {%- if ab_font_700 %}{{ ab_font_700 | font_face: font_display: 'swap' }}{% endif -%}
+    {%- if ab_font_800 %}{{ ab_font_800 | font_face: font_display: 'swap' }}{% endif %}
+    :root {
+      --ab-font-family: {{ ab_font.family }}, {{ ab_font.fallback_families }};
+    }
+  </style>
+{%- endif -%}
+
+{{ 'ab-tokens.css' | asset_url | stylesheet_tag }}
+{{ 'ab-base.css' | asset_url | stylesheet_tag }}
+{{ 'ab-components.css' | asset_url | stylesheet_tag }}
+{{ 'ab-product-card.css' | asset_url | stylesheet_tag }}
+{{ 'ab-header.css' | asset_url | stylesheet_tag }}
+{{ 'ab-footer.css' | asset_url | stylesheet_tag }}
+
+<script src="{{ 'ab-base.js' | asset_url }}" defer></script>
+<script src="{{ 'ab-carousel.js' | asset_url }}" defer></script>
+<script src="{{ 'ab-header.js' | asset_url }}" defer></script>
