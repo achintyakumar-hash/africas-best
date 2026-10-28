@@ -4,7 +4,7 @@
   Accepts:
   - rating {Number}: 0-5 (decimals allowed)
   - count {Number}: number of reviews (optional)
-  - size {Number}: star size in px (default 14, or whatever the parent sets via --ab-star-size)
+  - star_size {Number}: star size in px (default 14, or whatever the parent sets via --ab-star-size)
   - show_value {Boolean}: show the numeric rating before the count, e.g. "4.8 (2,314)"
   - class {String}: extra classes
 
@@ -13,7 +13,7 @@
 {%- endcomment -%}
 
 {%- liquid
-  assign star_size = size | default: 14
+  assign icon_px = star_size | default: 14
   assign rating_value = rating | default: 0 | times: 1.0
   assign fill_percent = rating_value | divided_by: 5.0 | times: 100 | round: 1
   if fill_percent > 100
@@ -40,13 +40,13 @@
   endif
 -%}
 
-<span class="ab-stars{% if class %} {{ class }}{% endif %}"{% if size %} style="--ab-star-size: {{ size }}px;"{% endif %}>
+<span class="ab-stars{% if class %} {{ class }}{% endif %}"{% if star_size %} style="--ab-star-size: {{ star_size }}px;"{% endif %}>
   <span class="ab-stars__icons" aria-hidden="true">
     <span class="ab-stars__base">
-      {%- for i in (1..5) -%}{% render 'ab-icon', name: 'star', size: star_size %}{%- endfor -%}
+      {%- for i in (1..5) -%}{% render 'ab-icon', name: 'star', size: icon_px %}{%- endfor -%}
     </span>
     <span class="ab-stars__fill" style="width: {{ fill_percent }}%;">
-      {%- for i in (1..5) -%}{% render 'ab-icon', name: 'star', size: star_size %}{%- endfor -%}
+      {%- for i in (1..5) -%}{% render 'ab-icon', name: 'star', size: icon_px %}{%- endfor -%}
     </span>
   </span>
   <span class="ab-visually-hidden">Rated {{ rating_display }} out of 5{% if count %}, {{ count_display }} reviews{% endif %}</span>
