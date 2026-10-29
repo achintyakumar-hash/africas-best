@@ -35,20 +35,20 @@
                     widths: '160, 240, 320, 480',
                     sizes: '(min-width: 1024px) 240px, 160px',
                     loading: 'lazy',
-                    alt: block.settings.name
+                    alt: block.settings.title
                 }}
               {%- else -%}
                 {%- comment -%} Grey wordmark until a logo is uploaded, styled like the design's placeholders {%- endcomment -%}
-                {%- assign wordmark_key = block.settings.name | handleize -%}
+                {%- assign wordmark_key = block.settings.title | handleize -%}
                 <span class="ab-retailers__wordmark ab-retailers__wordmark--{{ wordmark_key }}">
                   {%- case wordmark_key -%}
                     {%- when 'target' -%}
-                      <span class="ab-retailers__ring" aria-hidden="true"></span>{{ block.settings.name }}
+                      <span class="ab-retailers__ring" aria-hidden="true"></span>{{ block.settings.title }}
                     {%- when 'local-beauty-supply' -%}
                       <span class="ab-retailers__small">Local</span>
                       <span>Beauty Supply</span>
                     {%- else -%}
-                      {{ block.settings.name }}
+                      {{ block.settings.title }}
                   {%- endcase -%}
                 </span>
               {%- endif -%}
@@ -138,7 +138,7 @@
         },
         {
           "type": "text",
-          "id": "name",
+          "id": "title",
           "label": "Retailer name",
           "default": "Walmart"
         },
@@ -155,10 +155,10 @@
     {
       "name": "AB: Retailers",
       "blocks": [
-        { "type": "retailer", "settings": { "name": "Walmart" } },
-        { "type": "retailer", "settings": { "name": "Target" } },
-        { "type": "retailer", "settings": { "name": "Family Dollar" } },
-        { "type": "retailer", "settings": { "name": "Local Beauty Supply" } }
+        { "type": "retailer", "settings": { "title": "Walmart" } },
+        { "type": "retailer", "settings": { "title": "Target" } },
+        { "type": "retailer", "settings": { "title": "Family Dollar" } },
+        { "type": "retailer", "settings": { "title": "Local Beauty Supply" } }
       ]
     }
   ]

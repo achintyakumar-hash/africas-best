@@ -24,7 +24,7 @@
       <ul class="ab-ingredients__list" role="list" style="--ab-ingredient-count: {{ section.blocks.size }};">
         {%- for block in section.blocks -%}
           {%- liquid
-            assign ingredient_key = block.settings.label | handleize
+            assign ingredient_key = block.settings.title | handleize
             capture fallback_url
               render 'ab-fallback-url', key: ingredient_key
             endcapture
@@ -42,7 +42,7 @@
                 height: 600
               -%}
             </span>
-            <span class="ab-ingredients__label">{{ block.settings.label }}</span>
+            <span class="ab-ingredients__label">{{ block.settings.title }}</span>
           </li>
         {%- endfor -%}
       </ul>
@@ -109,11 +109,11 @@
           "type": "image_picker",
           "id": "image",
           "label": "Photo",
-          "info": "Square close-up, at least 360 x 360px. Shown as a circle."
+          "info": "Square close-up, at least 360 x 360px. Shown as a circle. Until one is uploaded, a stock photo is shown when the label is Olive Oil, Shea Butter, Honey, Castor Oil, Egg Protein, Aloe or Clove."
         },
         {
           "type": "text",
-          "id": "label",
+          "id": "title",
           "label": "Label",
           "default": "Olive Oil"
         }
@@ -124,13 +124,13 @@
     {
       "name": "AB: Quality ingredients",
       "blocks": [
-        { "type": "ingredient", "settings": { "label": "Olive Oil" } },
-        { "type": "ingredient", "settings": { "label": "Shea Butter" } },
-        { "type": "ingredient", "settings": { "label": "Honey" } },
-        { "type": "ingredient", "settings": { "label": "Castor Oil" } },
-        { "type": "ingredient", "settings": { "label": "Egg Protein" } },
-        { "type": "ingredient", "settings": { "label": "Aloe" } },
-        { "type": "ingredient", "settings": { "label": "Clove" } }
+        { "type": "ingredient", "settings": { "title": "Olive Oil" } },
+        { "type": "ingredient", "settings": { "title": "Shea Butter" } },
+        { "type": "ingredient", "settings": { "title": "Honey" } },
+        { "type": "ingredient", "settings": { "title": "Castor Oil" } },
+        { "type": "ingredient", "settings": { "title": "Egg Protein" } },
+        { "type": "ingredient", "settings": { "title": "Aloe" } },
+        { "type": "ingredient", "settings": { "title": "Clove" } }
       ]
     }
   ]

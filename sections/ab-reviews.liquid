@@ -91,7 +91,7 @@
                     <p>“{{ block.settings.quote }}”</p>
                   </blockquote>
                   <figcaption class="ab-review__who">
-                    <span class="ab-review__name">{{ block.settings.name }}</span>
+                    <span class="ab-review__name">{{ block.settings.title }}</span>
                     {%- if block.settings.source != blank -%}
                       <span class="ab-review__source">Verified review on {{ block.settings.source }}</span>
                     {%- endif -%}
@@ -143,7 +143,7 @@
           "type": "image_picker",
           "id": "image",
           "label": "Reviewer photo",
-          "info": "Portrait, at least 280 x 360px. Only use photos you have permission to show."
+          "info": "Portrait, at least 280 x 360px. Only use photos you have permission to show. Until one is uploaded, a placeholder photo from the design is shown."
         },
         {
           "type": "range",
@@ -163,7 +163,7 @@
         },
         {
           "type": "text",
-          "id": "name",
+          "id": "title",
           "label": "Reviewer name",
           "default": "Danielle M."
         },
@@ -177,7 +177,8 @@
         {
           "type": "product",
           "id": "product",
-          "label": "Reviewed product"
+          "label": "Reviewed product",
+          "info": "Leave empty to use the best-sellers collection's products in order."
         }
       ]
     }
@@ -191,7 +192,7 @@
           "type": "review",
           "settings": {
             "quote": "Light, not greasy, and my edges are thriving. I keep a bottle in every bag.",
-            "name": "Monique R.",
+            "title": "Monique R.",
             "source": "Amazon"
           }
         },
@@ -199,7 +200,7 @@
           "type": "review",
           "settings": {
             "quote": "A staple in my routine for years now. My curls have never looked this healthy.",
-            "name": "Keisha W.",
+            "title": "Keisha W.",
             "source": "Target"
           }
         }

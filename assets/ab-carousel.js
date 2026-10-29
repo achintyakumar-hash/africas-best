@@ -185,7 +185,8 @@
         return;
       }
       this.autoplayDelay = delay;
-      this.autoplayPausedByUser = false;
+      // Don't move slides while the merchant is editing in the theme editor.
+      this.autoplayPausedByUser = Boolean(window.Shopify && window.Shopify.designMode);
       this.autoplayInteracting = false;
 
       this.toggleButton?.addEventListener('click', () => {

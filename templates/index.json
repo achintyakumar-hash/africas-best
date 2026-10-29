@@ -16,7 +16,7 @@
             "heading": "When only the best will do",
             "text": "Moisturizing, nourishing hair care for every hair care need and growth goal.",
             "primary_label": "Shop best sellers",
-            "primary_link": "/collections/all",
+            "primary_link": "/collections/best-sellers",
             "secondary_label": "Where to buy",
             "secondary_link": ""
           }
@@ -29,7 +29,7 @@
             "heading": "Moisture that lasts",
             "text": "Olive oil and aloe care that softens, strengthens and seals in moisture.",
             "primary_label": "Shop olive oil conditioning",
-            "primary_link": "/collections/all",
+            "primary_link": "/collections/olive-oil-conditioning",
             "secondary_label": "Where to buy",
             "secondary_link": ""
           }
@@ -42,7 +42,7 @@
             "heading": "Grow your best hair",
             "text": "Castor, argan and coconut growth oils for every hair goal.",
             "primary_label": "Shop growth oils",
-            "primary_link": "/collections/all",
+            "primary_link": "/collections/growth-oils",
             "secondary_label": "Where to buy",
             "secondary_link": ""
           }
@@ -64,25 +64,25 @@
         "tile-1": {
           "type": "tile",
           "settings": {
-            "label": "Hair growth",
-            "link": "/collections/all",
-            "button_label": "View"
+            "link": "/collections/hair-growth",
+            "button_label": "View",
+            "title": "Hair growth"
           }
         },
         "tile-2": {
           "type": "tile",
           "settings": {
-            "label": "Deep moisture",
-            "link": "/collections/all",
-            "button_label": "View"
+            "link": "/collections/deep-moisture",
+            "button_label": "View",
+            "title": "Deep moisture"
           }
         },
         "tile-3": {
           "type": "tile",
           "settings": {
-            "label": "Scalp care",
-            "link": "/collections/all",
-            "button_label": "View"
+            "link": "/collections/scalp-care",
+            "button_label": "View",
+            "title": "Scalp care"
           }
         }
       },
@@ -160,43 +160,43 @@
         "ingredient-1": {
           "type": "ingredient",
           "settings": {
-            "label": "Olive Oil"
+            "title": "Olive Oil"
           }
         },
         "ingredient-2": {
           "type": "ingredient",
           "settings": {
-            "label": "Shea Butter"
+            "title": "Shea Butter"
           }
         },
         "ingredient-3": {
           "type": "ingredient",
           "settings": {
-            "label": "Honey"
+            "title": "Honey"
           }
         },
         "ingredient-4": {
           "type": "ingredient",
           "settings": {
-            "label": "Castor Oil"
+            "title": "Castor Oil"
           }
         },
         "ingredient-5": {
           "type": "ingredient",
           "settings": {
-            "label": "Egg Protein"
+            "title": "Egg Protein"
           }
         },
         "ingredient-6": {
           "type": "ingredient",
           "settings": {
-            "label": "Aloe"
+            "title": "Aloe"
           }
         },
         "ingredient-7": {
           "type": "ingredient",
           "settings": {
-            "label": "Clove"
+            "title": "Clove"
           }
         }
       },
@@ -320,8 +320,8 @@
           "settings": {
             "rating": 5,
             "quote": "My hair has never felt this soft. I've used Africa's Best for years and it still works every time.",
-            "name": "Danielle M.",
-            "source": "Walmart"
+            "source": "Walmart",
+            "title": "Danielle M."
           }
         },
         "review-2": {
@@ -329,8 +329,8 @@
           "settings": {
             "rating": 5,
             "quote": "Light, not greasy, and my edges are thriving. I keep a bottle in every bag.",
-            "name": "Monique R.",
-            "source": "Amazon"
+            "source": "Amazon",
+            "title": "Monique R."
           }
         },
         "review-3": {
@@ -338,8 +338,8 @@
           "settings": {
             "rating": 5,
             "quote": "A staple in my routine for years now. My curls have never looked this healthy.",
-            "name": "Keisha W.",
-            "source": "Target"
+            "source": "Target",
+            "title": "Keisha W."
           }
         }
       },
@@ -380,25 +380,25 @@
         "retailer-1": {
           "type": "retailer",
           "settings": {
-            "name": "Walmart"
+            "title": "Walmart"
           }
         },
         "retailer-2": {
           "type": "retailer",
           "settings": {
-            "name": "Target"
+            "title": "Target"
           }
         },
         "retailer-3": {
           "type": "retailer",
           "settings": {
-            "name": "Family Dollar"
+            "title": "Family Dollar"
           }
         },
         "retailer-4": {
           "type": "retailer",
           "settings": {
-            "name": "Local Beauty Supply"
+            "title": "Local Beauty Supply"
           }
         }
       },

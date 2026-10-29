@@ -133,9 +133,10 @@
               {%- if block.settings.primary_label != blank or block.settings.secondary_label != blank -%}
                 <div class="ab-hero__buttons">
                   {%- if block.settings.primary_label != blank -%}
+                    {%- assign primary_url = block.settings.primary_link | default: '/collections/best-sellers' -%}
                     {%- render 'ab-button',
                       label: block.settings.primary_label,
-                      url: block.settings.primary_link,
+                      url: primary_url,
                       style: 'primary',
                       full_width_mobile: true
                     -%}
@@ -197,7 +198,7 @@
       "type": "checkbox",
       "id": "autoplay",
       "label": "Autoplay",
-      "info": "Only with 2 or more slides. Turned off for visitors who prefer reduced motion.",
+      "info": "Only with 2 or more slides. Paused in the theme editor and for visitors who prefer reduced motion.",
       "default": true
     },
     {
@@ -220,7 +221,7 @@
           "type": "image_picker",
           "id": "image",
           "label": "Desktop image",
-          "info": "Landscape, at least 2400 x 1070px. Set the focal point so faces stay in view."
+          "info": "Landscape, at least 2400 x 1070px. Set the focal point so faces stay in view. Until one is uploaded, a placeholder photo from the design is shown."
         },
         {
           "type": "image_picker",
@@ -262,7 +263,7 @@
           "type": "url",
           "id": "primary_link",
           "label": "Primary button link",
-          "default": "/collections/all"
+          "default": "/collections/best-sellers"
         },
         {
           "type": "text",
