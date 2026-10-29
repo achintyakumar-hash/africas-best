@@ -350,6 +350,7 @@
     gap: var(--ab-space-6);
     padding: var(--ab-space-6) 0;
     font-size: 17px;
+    line-height: 1.6;
   }
 
   .ab-accordion__content {

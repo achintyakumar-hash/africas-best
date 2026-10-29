@@ -9,65 +9,125 @@
 
 {%- liquid
   assign faq_heading_id = 'AbFaqHeading-' | append: section.id
+
+  comment
+    Optional per-collection/product FAQ from a metafield: custom.faq, a list of metaobjects with
+    a "question" (single line text) and an "answer" (rich text or multi-line text) field.
+    Falls back to the section's own question blocks.
+  endcomment
+  assign faq_entries = blank
+  if section.settings.use_metafield
+    if collection
+      assign faq_entries = collection.metafields.custom.faq.value
+    elsif product
+      assign faq_entries = product.metafields.custom.faq.value
+    endif
+  endif
+  assign use_entries = false
+  if faq_entries != blank and faq_entries.size > 0
+    assign use_entries = true
+  endif
 -%}
 
-<section
-  class="ab-scope ab-faq ab-section ab-bg--{{ section.settings.background }}"
-  {% if section.settings.heading != blank %}
-    aria-labelledby="{{ faq_heading_id }}"
-  {% endif %}
->
-  <div class="ab-container ab-container--narrow">
-    {%- if section.settings.heading != blank -%}
-      <h2 id="{{ faq_heading_id }}" class="ab-section-heading ab-section-heading--center ab-faq__heading">
-        {{- section.settings.heading -}}
-      </h2>
-    {%- endif -%}
-
-    <div class="ab-accordion">
-      {%- for block in section.blocks -%}
-        <details
-          class="ab-accordion__item"
-          {% if forloop.first and section.settings.open_first %}
-            open
-          {% endif %}
-          {{ block.shopify_attributes }}
-        >
-          <summary class="ab-accordion__summary">
-            <span>{{ block.settings.question }}</span>
-            <span class="ab-accordion__icon">
-              {%- render 'ab-icon', name: 'add' -%}
-              {%- render 'ab-icon', name: 'remove' -%}
-            </span>
-          </summary>
-          <div class="ab-accordion__content ab-rte">{{ block.settings.answer }}</div>
-        </details>
-      {%- endfor -%}
-    </div>
-  </div>
-
-  {%- if section.settings.structured_data and section.blocks.size > 0 -%}
-    <script type="application/ld+json">
-      {
-        "@context": "https://schema.org",
-        "@type": "FAQPage",
-        "mainEntity": [
-          {%- for block in section.blocks -%}
-            {
-              "@type": "Question",
-              "name": {{ block.settings.question | strip_html | json }},
-              "acceptedAnswer": {
-                "@type": "Answer",
-                "text": {{ block.settings.answer | strip_html | json }}
-              }
-            }{% unless forloop.last %},{% endunless %}
-          {%- endfor -%}
-        ]
-      }
-    </script>
+{%- capture faq_items -%}
+  {%- if use_entries -%}
+    {%- for entry in faq_entries -%}
+      <details
+        class="ab-accordion__item"
+        {% if forloop.first and section.settings.open_first %}
+          open
+        {% endif %}
+      >
+        <summary class="ab-accordion__summary">
+          <span>{{ entry.question.value }}</span>
+          <span class="ab-accordion__icon">
+            {%- render 'ab-icon', name: 'add' -%}
+            {%- render 'ab-icon', name: 'remove' -%}
+          </span>
+        </summary>
+        <div class="ab-accordion__content ab-rte">
+          {%- if entry.answer.type == 'rich_text_field' -%}
+            {{ entry.answer | metafield_tag }}
+          {%- else -%}
+            <p>{{ entry.answer.value | newline_to_br }}</p>
+          {%- endif -%}
+        </div>
+      </details>
+    {%- endfor -%}
+  {%- else -%}
+    {%- for block in section.blocks -%}
+      <details
+        class="ab-accordion__item"
+        {% if forloop.first and section.settings.open_first %}
+          open
+        {% endif %}
+        {{ block.shopify_attributes }}
+      >
+        <summary class="ab-accordion__summary">
+          <span>{{ block.settings.question }}</span>
+          <span class="ab-accordion__icon">
+            {%- render 'ab-icon', name: 'add' -%}
+            {%- render 'ab-icon', name: 'remove' -%}
+          </span>
+        </summary>
+        <div class="ab-accordion__content ab-rte">{{ block.settings.answer }}</div>
+      </details>
+    {%- endfor -%}
   {%- endif -%}
-</section>
+{%- endcapture -%}
 
+{%- if faq_items != blank -%}
+  <section
+    class="ab-scope ab-faq ab-section ab-bg--{{ section.settings.background }}"
+    {% if section.settings.heading != blank %}
+      aria-labelledby="{{ faq_heading_id }}"
+    {% endif %}
+  >
+    <div class="ab-container ab-container--narrow">
+      {%- if section.settings.heading != blank -%}
+        <h2 id="{{ faq_heading_id }}" class="ab-section-heading ab-section-heading--center ab-faq__heading">
+          {{- section.settings.heading -}}
+        </h2>
+      {%- endif -%}
+
+      <div class="ab-accordion">{{ faq_items }}</div>
+    </div>
+
+    {%- if section.settings.structured_data -%}
+      <script type="application/ld+json">
+        {
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          "mainEntity": [
+            {%- if use_entries -%}
+              {%- for entry in faq_entries -%}
+                {
+                  "@type": "Question",
+                  "name": {{ entry.question.value | strip_html | json }},
+                  "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": {{ entry.answer | metafield_text | json }}
+                  }
+                }{% unless forloop.last %},{% endunless %}
+              {%- endfor -%}
+            {%- else -%}
+              {%- for block in section.blocks -%}
+                {
+                  "@type": "Question",
+                  "name": {{ block.settings.question | strip_html | json }},
+                  "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": {{ block.settings.answer | strip_html | json }}
+                  }
+                }{% unless forloop.last %},{% endunless %}
+              {%- endfor -%}
+            {%- endif -%}
+          ]
+        }
+      </script>
+    {%- endif -%}
+  </section>
+{%- endif -%}
 
 {% schema %}
 {
@@ -97,6 +157,13 @@
       "id": "open_first",
       "label": "Open the first question",
       "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "use_metafield",
+      "label": "Use the page's own FAQ when it has one",
+      "info": "On collection and product pages, shows the FAQ from the custom.faq metafield (a list of FAQ entries with question and answer). Otherwise the questions below are shown.",
+      "default": false
     },
     {
       "type": "checkbox",

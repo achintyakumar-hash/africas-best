@@ -56,7 +56,7 @@ body {
   color: inherit;
 }
 
-.ab-scope summary {
+.ab-scope :where(summary) {
   padding-block: 0;
 }
 
