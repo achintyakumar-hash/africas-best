@@ -45,10 +45,11 @@
 }
 
 .ab-card__image--placeholder {
+  display: block;
   width: 71%;
   height: 78%;
-  fill: var(--ab-color-muted);
-  opacity: 0.25;
+  border-radius: var(--ab-radius-badge);
+  background: var(--ab-color-placeholder);
 }
 
 .ab-card__hover-media {

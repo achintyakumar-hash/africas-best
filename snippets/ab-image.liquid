@@ -1,6 +1,9 @@
 {%- comment -%}
   Responsive image. Renders a Shopify image with image_url/image_tag, or a fallback URL
   (the approved design's photography) until the client uploads their own image.
+  Empty states: the parent container sets the size and a placeholder background colour
+  (--ab-color-placeholder / --ab-color-placeholder-dark). A failed fallback is hidden and
+  a missing image renders an empty .ab-placeholder, so the container colour shows through.
 
   Accepts:
   - image {Object}: image from a setting (optional)
@@ -46,9 +49,11 @@
       alt: img_alt
   }}
 {%- elsif fallback != blank -%}
+  {%- comment -%} If the hotlinked photo fails, hide it so the container's placeholder colour shows. {%- endcomment -%}
   <img
     src="{{ fallback }}"
     class="{{ class }}"
+    onerror="this.classList.add('ab-img--failed')"
     alt="{{ img_alt | escape }}"
     loading="{{ img_loading }}"
     fetchpriority="{{ img_priority }}"
@@ -57,5 +62,5 @@
     height="{{ height | default: 1200 }}"
   >
 {%- else -%}
-  {{ 'lifestyle-1' | placeholder_svg_tag: class }}
+  <span class="ab-placeholder {{ class }}" aria-hidden="true"></span>
 {%- endif -%}

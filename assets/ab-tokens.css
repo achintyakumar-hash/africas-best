@@ -30,6 +30,10 @@
   --ab-color-backdrop: rgb(0 0 0 / 0.4);
   --ab-color-focus: var(--ab-color-primary);
 
+  /* Image placeholders, shown while an image is missing or fails to load */
+  --ab-color-placeholder: #e7e1d6; /* light neutral, for images on cream/white */
+  --ab-color-placeholder-dark: #3a302a; /* behind white text on photos */
+
   /* Typography */
   --ab-font-family: 'Montserrat', 'Helvetica Neue', Arial, sans-serif;
   --ab-font-weight-regular: 400;

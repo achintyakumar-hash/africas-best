@@ -100,7 +100,7 @@
             alt: product.title
         }}
       {%- else -%}
-        {{ 'product-1' | placeholder_svg_tag: 'ab-card__image ab-card__image--placeholder' }}
+        <span class="ab-card__image--placeholder" aria-hidden="true"></span>
       {%- endif -%}
     </div>
 

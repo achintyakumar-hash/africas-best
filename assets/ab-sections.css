@@ -20,7 +20,7 @@
    ========================================================= */
 .ab-hero {
   position: relative;
-  background: #2a2420;
+  background: var(--ab-color-placeholder-dark);
   color: var(--ab-color-white);
 }
 
@@ -268,7 +268,7 @@
   height: 340px;
   overflow: hidden;
   border-radius: var(--ab-radius-tile);
-  background: #3a302a;
+  background: var(--ab-color-placeholder-dark);
   color: var(--ab-color-white);
   text-decoration: none;
 }
@@ -591,6 +591,7 @@
   height: 64px;
   overflow: hidden;
   border-radius: var(--ab-radius-pill);
+  background: var(--ab-color-placeholder);
 }
 
 .ab-ingredients__image {
@@ -664,7 +665,7 @@
   height: 420px;
   overflow: hidden;
   border-radius: var(--ab-radius-tile);
-  background: #3a302a;
+  background: var(--ab-color-placeholder);
 }
 
 .ab-spotlight__image {
@@ -895,7 +896,7 @@
   aspect-ratio: 9 / 16;
   overflow: hidden;
   border-radius: var(--ab-radius-card);
-  background: #3a302a;
+  background: var(--ab-color-placeholder);
 }
 
 .ab-ugc__poster,
@@ -1102,6 +1103,7 @@
   height: 48px;
   overflow: hidden;
   border-radius: var(--ab-radius-pill);
+  background: var(--ab-color-placeholder);
 }
 
 .ab-review__image {
@@ -1279,7 +1281,7 @@
   position: relative;
   height: 480px;
   overflow: hidden;
-  background: #2a2420;
+  background: var(--ab-color-placeholder-dark);
 }
 
 .ab-about__secondary {
