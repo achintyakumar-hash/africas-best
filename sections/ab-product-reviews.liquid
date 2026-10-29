@@ -1,0 +1,278 @@
+{%- comment -%}
+  Customer Reviews (FINAL / Product Page, id "reviews").
+  Desktop: heading left; rating summary (64px score, stars, "Based on n reviews") with the
+  WRITE A REVIEW button on the right; 8 customer photos in a row; review rows (220px author
+  column + review); numbered pagination.
+  Mobile: summary stacked, full-width button, photo swipe row, single-column reviews.
+
+  Reviews come from either:
+  - a review app's app block added to this section (it replaces the summary and list), or
+  - the product metafield custom.reviews: a list of "Product review" metaobjects with the
+    fields author, date, title, body, rating, verified, helpful and photo.
+  The score uses reviews.rating / reviews.rating_count when set, else the average of the
+  listed reviews. Photos: product metafield custom.review_photos (list of images), else the
+  photos attached to the listed reviews.
+{%- endcomment -%}
+
+{{ 'ab-product-reviews.css' | asset_url | stylesheet_tag: preload: true }}
+<script src="{{ 'ab-product-reviews.js' | asset_url }}" type="module"></script>
+
+{%- liquid
+  assign heading_id = 'AbReviewsHeading-' | append: section.id
+
+  assign has_app_block = false
+  for block in section.blocks
+    if block.type == '@app'
+      assign has_app_block = true
+      break
+    endif
+  endfor
+
+  assign review_entries = product.metafields.custom.reviews.value
+  assign review_total = 0
+  if review_entries != blank
+    assign review_total = review_entries.size
+  endif
+
+  comment
+    Score on a 5-point scale: the reviews.* metafields first, else the listed reviews' average
+  endcomment
+  assign score = ''
+  assign score_count = product.metafields.reviews.rating_count.value | default: 0
+  assign rating_metafield = product.metafields.reviews.rating.value
+  if rating_metafield != blank and score_count > 0
+    assign rating_scale = rating_metafield.scale_max | default: 5 | times: 1.0
+    assign score = rating_metafield.rating | times: 5.0 | divided_by: rating_scale
+  elsif review_total > 0
+    assign rating_sum = 0.0
+    for entry in review_entries
+      assign entry_rating = entry.rating.value.rating | default: entry.rating.value | default: 0 | times: 1.0
+      assign rating_sum = rating_sum | plus: entry_rating
+    endfor
+    assign score = rating_sum | divided_by: review_total
+    assign score_count = review_total
+  endif
+
+  assign photos = product.metafields.custom.review_photos.value
+  assign photos_from_reviews = false
+  if photos == blank or photos.size == 0
+    assign photos = ''
+    for entry in review_entries
+      if entry.photo.value != blank
+        assign photos_from_reviews = true
+        break
+      endif
+    endfor
+  endif
+
+  assign per_page = section.settings.per_page
+-%}
+
+<section
+  id="{{ section.settings.anchor | default: 'reviews' }}"
+  class="ab-scope ab-reviews-list ab-section ab-bg--{{ section.settings.background }}"
+  aria-labelledby="{{ heading_id }}"
+>
+  <div class="ab-container ab-reviews-list__inner">
+    <h2 id="{{ heading_id }}" class="ab-section-heading">{{ section.settings.heading }}</h2>
+
+    {%- if has_app_block -%}
+      {%- for block in section.blocks -%}
+        {%- if block.type == '@app' -%}
+          <div class="ab-reviews-list__app">{% render block %}</div>
+        {%- endif -%}
+      {%- endfor -%}
+    {%- else -%}
+      <div class="ab-reviews-list__summary">
+        {%- if score != blank -%}
+          <div class="ab-reviews-list__score">
+            <span class="ab-reviews-list__score-value" aria-hidden="true">{{ score | round: 1 }}</span>
+            <span class="ab-reviews-list__score-detail">
+              {%- render 'ab-stars', rating: score, class: 'ab-reviews-list__stars' -%}
+              <span class="ab-reviews-list__based">Based on {{ score_count }} {% if score_count == 1 %}review{% else %}reviews{% endif %}</span>
+            </span>
+          </div>
+        {%- else -%}
+          <p class="ab-reviews-list__empty">{{ section.settings.empty_text }}</p>
+        {%- endif -%}
+
+        {%- if section.settings.button_label != blank and section.settings.button_link != blank -%}
+          {%- render 'ab-button',
+            label: section.settings.button_label,
+            url: section.settings.button_link,
+            full_width_mobile: true,
+            class: 'ab-reviews-list__write'
+          -%}
+        {%- endif -%}
+      </div>
+
+      {%- if photos != blank or photos_from_reviews -%}
+        <ul class="ab-reviews-list__photos" role="list" aria-label="Customer photos" tabindex="0">
+          {%- if photos_from_reviews -%}
+            {%- assign photo_count = 0 -%}
+            {%- for entry in review_entries -%}
+              {%- assign photo_image = entry.photo.value -%}
+              {%- if photo_image == blank -%}{%- continue -%}{%- endif -%}
+              <li class="ab-reviews-list__photo">
+                {{
+                  photo_image
+                  | image_url: width: 400
+                  | image_tag: class: 'ab-reviews-list__photo-image', widths: '96, 192, 300, 400', sizes: '(min-width: 1024px) 150px, 96px', loading: 'lazy', alt: photo_image.alt | default: 'Customer photo'
+                }}
+              </li>
+              {%- assign photo_count = photo_count | plus: 1 -%}
+              {%- if photo_count >= 8 -%}{%- break -%}{%- endif -%}
+            {%- endfor -%}
+          {%- else -%}
+            {%- for photo in photos limit: 8 -%}
+              <li class="ab-reviews-list__photo">
+                {{
+                  photo
+                  | image_url: width: 400
+                  | image_tag: class: 'ab-reviews-list__photo-image', widths: '96, 192, 300, 400', sizes: '(min-width: 1024px) 150px, 96px', loading: 'lazy', alt: photo.alt | default: 'Customer photo'
+                }}
+              </li>
+            {%- endfor -%}
+          {%- endif -%}
+        </ul>
+      {%- endif -%}
+
+      {%- if review_total > 0 -%}
+        <ab-review-pages class="ab-reviews-list__pages" data-per-page="{{ per_page }}">
+          <ul class="ab-reviews-list__items" role="list">
+            {%- for entry in review_entries -%}
+              {%- liquid
+                assign entry_rating = entry.rating.value.rating | default: entry.rating.value | default: 0
+                assign entry_helpful = entry.helpful.value | default: 0
+              -%}
+              <li class="ab-review" data-ab-review>
+                <div class="ab-review__author">
+                  <span class="ab-review__name">{{ entry.author.value }}</span>
+                  {%- if entry.date.value != blank -%}
+                    <time class="ab-review__date" datetime="{{ entry.date.value | date: '%Y-%m-%d' }}">{{ entry.date.value | date: '%b %-d, %Y' }}</time>
+                  {%- endif -%}
+                  {%- if entry.verified.value -%}
+                    <span class="ab-review__verified">
+                      {%- render 'ab-icon', name: 'verified', size: 16 -%}
+                      {{ section.settings.verified_label }}
+                    </span>
+                  {%- endif -%}
+                </div>
+                <div class="ab-review__body">
+                  {%- render 'ab-stars', rating: entry_rating, class: 'ab-review__stars' -%}
+                  {%- if entry.title.value != blank -%}
+                    <h3 class="ab-review__title">{{ entry.title.value }}</h3>
+                  {%- endif -%}
+                  {%- if entry.body.value != blank -%}
+                    <p class="ab-review__text">{{ entry.body.value | escape | newline_to_br }}</p>
+                  {%- endif -%}
+                  {%- if entry_helpful > 0 -%}
+                    <span class="ab-review__helpful">
+                      {%- render 'ab-icon', name: 'thumb-up', size: 18 -%}
+                      Helpful ({{ entry_helpful }})
+                    </span>
+                  {%- endif -%}
+                </div>
+              </li>
+            {%- endfor -%}
+          </ul>
+
+          {%- if review_total > per_page -%}
+            <nav class="ab-pagination" aria-label="Review pages" data-ab-review-nav hidden>
+              <button type="button" class="ab-pagination__arrow" data-ab-page="prev" aria-label="Previous page">
+                {%- render 'ab-icon', name: 'chevron-left', size: 26 -%}
+              </button>
+              <ol class="ab-pagination__list" role="list" data-ab-page-list></ol>
+              <button type="button" class="ab-pagination__arrow" data-ab-page="next" aria-label="Next page">
+                {%- render 'ab-icon', name: 'chevron-right', size: 26 -%}
+              </button>
+            </nav>
+          {%- endif -%}
+        </ab-review-pages>
+      {%- endif -%}
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "AB: Product reviews",
+  "tag": "div",
+  "class": "ab-product-reviews-section",
+  "enabled_on": {
+    "templates": ["product"]
+  },
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Customer reviews"
+    },
+    {
+      "type": "paragraph",
+      "content": "Reviews come from the product metafield custom.reviews (list of Product review entries). If you install a review app, add its app block to this section instead; it replaces the summary and list."
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Write a review label",
+      "default": "Write a review"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Write a review link",
+      "info": "The button is hidden without a link."
+    },
+    {
+      "type": "text",
+      "id": "empty_text",
+      "label": "Text when there are no reviews",
+      "default": "No reviews yet. Be the first to share how it worked for you."
+    },
+    {
+      "type": "text",
+      "id": "verified_label",
+      "label": "Verified label",
+      "default": "Verified Buyer"
+    },
+    {
+      "type": "range",
+      "id": "per_page",
+      "label": "Reviews per page",
+      "min": 2,
+      "max": 12,
+      "step": 1,
+      "default": 4
+    },
+    {
+      "type": "text",
+      "id": "anchor",
+      "label": "Section id",
+      "info": "The rating link at the top of the page jumps here. Must match \"Review count links to\" in the product section.",
+      "default": "reviews"
+    },
+    {
+      "type": "select",
+      "id": "background",
+      "label": "Background",
+      "options": [
+        { "value": "white", "label": "White" },
+        { "value": "cream", "label": "Cream" }
+      ],
+      "default": "cream"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "@app"
+    }
+  ],
+  "presets": [
+    {
+      "name": "AB: Product reviews"
+    }
+  ]
+}
+{% endschema %}

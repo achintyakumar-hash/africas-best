@@ -1,0 +1,350 @@
+/*
+ * Customer Reviews (sections/ab-product-reviews.liquid)
+ * Loaded by the section only when it is on the page.
+ * Mobile-first: base = 0-767px, then 768px (tablet) and 1024px (desktop).
+ */
+
+.ab-reviews-list {
+  scroll-margin-top: var(--ab-header-height);
+}
+
+.ab-reviews-list__inner {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ab-space-6);
+}
+
+/* ---------- Summary ---------- */
+.ab-reviews-list__summary {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: var(--ab-space-6);
+}
+
+.ab-reviews-list__score {
+  display: flex;
+  align-items: center;
+  gap: var(--ab-space-4);
+}
+
+.ab-reviews-list__score-value {
+  font-size: 48px;
+  font-weight: var(--ab-font-weight-extrabold);
+  line-height: 1;
+}
+
+.ab-reviews-list__score-detail {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ab-space-1);
+}
+
+.ab-reviews-list__score-detail .ab-stars {
+  --ab-star-size: 20px;
+}
+
+.ab-reviews-list__based,
+.ab-reviews-list__empty {
+  font-size: 14px;
+  color: var(--ab-color-muted-strong);
+}
+
+.ab-reviews-list__empty {
+  margin: 0;
+  font-size: 16px;
+}
+
+/* ---------- Photo strip: swipe row on mobile ---------- */
+.ab-reviews-list__photos {
+  display: flex;
+  gap: var(--ab-space-2);
+  margin: 0;
+  padding: 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+  list-style: none;
+}
+
+.ab-reviews-list__photos::-webkit-scrollbar {
+  display: none;
+}
+
+.ab-reviews-list__photo {
+  flex: 0 0 96px;
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+  border-radius: 8px;
+  background: var(--ab-color-placeholder);
+}
+
+.ab-scope .ab-reviews-list__photo-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* ---------- Review rows ---------- */
+.ab-reviews-list__pages {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ab-space-6);
+}
+
+.ab-reviews-list__items {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ab-review {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ab-space-2);
+  padding: var(--ab-space-5) 0;
+  border-bottom: 1px solid var(--ab-color-border);
+}
+
+.ab-review[hidden] {
+  display: none;
+}
+
+/* Mobile: stars first, then the author line */
+.ab-review__author {
+  order: 1;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--ab-space-1) var(--ab-space-3);
+  font-size: 13px;
+}
+
+.ab-review__body {
+  display: contents;
+}
+
+.ab-review__body .ab-stars {
+  --ab-star-size: 16px;
+  order: 0;
+}
+
+.ab-review__title,
+.ab-review__text,
+.ab-review__helpful {
+  order: 2;
+}
+
+.ab-review__name {
+  font-weight: var(--ab-font-weight-bold);
+}
+
+.ab-review__date {
+  color: var(--ab-color-muted-strong);
+}
+
+.ab-review__verified {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ab-space-1);
+  font-weight: var(--ab-font-weight-semibold);
+  color: var(--ab-color-in-stock);
+}
+
+.ab-review__verified .ab-icon {
+  display: none;
+}
+
+.ab-reviews-list .ab-review__title {
+  font-size: 16px;
+  font-weight: var(--ab-font-weight-bold);
+  line-height: 1.6;
+}
+
+.ab-review__text {
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+.ab-review__helpful {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-height: var(--ab-tap-target);
+  font-size: 13px;
+  color: var(--ab-color-muted-strong);
+}
+
+/* ---------- Pagination ---------- */
+.ab-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--ab-space-1);
+  font-size: 14px;
+  font-weight: var(--ab-font-weight-semibold);
+}
+
+.ab-pagination[hidden] {
+  display: none;
+}
+
+.ab-pagination__list {
+  display: flex;
+  align-items: center;
+  gap: var(--ab-space-1);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ab-pagination__arrow,
+.ab-pagination__page,
+.ab-pagination__gap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--ab-tap-target);
+  height: var(--ab-tap-target);
+  padding: 0;
+  border: 0;
+  border-radius: var(--ab-radius-pill);
+  background: transparent;
+  color: var(--ab-color-text);
+  font: inherit;
+  cursor: pointer;
+}
+
+.ab-pagination__gap {
+  cursor: default;
+}
+
+.ab-pagination__page:hover,
+.ab-pagination__arrow:hover:not(:disabled) {
+  color: var(--ab-color-button);
+}
+
+.ab-pagination__page[aria-current='page'] {
+  background: var(--ab-color-primary);
+  color: var(--ab-color-white);
+}
+
+.ab-pagination__arrow:disabled {
+  color: var(--ab-color-muted);
+  cursor: default;
+}
+
+@media (min-width: 768px) {
+  .ab-reviews-list__summary {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+}
+
+@media (min-width: 1024px) {
+  .ab-reviews-list__inner,
+  .ab-reviews-list__pages {
+    gap: var(--ab-space-10);
+  }
+
+  .ab-reviews-list__summary {
+    gap: var(--ab-space-8);
+    padding-bottom: var(--ab-space-8);
+    border-bottom: 1px solid var(--ab-color-border);
+  }
+
+  .ab-reviews-list__score {
+    gap: var(--ab-space-5);
+  }
+
+  .ab-reviews-list__score-value {
+    font-size: 64px;
+  }
+
+  .ab-reviews-list__score-detail {
+    gap: 6px;
+  }
+
+  .ab-reviews-list__score-detail .ab-stars {
+    --ab-star-size: 24px;
+  }
+
+  .ab-reviews-list__photos {
+    display: grid;
+    grid-template-columns: repeat(8, minmax(0, 1fr));
+    gap: var(--ab-space-3);
+    overflow: visible;
+  }
+
+  .ab-review {
+    display: grid;
+    grid-template-columns: 220px minmax(0, 1fr);
+    gap: var(--ab-space-10);
+    padding: var(--ab-space-8) 0;
+  }
+
+  .ab-review__author {
+    order: 0;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    align-items: flex-start;
+    gap: var(--ab-space-1);
+  }
+
+  .ab-review__name {
+    font-size: 15px;
+  }
+
+  .ab-review__verified .ab-icon {
+    display: block;
+  }
+
+  .ab-review__body {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .ab-review__body .ab-stars {
+    --ab-star-size: 18px;
+  }
+
+  .ab-reviews-list .ab-review__title {
+    font-size: 17px;
+  }
+
+  .ab-review__text {
+    max-width: 760px;
+  }
+
+  .ab-review__helpful {
+    min-height: 0;
+    margin-top: var(--ab-space-1);
+  }
+
+  .ab-pagination,
+  .ab-pagination__list {
+    gap: var(--ab-space-2);
+  }
+
+  /* Drawn 40px on desktop, as designed; the hit area stays 44px. */
+  .ab-pagination__arrow,
+  .ab-pagination__page,
+  .ab-pagination__gap {
+    width: 40px;
+    height: 40px;
+  }
+
+  .ab-pagination__arrow::before,
+  .ab-pagination__page::before {
+    content: '';
+    position: absolute;
+    inset: -2px;
+  }
+
+  .ab-pagination__arrow .ab-icon {
+    width: 22px;
+    height: 22px;
+  }
+}
