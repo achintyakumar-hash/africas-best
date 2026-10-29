@@ -187,6 +187,7 @@
 
   .ab-card__rating {
     height: auto;
+    min-height: 19px;
     margin-top: 2px;
     --ab-star-size: 14px;
   }

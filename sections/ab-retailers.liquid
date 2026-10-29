@@ -15,7 +15,7 @@
     <div class="ab-section-header ab-section-header--center ab-retailers__header">
       <h2 class="ab-section-heading">{{ section.settings.heading }}</h2>
       {%- if section.settings.text != blank -%}
-        <p class="ab-section-subheading">{{ section.settings.text }}</p>
+        <p class="ab-retailers__text">{{ section.settings.text }}</p>
       {%- endif -%}
     </div>
 
@@ -36,7 +36,19 @@
                     alt: block.settings.name
                 }}
               {%- else -%}
-                <span class="ab-retailers__wordmark">{{ block.settings.name }}</span>
+                {%- comment -%} Grey wordmark until a logo is uploaded, styled like the design's placeholders {%- endcomment -%}
+                {%- assign wordmark_key = block.settings.name | handleize -%}
+                <span class="ab-retailers__wordmark ab-retailers__wordmark--{{ wordmark_key }}">
+                  {%- case wordmark_key -%}
+                    {%- when 'target' -%}
+                      <span class="ab-retailers__ring" aria-hidden="true"></span>{{ block.settings.name }}
+                    {%- when 'local-beauty-supply' -%}
+                      <span class="ab-retailers__small">Local</span>
+                      <span>Beauty Supply</span>
+                    {%- else -%}
+                      {{ block.settings.name }}
+                  {%- endcase -%}
+                </span>
               {%- endif -%}
             {%- endcapture -%}
             {%- if block.settings.link != blank -%}

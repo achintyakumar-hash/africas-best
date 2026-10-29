@@ -176,7 +176,6 @@ html.ab-scroll-locked body {
   font-weight: var(--ab-font-weight-extrabold);
   letter-spacing: var(--ab-letter-spacing-heading);
   text-transform: uppercase;
-  text-wrap: balance;
 }
 
 .ab-section-heading--center {

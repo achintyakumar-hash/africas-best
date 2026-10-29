@@ -47,8 +47,8 @@
 }
 
 .ab-btn--primary {
+  border-width: 0;
   background: var(--ab-color-button);
-  border-color: var(--ab-color-button);
   color: var(--ab-color-white);
 }
 
@@ -127,11 +127,22 @@
   letter-spacing: var(--ab-letter-spacing-button);
   text-transform: uppercase;
   color: var(--ab-color-text);
-  text-decoration: underline;
-  text-decoration-thickness: 1.5px;
-  text-underline-offset: 4px;
+  text-decoration: none;
   cursor: pointer;
   transition: color var(--ab-transition-fast);
+}
+
+/* 1.5px underline 4px below the baseline, running under the label and any arrow icon. */
+.ab-link__inner {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ab-space-1);
+  line-height: 1.6;
+  background: linear-gradient(currentcolor, currentcolor) 0 100% / 100% 1.5px no-repeat;
+}
+
+.ab-link .ab-icon {
+  margin-bottom: -1px;
 }
 
 .ab-link:hover,
@@ -239,7 +250,6 @@
 
 /* ---------- Star rating ---------- */
 .ab-stars {
-  --ab-star-size: 14px;
   display: inline-flex;
   align-items: center;
   gap: var(--ab-space-1);
@@ -267,9 +277,10 @@
   overflow: hidden;
 }
 
+/* Size comes from the parent (e.g. the card or review sets --ab-star-size); 14px otherwise. */
 .ab-stars .ab-icon {
-  width: var(--ab-star-size);
-  height: var(--ab-star-size);
+  width: var(--ab-star-size, 14px);
+  height: var(--ab-star-size, 14px);
 }
 
 .ab-stars__count {

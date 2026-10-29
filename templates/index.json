@@ -224,7 +224,9 @@
           "settings": {
             "title": "",
             "marker_x": 22,
-            "marker_y": 58
+            "marker_y": 58,
+            "marker_x_mobile": 30,
+            "marker_y_mobile": 52
           }
         },
         "product-2": {
@@ -232,7 +234,9 @@
           "settings": {
             "title": "",
             "marker_x": 48,
-            "marker_y": 66
+            "marker_y": 66,
+            "marker_x_mobile": 54,
+            "marker_y_mobile": 60
           }
         },
         "product-3": {
@@ -240,7 +244,9 @@
           "settings": {
             "title": "",
             "marker_x": 70,
-            "marker_y": 54
+            "marker_y": 54,
+            "marker_x_mobile": 70,
+            "marker_y_mobile": 46
           }
         }
       },

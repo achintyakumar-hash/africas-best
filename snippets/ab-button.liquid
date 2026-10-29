@@ -55,12 +55,14 @@
 -%}
 
 {%- capture inner -%}
+  {%- if button_style == 'link' -%}<span class="ab-link__inner">{%- endif -%}
   {%- if icon != blank -%}{% render 'ab-icon', name: icon, size: icon_size %}{%- endif -%}
   <span class="ab-btn__label">{{ label }}</span>
   {%- if visually_hidden_suffix != blank -%}
     <span class="ab-visually-hidden">: {{ visually_hidden_suffix }}</span>
   {%- endif -%}
   {%- if icon_after != blank -%}{% render 'ab-icon', name: icon_after, size: icon_size %}{%- endif -%}
+  {%- if button_style == 'link' -%}</span>{%- endif -%}
 {%- endcapture -%}
 
 {%- if url != blank and disabled != true -%}

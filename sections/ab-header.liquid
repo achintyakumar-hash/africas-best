@@ -123,8 +123,10 @@
                           {%- endif -%}
                           {%- if section.settings.promo_link_label != blank -%}
                             <span class="ab-link ab-mega__promo-link">
-                              {{- section.settings.promo_link_label -}}
-                              {%- render 'ab-icon', name: 'arrow-forward', size: 18 -%}
+                              <span class="ab-link__inner">
+                                {{- section.settings.promo_link_label -}}
+                                {%- render 'ab-icon', name: 'arrow-forward', size: 18 -%}
+                              </span>
                             </span>
                           {%- endif -%}
                         </a>
@@ -362,8 +364,10 @@
             <p class="ab-search__label">Products</p>
             <ul class="ab-search__products" role="list" data-ab-search-list></ul>
             <a href="{{ routes.search_url }}" class="ab-link ab-search__all" data-ab-search-all>
-              View all results
-              {%- render 'ab-icon', name: 'arrow-forward', size: 18 -%}
+              <span class="ab-link__inner">
+                View all results
+                {%- render 'ab-icon', name: 'arrow-forward', size: 18 -%}
+              </span>
             </a>
           </div>
           <p class="ab-search__empty" data-ab-search-empty hidden></p>

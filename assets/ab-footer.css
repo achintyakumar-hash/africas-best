@@ -112,6 +112,10 @@
   display: flex;
 }
 
+.ab-footer__links li {
+  display: flex;
+}
+
 .ab-footer__link {
   display: inline-flex;
   align-items: center;

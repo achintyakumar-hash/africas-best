@@ -433,7 +433,7 @@
   position: relative;
   width: auto;
   max-width: 34%;
-  height: 104px;
+  height: 120px;
   margin: 0 -4px;
   object-fit: contain;
   filter: drop-shadow(0 6px 8px rgb(0 0 0 / 0.14));
@@ -530,7 +530,7 @@
   .ab-collections .ab-collections__name {
     margin-top: 0;
     font-size: 18px;
-    line-height: 1.4;
+    line-height: 1.6;
   }
 
   .ab-collections__description {
@@ -645,7 +645,7 @@
   .ab-ingredients__label {
     height: auto;
     font-size: 13px;
-    line-height: 1.3;
+    line-height: 1.6;
     letter-spacing: 0.1em;
   }
 }
@@ -678,6 +678,8 @@
 
 .ab-spotlight__marker {
   position: absolute;
+  left: var(--ab-marker-x-mobile);
+  top: var(--ab-marker-y-mobile);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -689,6 +691,12 @@
   font-size: 14px;
   font-weight: var(--ab-font-weight-extrabold);
   box-shadow: 0 0 0 5px rgb(255 255 255 / 0.35);
+}
+
+.ab-spotlight__content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ab-space-6);
 }
 
 .ab-spotlight__header {
@@ -797,6 +805,8 @@
   }
 
   .ab-spotlight__marker {
+    left: var(--ab-marker-x);
+    top: var(--ab-marker-y);
     width: 36px;
     height: 36px;
     font-size: 15px;
@@ -804,9 +814,7 @@
   }
 
   .ab-spotlight__content {
-    display: flex;
-    flex-direction: column;
-    gap: var(--ab-space-6);
+    gap: var(--ab-space-10);
   }
 
   .ab-spotlight__header {
@@ -860,7 +868,13 @@
    7. As Seen On You
    ========================================================= */
 .ab-ugc .ab-section-subheading strong {
-  font-weight: var(--ab-font-weight-bold);
+  font-weight: inherit;
+}
+
+@media (min-width: 1024px) {
+  .ab-ugc .ab-section-subheading strong {
+    font-weight: var(--ab-font-weight-bold);
+  }
 }
 
 .ab-ugc__carousel {
@@ -1100,6 +1114,8 @@
 .ab-review__stars {
   grid-area: stars;
   align-self: end;
+  display: flex;
+  line-height: 1;
   --ab-star-size: 16px;
 }
 
@@ -1232,6 +1248,7 @@
     align-self: end;
     margin-top: 0;
     font-size: 15px;
+    line-height: 1.6;
   }
 
   .ab-review__source {
@@ -1449,7 +1466,12 @@
 }
 
 .ab-retailers__header {
+  gap: var(--ab-space-4);
   margin-bottom: var(--ab-space-4);
+}
+
+.ab-retailers__text {
+  font-size: 16px;
 }
 
 .ab-retailers__logos {
@@ -1498,11 +1520,52 @@
   opacity: 1;
 }
 
+/* Wordmark fallbacks (no logo uploaded). #66625D on cream is 5.4:1. */
 .ab-retailers__wordmark {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--ab-space-2);
   font-size: 19px;
   font-weight: var(--ab-font-weight-extrabold);
   line-height: 1.1;
   color: #66625d;
+}
+
+.ab-retailers__wordmark--walmart {
+  font-size: 24px;
+  font-weight: var(--ab-font-weight-bold);
+}
+
+.ab-retailers__wordmark--target {
+  font-size: 21px;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.ab-retailers__ring {
+  flex-shrink: 0;
+  width: 22px;
+  height: 22px;
+  border: 5px solid currentcolor;
+  border-radius: var(--ab-radius-pill);
+}
+
+.ab-retailers__wordmark--family-dollar {
+  font-style: italic;
+}
+
+.ab-retailers__wordmark--local-beauty-supply {
+  flex-direction: column;
+  gap: 0;
+  font-size: 16px;
+  text-transform: uppercase;
+}
+
+.ab-retailers__small {
+  font-size: 11px;
+  font-weight: var(--ab-font-weight-bold);
+  letter-spacing: 0.3em;
 }
 
 @media (min-width: 768px) {
@@ -1513,6 +1576,7 @@
 
 @media (min-width: 1024px) {
   .ab-retailers__header {
+    gap: var(--ab-space-6);
     margin-bottom: var(--ab-space-6);
   }
 
@@ -1530,6 +1594,31 @@
   }
 
   .ab-retailers__wordmark {
+    font-size: 28px;
+  }
+
+  .ab-retailers__wordmark--walmart {
+    font-size: 34px;
+    letter-spacing: -0.01em;
+  }
+
+  .ab-retailers__wordmark--target {
+    gap: var(--ab-space-3);
     font-size: 30px;
+  }
+
+  .ab-retailers__ring {
+    width: 32px;
+    height: 32px;
+    border-width: 7px;
+  }
+
+  .ab-retailers__wordmark--local-beauty-supply {
+    font-size: 24px;
+    letter-spacing: 0.04em;
+  }
+
+  .ab-retailers__small {
+    font-size: 13px;
   }
 }
