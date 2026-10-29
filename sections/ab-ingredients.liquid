@@ -5,23 +5,75 @@
   Mobile: 64px circles, 4 per row with the last row centered, 11px labels (2 lines reserved).
   A missing photo falls back to the design's stock photo when the label matches a known
   ingredient (Olive Oil, Shea Butter, Honey, Castor Oil, Egg Protein, Aloe, Clove).
+  Product page ("What's Inside"): with "Use the product's own ingredients", the list comes from
+  the product metafield custom.key_ingredients (a list of "Ingredient" metaobjects with a "name"
+  and an "image" field) and the text from custom.whats_inside, falling back to the blocks/text.
+  The 2 x 2 mobile layout matches FINAL MOBILE / Product Page.
 {%- endcomment -%}
 
 {{ 'ab-ingredients.css' | asset_url | stylesheet_tag: preload: true }}
 
-<section class="ab-scope ab-ingredients ab-section ab-bg--{{ section.settings.background }}">
+{%- liquid
+  assign ingredient_entries = ''
+  assign ingredients_text = section.settings.text
+  if section.settings.use_metafield and product
+    assign ingredient_entries = product.metafields.custom.key_ingredients.value
+    assign product_text_field = product.metafields.custom.whats_inside
+    if product_text_field.type == 'rich_text_field'
+      assign ingredients_text = product_text_field | metafield_tag
+    elsif product_text_field.value != blank
+      assign ingredients_text = product_text_field.value | escape | newline_to_br | prepend: '<p>' | append: '</p>'
+    endif
+  endif
+  assign use_entries = false
+  if ingredient_entries != blank and ingredient_entries.size > 0
+    assign use_entries = true
+    assign ingredient_count = ingredient_entries.size
+  else
+    assign ingredient_count = section.blocks.size
+  endif
+-%}
+
+<section class="ab-scope ab-ingredients ab-ingredients--mobile-{{ section.settings.mobile_layout }} ab-section ab-bg--{{ section.settings.background }}">
   <div class="ab-container ab-ingredients__inner">
     <div class="ab-ingredients__intro">
       {%- if section.settings.heading != blank -%}
         <h2 class="ab-section-heading">{{ section.settings.heading }}</h2>
       {%- endif -%}
-      {%- if section.settings.text != blank -%}
-        <div class="ab-ingredients__text ab-rte">{{ section.settings.text }}</div>
+      {%- if ingredients_text != blank -%}
+        <div class="ab-ingredients__text ab-rte">{{ ingredients_text }}</div>
       {%- endif -%}
     </div>
 
-    {%- if section.blocks.size > 0 -%}
-      <ul class="ab-ingredients__list" role="list" style="--ab-ingredient-count: {{ section.blocks.size }};">
+    {%- if use_entries -%}
+      <ul class="ab-ingredients__list" role="list" style="--ab-ingredient-count: {{ ingredient_count }};">
+        {%- for entry in ingredient_entries -%}
+          {%- liquid
+            assign entry_name = entry.name.value | default: entry.title.value
+            assign ingredient_key = entry_name | handleize
+            capture fallback_url
+              render 'ab-fallback-url', key: ingredient_key
+            endcapture
+          -%}
+          <li class="ab-ingredients__item">
+            <span class="ab-ingredients__photo">
+              {%- render 'ab-image',
+                image: entry.image.value,
+                fallback: fallback_url,
+                alt: '',
+                widths: '120, 240, 360',
+                sizes: '(min-width: 1024px) 120px, 80px',
+                class: 'ab-ingredients__image',
+                width: 600,
+                height: 600
+              -%}
+            </span>
+            <span class="ab-ingredients__label">{{ entry_name }}</span>
+          </li>
+        {%- endfor -%}
+      </ul>
+    {%- elsif section.blocks.size > 0 -%}
+      <ul class="ab-ingredients__list" role="list" style="--ab-ingredient-count: {{ ingredient_count }};">
         {%- for block in section.blocks -%}
           {%- liquid
             assign ingredient_key = block.settings.title | handleize
@@ -36,7 +88,7 @@
                 fallback: fallback_url,
                 alt: '',
                 widths: '120, 240, 360',
-                sizes: '(min-width: 1024px) 120px, 64px',
+                sizes: '(min-width: 1024px) 120px, 80px',
                 class: 'ab-ingredients__image',
                 width: 600,
                 height: 600
@@ -98,6 +150,23 @@
         { "value": "cream", "label": "Cream" }
       ],
       "default": "white"
+    },
+    {
+      "type": "select",
+      "id": "mobile_layout",
+      "label": "Mobile layout",
+      "options": [
+        { "value": "row", "label": "Small circles, 4 per row (homepage)" },
+        { "value": "grid", "label": "Large circles, 2 per row (product page)" }
+      ],
+      "default": "row"
+    },
+    {
+      "type": "checkbox",
+      "id": "use_metafield",
+      "label": "Use the product's own ingredients",
+      "info": "Product pages only. Shows the product metafield custom.key_ingredients (list of Ingredient entries with name and image) and the text from custom.whats_inside. Products without them show the ingredients and text set here.",
+      "default": false
     }
   ],
   "blocks": [
