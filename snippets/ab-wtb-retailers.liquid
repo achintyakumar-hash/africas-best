@@ -1,0 +1,103 @@
+{%- comment -%}
+  Retailer rows of the Where to Buy modal / bottom sheet (sections/ab-main-product.liquid).
+  One row per "retailer" block whose URL metafield is set for the variant (or product), then the
+  local beauty supply stores row.
+
+  Accepts:
+  - product {Object}, variant {Object}: the product and the selected variant
+  - blocks {Array}: the section's blocks (only "retailer" blocks are used)
+  - out_of_stock_handles {String}: "|walmart||target|" style list of out of stock retailers
+  - store_url {String}: store locator link
+  - show_stock {Boolean}, in_stock_label, out_of_stock_label, buy_label, view_label,
+    local_row_label, find_store_label {String}: section settings
+{%- endcomment -%}
+
+<ul class="ab-wtb__list" role="list">
+  {%- for block in blocks -%}
+    {%- if block.type != 'retailer' -%}{%- continue -%}{%- endif -%}
+    {%- liquid
+      assign key_parts = block.settings.url_metafield | strip | split: '.'
+      assign mf_namespace = key_parts[0]
+      assign mf_key = key_parts[1]
+      if mf_namespace == blank or mf_key == blank
+        continue
+      endif
+      assign retailer_url = variant.metafields[mf_namespace][mf_key].value | default: product.metafields[mf_namespace][mf_key].value
+      if retailer_url == blank
+        continue
+      endif
+
+      assign retailer_handle = block.settings.title | handleize
+      assign handle_token = '|' | append: retailer_handle | append: '|'
+      assign retailer_out = false
+      if out_of_stock_handles contains handle_token
+        assign retailer_out = true
+      endif
+
+      assign retailer_rating_text = ''
+      assign rating_parts = block.settings.rating_metafield | strip | split: '.'
+      assign rating_namespace = rating_parts[0]
+      assign rating_key = rating_parts[1]
+      if rating_namespace != blank and rating_key != blank
+        assign retailer_rating_text = product.metafields[rating_namespace][rating_key].value | strip
+      endif
+      assign retailer_rating = retailer_rating_text | split: ' ' | first | plus: 0
+    -%}
+    <li class="ab-wtb__row" {{ block.shopify_attributes }}>
+      <span class="ab-wtb__logo" style="--ab-logo-height: {{ block.settings.logo_height }}px;">
+        {%- if block.settings.logo != blank -%}
+          {{ block.settings.logo | image_url: width: 300 | image_tag: class: 'ab-wtb__logo-image', widths: '100, 200, 300', sizes: '96px', loading: 'lazy', alt: block.settings.title }}
+        {%- else -%}
+          <span class="ab-wtb__logo-text">{{ block.settings.title }}</span>
+        {%- endif -%}
+      </span>
+      <span class="ab-wtb__status">
+        {%- if show_stock -%}
+          {%- if retailer_out -%}
+            <span class="ab-wtb__stock ab-wtb__stock--out">{{ out_of_stock_label }}</span>
+          {%- else -%}
+            <span class="ab-wtb__stock">{{ in_stock_label }}</span>
+          {%- endif -%}
+        {%- endif -%}
+        {%- if retailer_rating > 0 -%}
+          <span class="ab-wtb__rating">
+            {%- render 'ab-stars', rating: retailer_rating, star_size: 13 -%}
+            <span class="ab-wtb__rating-text" aria-hidden="true">{{ retailer_rating_text }}</span>
+          </span>
+        {%- endif -%}
+      </span>
+      {%- liquid
+        assign hidden_suffix = product.title | append: ' at ' | append: block.settings.title
+        if retailer_out
+          assign hidden_suffix = hidden_suffix | append: ' (' | append: out_of_stock_label | append: ')'
+        endif
+        if retailer_out
+          assign row_label = view_label
+          assign row_style = 'secondary'
+        else
+          assign row_label = buy_label
+          assign row_style = 'primary'
+        endif
+      -%}
+      {%- render 'ab-button',
+        label: row_label,
+        url: retailer_url,
+        style: row_style,
+        size: 'small',
+        new_tab: true,
+        visually_hidden_suffix: hidden_suffix,
+        class: 'ab-wtb__buy'
+      -%}
+    </li>
+  {%- endfor -%}
+
+  {%- if local_row_label != blank -%}
+    <li class="ab-wtb__row ab-wtb__row--local">
+      <span class="ab-wtb__local-icon">{%- render 'ab-icon', name: 'storefront', size: 26 -%}</span>
+      <span class="ab-wtb__local-label">{{ local_row_label }}</span>
+      {%- if find_store_label != blank -%}
+        {%- render 'ab-button', label: find_store_label, url: store_url, style: 'link', class: 'ab-wtb__find' -%}
+      {%- endif -%}
+    </li>
+  {%- endif -%}
+</ul>

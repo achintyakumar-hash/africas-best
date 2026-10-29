@@ -1,0 +1,915 @@
+{%- comment -%}
+  Main product (FINAL / Product Page, FINAL MOBILE / Product Page, Where to Buy modal and
+  bottom sheet, Product Page - Sticky Bar).
+  Desktop: breadcrumb, then a 58/42 grid. Left: sticky 1:1 gallery with prev/next and a row of
+  72px thumbnails. Right: sticky info column with badge, H1, summary, rating, highlights,
+  size pills, the WHERE TO BUY button, the local stores link and the accordions.
+  Mobile/tablet: everything stacked; the gallery swipes with dots and a row of 56px thumbnails.
+  A sticky WHERE TO BUY bar slides up once the main button has scrolled out of view.
+
+  Retail-only: no price, quantity, add to cart or checkout. WHERE TO BUY opens a modal
+  (desktop) / bottom sheet (mobile) listing the retailers that have a link for this product.
+  Retailers are blocks (name + logo set once); each reads its URL from a product or variant
+  metafield, e.g. custom.walmart_url. Retailers without a URL are hidden. Without any retailer
+  URL the button links to the global Where to Buy page instead.
+
+  Product data:
+  - badge: custom.badge (or a "badge:…" tag), summary: custom.short_description, else
+    custom.benefit, else the start of the description
+  - highlights: custom.highlights (list of single line text, or multi-line text, one per line)
+  - rating: reviews.rating / reviews.rating_count (hidden when empty)
+  - out of stock retailers: custom.out_of_stock_at (list of single line text, retailer names)
+  - accordion content: product description or any metafield set on the block
+  - Popular Videos: custom.popular_videos (list of video files)
+{%- endcomment -%}
+
+{{ 'ab-main-product.css' | asset_url | stylesheet_tag: preload: true }}
+<script src="{{ 'ab-product.js' | asset_url }}" type="module"></script>
+
+{%- liquid
+  assign current_variant = product.selected_or_first_available_variant
+  assign show_picker = true
+  if product.has_only_default_variant
+    assign show_picker = false
+  endif
+
+  assign wtb_id = 'AbWtb-' | append: section.id
+  assign wtb_label = section.settings.wtb_label | default: settings.ab_wtb_label | default: 'Where to buy'
+  assign wtb_page_url = section.settings.wtb_fallback_link | default: settings.ab_wtb_url | default: '/pages/where-to-buy'
+  assign store_url = section.settings.store_link | default: settings.ab_wtb_url | default: '/pages/where-to-buy'
+  assign wtb_open_attributes = 'data-ab-open="' | append: wtb_id | append: '" aria-controls="' | append: wtb_id | append: '" aria-haspopup="dialog" aria-expanded="false"'
+
+  comment
+    Badge: metafield custom.badge, else a "badge:Best Seller" tag (same as the product card)
+  endcomment
+  assign product_badge = product.metafields.custom.badge.value
+  if product_badge == blank
+    for tag in product.tags
+      assign tag_lower = tag | downcase
+      if tag_lower contains 'badge:'
+        assign product_badge = tag | split: ':' | last | strip
+        break
+      endif
+    endfor
+  endif
+  assign badge_class = 'ab-badge ab-product__badge'
+  assign badge_lower = product_badge | downcase
+  if badge_lower == 'new'
+    assign badge_class = badge_class | append: ' ab-badge--new'
+  endif
+
+  comment
+    Summary under the title
+  endcomment
+  assign product_summary = product.metafields.custom.short_description.value | default: product.metafields.custom.benefit.value
+  if product_summary == blank and section.settings.summary_from_description
+    assign product_summary = product.description | strip_html | truncatewords: 26
+  endif
+
+  comment
+    Rating on a 5-point scale
+  endcomment
+  assign product_rating = ''
+  assign product_rating_count = product.metafields.reviews.rating_count.value | default: 0
+  assign rating_metafield = product.metafields.reviews.rating.value
+  if section.settings.show_rating and rating_metafield != blank and product_rating_count > 0
+    assign rating_scale = rating_metafield.scale_max | default: 5 | times: 1.0
+    assign product_rating = rating_metafield.rating | times: 5.0 | divided_by: rating_scale
+  endif
+
+  comment
+    Highlights: a list metafield, or multi-line text with one highlight per line
+  endcomment
+  assign highlights_field = product.metafields.custom.highlights
+  if highlights_field.type contains 'list.'
+    assign highlights = highlights_field.value
+  elsif highlights_field.value != blank
+    assign highlights = highlights_field.value | newline_to_br | split: '<br />'
+  else
+    assign highlights = ''
+  endif
+
+  comment
+    Retailers that have a link for the current variant (variant metafield first, then product)
+  endcomment
+  assign out_of_stock_field = current_variant.metafields.custom.out_of_stock_at.value | default: product.metafields.custom.out_of_stock_at.value
+  assign out_of_stock_handles = ''
+  for name in out_of_stock_field
+    assign name_handle = name | handleize
+    assign out_of_stock_handles = out_of_stock_handles | append: '|' | append: name_handle | append: '|'
+  endfor
+
+  assign retailer_count = 0
+  for block in section.blocks
+    if block.type != 'retailer'
+      continue
+    endif
+    assign key_parts = block.settings.url_metafield | strip | split: '.'
+    assign mf_namespace = key_parts[0]
+    assign mf_key = key_parts[1]
+    if mf_namespace == blank or mf_key == blank
+      continue
+    endif
+    assign retailer_url = current_variant.metafields[mf_namespace][mf_key].value | default: product.metafields[mf_namespace][mf_key].value
+    if retailer_url != blank
+      assign retailer_count = retailer_count | plus: 1
+    endif
+  endfor
+
+  assign gallery_media = product.media
+  assign first_media = current_variant.featured_media | default: product.featured_media
+  assign size_option_value = ''
+  if show_picker
+    assign size_option_value = current_variant.title
+  endif
+-%}
+
+<section
+  class="ab-scope ab-product"
+  data-ab-product
+  data-section-id="{{ section.id }}"
+  data-product-url="{{ product.url }}"
+>
+  <div class="ab-container ab-product__inner">
+    {%- if section.settings.show_breadcrumb -%}
+      {%- liquid
+        assign crumb_collection = collection
+        if crumb_collection == blank
+          for c in product.collections
+            if c.handle != 'all' and c.handle != 'frontpage' and c.handle != 'best-sellers'
+              assign crumb_collection = c
+              break
+            endif
+          endfor
+        endif
+      -%}
+      <nav class="ab-breadcrumb" aria-label="Breadcrumb">
+        <ol class="ab-breadcrumb__list" role="list">
+          <li class="ab-breadcrumb__item">
+            <a class="ab-breadcrumb__link" href="{{ routes.root_url }}">Home</a>
+            {%- render 'ab-icon', name: 'chevron-right', size: 16, class: 'ab-breadcrumb__sep' -%}
+          </li>
+          {%- if crumb_collection != blank -%}
+            <li class="ab-breadcrumb__item">
+              <a class="ab-breadcrumb__link" href="{{ crumb_collection.url }}">{{ crumb_collection.title }}</a>
+              {%- render 'ab-icon', name: 'chevron-right', size: 16, class: 'ab-breadcrumb__sep' -%}
+            </li>
+          {%- endif -%}
+          <li class="ab-breadcrumb__item ab-breadcrumb__item--current">
+            <span aria-current="page">{{ product.title }}</span>
+          </li>
+        </ol>
+      </nav>
+    {%- endif -%}
+
+    <div class="ab-product__grid">
+      {%- comment -%} ---------- Gallery ---------- {%- endcomment -%}
+      <ab-product-gallery class="ab-gallery" data-count="{{ gallery_media.size }}">
+        <div class="ab-gallery__main">
+          {%- if gallery_media.size > 0 -%}
+            <ul
+              class="ab-gallery__track"
+              role="list"
+              aria-label="{{ product.title | escape }} images, use the arrow keys to move between them"
+              tabindex="0"
+              data-ab-gallery-track
+            >
+              {%- for media in gallery_media -%}
+                {%- liquid
+                  assign is_first = false
+                  if first_media != blank and media.id == first_media.id
+                    assign is_first = true
+                  elsif first_media == blank and forloop.first
+                    assign is_first = true
+                  endif
+                  assign media_alt = media.alt | default: product.title
+                -%}
+                <li
+                  class="ab-gallery__slide ab-gallery__slide--{{ media.media_type }}"
+                  data-media-id="{{ media.id }}"
+                  aria-label="{{ forloop.index }} of {{ gallery_media.size }}"
+                  {% if is_first %}data-initial{% endif %}
+                >
+                  {%- case media.media_type -%}
+                    {%- when 'image' -%}
+                      {%- liquid
+                        if is_first
+                          assign media_loading = 'eager'
+                          assign media_priority = 'high'
+                        else
+                          assign media_loading = 'lazy'
+                          assign media_priority = 'auto'
+                        endif
+                      -%}
+                      {{
+                        media
+                        | image_url: width: 1400
+                        | image_tag:
+                          class: 'ab-gallery__image',
+                          widths: '390, 550, 700, 900, 1100, 1400',
+                          sizes: '(min-width: 1024px) min(705px, 55vw), calc(100vw - 2 * var(--ab-side-padding))',
+                          loading: media_loading,
+                          fetchpriority: media_priority,
+                          preload: is_first,
+                          alt: media_alt
+                      }}
+                    {%- else -%}
+                      {%- comment -%} Video, external video and 3D: poster first, the player loads on click {%- endcomment -%}
+                      <button
+                        type="button"
+                        class="ab-gallery__deferred"
+                        data-ab-media-load
+                        aria-label="{% if media.media_type == 'model' %}View {{ media_alt | escape }} in 3D{% else %}Play video: {{ media_alt | escape }}{% endif %}"
+                      >
+                        {%- if media.preview_image != blank -%}
+                          {%- liquid
+                            if is_first
+                              assign media_loading = 'eager'
+                            else
+                              assign media_loading = 'lazy'
+                            endif
+                          -%}
+                          {{
+                            media.preview_image
+                            | image_url: width: 1400
+                            | image_tag:
+                              class: 'ab-gallery__image',
+                              widths: '390, 550, 700, 900, 1100, 1400',
+                              sizes: '(min-width: 1024px) min(705px, 55vw), calc(100vw - 2 * var(--ab-side-padding))',
+                              loading: media_loading,
+                              alt: ''
+                          }}
+                        {%- endif -%}
+                        <span class="ab-gallery__badge" aria-hidden="true">
+                          {%- if media.media_type == 'model' -%}
+                            {%- render 'ab-icon', name: 'view-in-ar', size: 36 -%}
+                          {%- else -%}
+                            {%- render 'ab-icon', name: 'play', size: 36 -%}
+                          {%- endif -%}
+                        </span>
+                      </button>
+                      <template data-ab-media-template>
+                        {%- case media.media_type -%}
+                          {%- when 'video' -%}
+                            {{ media | video_tag: controls: true, playsinline: true, preload: 'metadata', class: 'ab-gallery__player', image_size: '1400x' }}
+                          {%- when 'external_video' -%}
+                            {{ media | external_video_url: autoplay: true, rel: 0 | external_video_tag: class: 'ab-gallery__player', loading: 'lazy' }}
+                          {%- when 'model' -%}
+                            {{ media | model_viewer_tag: class: 'ab-gallery__player' }}
+                        {%- endcase -%}
+                      </template>
+                  {%- endcase -%}
+                </li>
+              {%- endfor -%}
+            </ul>
+
+            {%- if gallery_media.size > 1 -%}
+              <button type="button" class="ab-gallery__arrow ab-gallery__arrow--prev" data-ab-gallery-prev aria-label="Previous image">
+                {%- render 'ab-icon', name: 'chevron-left', size: 32 -%}
+              </button>
+              <button type="button" class="ab-gallery__arrow ab-gallery__arrow--next" data-ab-gallery-next aria-label="Next image">
+                {%- render 'ab-icon', name: 'chevron-right', size: 26 -%}
+              </button>
+            {%- endif -%}
+          {%- else -%}
+            <div class="ab-gallery__empty" aria-hidden="true"></div>
+          {%- endif -%}
+        </div>
+
+        {%- if gallery_media.size > 1 -%}
+          <div class="ab-gallery__dots" aria-hidden="true">
+            {%- for media in gallery_media -%}
+              <span class="ab-gallery__dot" data-ab-gallery-dot></span>
+            {%- endfor -%}
+          </div>
+
+          <ul class="ab-gallery__thumbs" role="list" data-ab-gallery-thumbs>
+            {%- for media in gallery_media -%}
+              {%- liquid
+                assign thumb_alt = media.alt | default: product.title
+                if media.media_type == 'video' or media.media_type == 'external_video'
+                  assign thumb_label = 'Show video: ' | append: thumb_alt
+                elsif media.media_type == 'model'
+                  assign thumb_label = 'Show 3D model: ' | append: thumb_alt
+                else
+                  assign thumb_label = 'Show image ' | append: forloop.index | append: ': ' | append: thumb_alt
+                endif
+              -%}
+              <li>
+                <button
+                  type="button"
+                  class="ab-gallery__thumb"
+                  data-ab-gallery-thumb="{{ forloop.index0 }}"
+                  aria-label="{{ thumb_label | escape }}"
+                >
+                  <span class="ab-gallery__thumb-frame">
+                    {%- if media.preview_image != blank -%}
+                      {{
+                        media.preview_image
+                        | image_url: width: 160
+                        | image_tag: class: 'ab-gallery__thumb-image', widths: '72, 112, 144, 160', sizes: '(min-width: 1024px) 72px, 56px', loading: 'lazy', alt: ''
+                      }}
+                    {%- endif -%}
+                    {%- if media.media_type != 'image' -%}
+                      <span class="ab-gallery__thumb-badge" aria-hidden="true">
+                        {%- if media.media_type == 'model' -%}
+                          {%- render 'ab-icon', name: 'view-in-ar', size: 18 -%}
+                        {%- else -%}
+                          {%- render 'ab-icon', name: 'play', size: 18 -%}
+                        {%- endif -%}
+                      </span>
+                    {%- endif -%}
+                  </span>
+                </button>
+              </li>
+            {%- endfor -%}
+          </ul>
+        {%- endif -%}
+      </ab-product-gallery>
+
+      {%- comment -%} ---------- Info ---------- {%- endcomment -%}
+      <div class="ab-product__info">
+        <div class="ab-product__details">
+          {%- if product_badge != blank and product_badge != 'none' -%}
+            <span class="{{ badge_class }}">{{ product_badge }}</span>
+          {%- endif -%}
+
+          <h1 class="ab-product__title">{{ product.title }}</h1>
+
+          {%- if product_summary != blank -%}
+            <p class="ab-product__summary">{{ product_summary }}</p>
+          {%- endif -%}
+
+          {%- if product_rating != blank -%}
+            <div class="ab-product__rating">
+              {%- render 'ab-stars', rating: product_rating, star_size: 18 -%}
+              <span class="ab-product__rating-value" aria-hidden="true">{{ product_rating | round: 1 }}</span>
+              <a class="ab-product__rating-link" href="#{{ section.settings.reviews_anchor | default: 'reviews' }}">
+                ({{ product_rating_count }} {% if product_rating_count == 1 %}review{% else %}reviews{% endif %})
+              </a>
+            </div>
+          {%- endif -%}
+
+          {%- if highlights != blank and highlights.size > 0 -%}
+            <ul class="ab-product__highlights" role="list">
+              {%- for highlight in highlights -%}
+                {%- assign highlight_text = highlight | strip -%}
+                {%- if highlight_text != blank -%}
+                  <li class="ab-product__highlight">{{ highlight_text }}</li>
+                {%- endif -%}
+              {%- endfor -%}
+            </ul>
+          {%- endif -%}
+
+          {%- if show_picker -%}
+            <form class="ab-variants" data-ab-variant-form>
+              {%- for option in product.options_with_values -%}
+                <fieldset class="ab-variants__option">
+                  <legend class="ab-variants__legend">
+                    {{ option.name }}: <span data-ab-option-value="{{ forloop.index0 }}">{{ option.selected_value }}</span>
+                  </legend>
+                  <div class="ab-variants__pills">
+                    {%- assign option_index = forloop.index0 -%}
+                    {%- for value in option.values -%}
+                      <label class="ab-variants__pill">
+                        <input
+                          class="ab-variants__input"
+                          type="radio"
+                          name="option-{{ option_index }}"
+                          value="{{ value | escape }}"
+                          {% if option.selected_value == value %}checked{% endif %}
+                        >
+                        <span class="ab-variants__label">{{ value }}</span>
+                      </label>
+                    {%- endfor -%}
+                  </div>
+                </fieldset>
+              {%- endfor -%}
+              <script type="application/json" data-ab-variants>
+                [
+                  {%- for variant in product.variants -%}
+                    {
+                      "id": {{ variant.id }},
+                      "title": {{ variant.title | json }},
+                      "options": {{ variant.options | json }},
+                      "media": {{ variant.featured_media.id | default: 'null' }}
+                    }{% unless forloop.last %},{% endunless %}
+                  {%- endfor -%}
+                ]
+              </script>
+            </form>
+          {%- endif -%}
+        </div>
+
+        {%- comment -%} Swapped on variant change: retailer links can differ per variant {%- endcomment -%}
+        <div class="ab-product__actions" id="AbWtbActions-{{ section.id }}" data-ab-swap>
+          {%- if retailer_count > 0 -%}
+            {%- assign wtb_trigger_attributes = wtb_open_attributes | append: ' data-ab-wtb-trigger' -%}
+            {%- render 'ab-button',
+              label: wtb_label,
+              icon: 'storefront',
+              full_width: true,
+              class: 'ab-product__wtb',
+              attributes: wtb_trigger_attributes
+            -%}
+          {%- else -%}
+            {%- render 'ab-button',
+              label: wtb_label,
+              url: wtb_page_url,
+              icon: 'storefront',
+              full_width: true,
+              class: 'ab-product__wtb',
+              attributes: 'data-ab-wtb-trigger'
+            -%}
+          {%- endif -%}
+          {%- if section.settings.local_label != blank -%}
+            <a class="ab-product__local" href="{{ store_url }}">
+              {%- render 'ab-icon', name: 'storefront', size: 20 -%}
+              <span>{{ section.settings.local_label }}</span>
+            </a>
+          {%- endif -%}
+        </div>
+
+        {%- comment -%} ---------- Accordions ---------- {%- endcomment -%}
+        <div class="ab-accordion ab-product__accordions">
+          {%- for block in section.blocks -%}
+            {%- case block.type -%}
+              {%- when 'accordion' -%}
+                {%- liquid
+                  assign panel_content = ''
+                  case block.settings.source
+                    when 'description'
+                      assign panel_content = product.description
+                    when 'metafield'
+                      assign key_parts = block.settings.metafield | strip | split: '.'
+                      assign mf_namespace = key_parts[0]
+                      assign mf_key = key_parts[1]
+                      if mf_namespace != blank and mf_key != blank
+                        assign panel_field = product.metafields[mf_namespace][mf_key]
+                        if panel_field.type == 'rich_text_field'
+                          assign panel_content = panel_field | metafield_tag
+                        elsif panel_field.value != blank
+                          assign panel_content = panel_field.value | escape | newline_to_br | prepend: '<p>' | append: '</p>'
+                        endif
+                      endif
+                  endcase
+                  if panel_content == blank
+                    assign panel_content = block.settings.content
+                  endif
+                -%}
+                {%- if panel_content != blank -%}
+                  <details class="ab-accordion__item" {% if block.settings.open %}open{% endif %} {{ block.shopify_attributes }}>
+                    <summary class="ab-accordion__summary">
+                      <span>{{ block.settings.title }}</span>
+                      <span class="ab-accordion__icon">
+                        {%- render 'ab-icon', name: 'add', size: 22 -%}
+                        {%- render 'ab-icon', name: 'remove', size: 22 -%}
+                      </span>
+                    </summary>
+                    <div class="ab-accordion__content ab-rte">{{ panel_content }}</div>
+                  </details>
+                {%- endif -%}
+
+              {%- when 'videos' -%}
+                {%- liquid
+                  assign key_parts = block.settings.metafield | strip | split: '.'
+                  assign mf_namespace = key_parts[0]
+                  assign mf_key = key_parts[1]
+                  assign videos = ''
+                  if mf_namespace != blank and mf_key != blank
+                    assign videos = product.metafields[mf_namespace][mf_key].value
+                  endif
+                -%}
+                {%- if videos != blank and videos.size > 0 -%}
+                  <details class="ab-accordion__item" {% if block.settings.open %}open{% endif %} {{ block.shopify_attributes }}>
+                    <summary class="ab-accordion__summary">
+                      <span>{{ block.settings.title }}</span>
+                      <span class="ab-accordion__icon">
+                        {%- render 'ab-icon', name: 'add', size: 22 -%}
+                        {%- render 'ab-icon', name: 'remove', size: 22 -%}
+                      </span>
+                    </summary>
+                    <ul class="ab-product__videos" role="list">
+                      {%- for video in videos -%}
+                        {%- if video.media_type != 'video' -%}{%- continue -%}{%- endif -%}
+                        {%- assign video_alt = video.alt | default: product.title -%}
+                        <li class="ab-product__video">
+                          <button type="button" class="ab-product__video-button" data-ab-media-load aria-label="Play video: {{ video_alt | escape }}">
+                            {%- if video.preview_image != blank -%}
+                              {{
+                                video.preview_image
+                                | image_url: width: 480
+                                | image_tag: class: 'ab-product__video-poster', widths: '160, 240, 320, 480', sizes: '(min-width: 1024px) 140px, 140px', loading: 'lazy', alt: ''
+                              }}
+                            {%- endif -%}
+                            <span class="ab-product__video-play" aria-hidden="true">{%- render 'ab-icon', name: 'play', size: 28 -%}</span>
+                          </button>
+                          <template data-ab-media-template>
+                            {{ video | video_tag: controls: true, playsinline: true, preload: 'metadata', class: 'ab-product__video-player', image_size: '480x' }}
+                          </template>
+                        </li>
+                      {%- endfor -%}
+                    </ul>
+                  </details>
+                {%- endif -%}
+            {%- endcase -%}
+          {%- endfor -%}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  {%- comment -%} ---------- Where to Buy: modal on desktop, bottom sheet below 1024px ---------- {%- endcomment -%}
+  <div
+    id="{{ wtb_id }}"
+    class="ab-wtb"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="{{ wtb_id }}-title"
+    hidden
+  >
+    <div class="ab-wtb__backdrop" data-ab-close></div>
+    <div class="ab-wtb__panel">
+      <div class="ab-wtb__handle" aria-hidden="true"><span></span></div>
+      <div class="ab-wtb__header">
+        <h2 id="{{ wtb_id }}-title" class="ab-wtb__title">{{ section.settings.modal_heading }}</h2>
+        <button type="button" class="ab-icon-btn ab-wtb__close" data-ab-close aria-label="Close {{ section.settings.modal_heading | escape }}">
+          {%- render 'ab-icon', name: 'close', size: 24 -%}
+        </button>
+      </div>
+
+      <div class="ab-wtb__body" id="AbWtbBody-{{ section.id }}" data-ab-swap>
+        {%- assign wtb_image = current_variant.featured_media.preview_image | default: product.featured_media.preview_image -%}
+        <div class="ab-wtb__product">
+          <span class="ab-wtb__thumb">
+            {%- if wtb_image != blank -%}
+              {{ wtb_image | image_url: width: 160 | image_tag: class: 'ab-wtb__thumb-image', widths: '48, 96, 160', sizes: '48px', loading: 'lazy', alt: '' }}
+            {%- endif -%}
+          </span>
+          <span class="ab-wtb__product-text">
+            <span class="ab-wtb__product-name">{{ product.title }}</span>
+            {%- if size_option_value != blank -%}
+              <span class="ab-wtb__product-size">{{ size_option_value }}</span>
+            {%- endif -%}
+          </span>
+        </div>
+
+        {%- render 'ab-wtb-retailers',
+          product: product,
+          variant: current_variant,
+          blocks: section.blocks,
+          out_of_stock_handles: out_of_stock_handles,
+          store_url: store_url,
+          buy_label: section.settings.buy_label,
+          find_store_label: section.settings.find_store_label,
+          in_stock_label: section.settings.in_stock_label,
+          local_row_label: section.settings.local_row_label,
+          out_of_stock_label: section.settings.out_of_stock_label,
+          show_stock: section.settings.show_stock,
+          view_label: section.settings.view_label
+        -%}
+      </div>
+    </div>
+  </div>
+
+  {%- comment -%} ---------- Sticky bar (mobile and tablet) ---------- {%- endcomment -%}
+  {%- if section.settings.show_sticky_bar -%}
+    <div class="ab-sticky-bar" data-ab-sticky-bar aria-hidden="true" inert>
+      <div class="ab-sticky-bar__inner" id="AbStickyBar-{{ section.id }}" data-ab-swap>
+        {%- assign sticky_image = current_variant.featured_media.preview_image | default: product.featured_media.preview_image -%}
+        <span class="ab-sticky-bar__thumb">
+          {%- if sticky_image != blank -%}
+            {{ sticky_image | image_url: width: 120 | image_tag: class: 'ab-sticky-bar__image', widths: '40, 80, 120', sizes: '40px', loading: 'lazy', alt: '' }}
+          {%- endif -%}
+        </span>
+        <span class="ab-sticky-bar__name">{{ product.title }}</span>
+        {%- if retailer_count > 0 -%}
+          {%- render 'ab-button',
+            label: wtb_label,
+            size: 'small',
+            class: 'ab-sticky-bar__button',
+            attributes: wtb_open_attributes
+          -%}
+        {%- else -%}
+          {%- render 'ab-button', label: wtb_label, url: wtb_page_url, size: 'small', class: 'ab-sticky-bar__button' -%}
+        {%- endif -%}
+      </div>
+    </div>
+  {%- endif -%}
+
+  {%- comment -%}
+    Structured data without offers or price (retail-only). aggregateRating only with reviews.
+  {%- endcomment -%}
+  {%- liquid
+    assign ld_description = product.description | strip_html | strip_newlines | strip
+    assign ld_brand = product.vendor | default: shop.name
+  -%}
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Product",
+      "name": {{ product.title | json }},
+      "url": {{ request.origin | append: product.url | json }},
+      {%- if ld_description != blank %}
+      "description": {{ ld_description | json }},
+      {%- endif %}
+      {%- if product.media.size > 0 %}
+      "image": [
+        {%- for media in product.media limit: 6 -%}
+          {{ media.preview_image | image_url: width: 1200 | prepend: 'https:' | json }}{% unless forloop.last %},{% endunless %}
+        {%- endfor -%}
+      ],
+      {%- endif %}
+      {%- if current_variant.sku != blank %}
+      "sku": {{ current_variant.sku | json }},
+      {%- endif %}
+      {%- if current_variant.barcode != blank %}
+      "gtin": {{ current_variant.barcode | json }},
+      {%- endif %}
+      {%- if rating_metafield != blank and product_rating_count > 0 %}
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": {{ rating_metafield.rating | json }},
+        "bestRating": {{ rating_metafield.scale_max | default: 5 | json }},
+        "worstRating": {{ rating_metafield.scale_min | default: 1 | json }},
+        "ratingCount": {{ product_rating_count | json }}
+      },
+      {%- endif %}
+      "brand": {
+        "@type": "Brand",
+        "name": {{ ld_brand | json }}
+      }
+    }
+  </script>
+  {%- if section.settings.show_breadcrumb -%}
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          { "@type": "ListItem", "position": 1, "name": "Home", "item": {{ request.origin | append: routes.root_url | json }} },
+          {%- if crumb_collection != blank %}
+          { "@type": "ListItem", "position": 2, "name": {{ crumb_collection.title | json }}, "item": {{ request.origin | append: crumb_collection.url | json }} },
+          { "@type": "ListItem", "position": 3, "name": {{ product.title | json }} }
+          {%- else %}
+          { "@type": "ListItem", "position": 2, "name": {{ product.title | json }} }
+          {%- endif %}
+        ]
+      }
+    </script>
+  {%- endif -%}
+</section>
+
+{% schema %}
+{
+  "name": "AB: Product",
+  "tag": "div",
+  "class": "ab-main-product-section",
+  "max_blocks": 16,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Product info"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_breadcrumb",
+      "label": "Show breadcrumb",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "summary_from_description",
+      "label": "Use the start of the description when there is no summary",
+      "info": "The line under the title comes from the product metafield custom.short_description, else custom.benefit.",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_rating",
+      "label": "Show star rating",
+      "info": "From the reviews.rating and reviews.rating_count metafields. Hidden when the product has no reviews.",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "reviews_anchor",
+      "label": "Review count links to",
+      "info": "The id of the reviews section, without #.",
+      "default": "reviews"
+    },
+    {
+      "type": "header",
+      "content": "Where to buy"
+    },
+    {
+      "type": "text",
+      "id": "wtb_label",
+      "label": "Button label",
+      "info": "Leave empty to use the theme setting.",
+      "default": "Where to buy"
+    },
+    {
+      "type": "url",
+      "id": "wtb_fallback_link",
+      "label": "Link when the product has no retailer links",
+      "info": "Defaults to the Where to Buy link in the theme settings."
+    },
+    {
+      "type": "text",
+      "id": "local_label",
+      "label": "Local stores link label",
+      "default": "Available at Local Beauty Supply Stores"
+    },
+    {
+      "type": "url",
+      "id": "store_link",
+      "label": "Store locator link",
+      "info": "Used by the local stores link and Find a store. Defaults to the Where to Buy link in the theme settings."
+    },
+    {
+      "type": "text",
+      "id": "modal_heading",
+      "label": "Retailer list heading",
+      "default": "Where to buy"
+    },
+    {
+      "type": "text",
+      "id": "buy_label",
+      "label": "Buy button label",
+      "default": "Buy now"
+    },
+    {
+      "type": "text",
+      "id": "view_label",
+      "label": "Out of stock button label",
+      "default": "View"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_stock",
+      "label": "Show stock status",
+      "info": "Retailers listed in the product metafield custom.out_of_stock_at show the out of stock label. Every other retailer shows the in stock label.",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "in_stock_label",
+      "label": "In stock label",
+      "default": "In Stock"
+    },
+    {
+      "type": "text",
+      "id": "out_of_stock_label",
+      "label": "Out of stock label",
+      "default": "Out of Stock"
+    },
+    {
+      "type": "text",
+      "id": "local_row_label",
+      "label": "Local stores row",
+      "default": "Local Beauty Supply Stores"
+    },
+    {
+      "type": "text",
+      "id": "find_store_label",
+      "label": "Find a store label",
+      "default": "Find a store"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_sticky_bar",
+      "label": "Show sticky bar on mobile and tablet",
+      "info": "Appears once the Where to Buy button scrolls out of view.",
+      "default": true
+    }
+  ],
+  "blocks": [
+    {
+      "type": "retailer",
+      "name": "Retailer",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Retailer name",
+          "default": "Walmart"
+        },
+        {
+          "type": "image_picker",
+          "id": "logo",
+          "label": "Logo",
+          "info": "SVG or transparent PNG. Until a logo is uploaded, the name is shown as text."
+        },
+        {
+          "type": "range",
+          "id": "logo_height",
+          "label": "Logo height",
+          "min": 12,
+          "max": 32,
+          "step": 1,
+          "unit": "px",
+          "default": 24
+        },
+        {
+          "type": "text",
+          "id": "url_metafield",
+          "label": "Product link metafield",
+          "info": "namespace.key of the product (or variant) URL metafield, e.g. custom.walmart_url. Products without a link hide this retailer.",
+          "default": "custom.walmart_url"
+        },
+        {
+          "type": "text",
+          "id": "rating_metafield",
+          "label": "Retailer rating metafield",
+          "info": "Optional. namespace.key of a single line text product metafield such as \"4.5 (2,140)\", e.g. custom.walmart_rating."
+        }
+      ]
+    },
+    {
+      "type": "accordion",
+      "name": "Accordion",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "How to use"
+        },
+        {
+          "type": "select",
+          "id": "source",
+          "label": "Content",
+          "options": [
+            { "value": "description", "label": "Product description" },
+            { "value": "metafield", "label": "Product metafield" },
+            { "value": "text", "label": "Text below" }
+          ],
+          "default": "metafield"
+        },
+        {
+          "type": "text",
+          "id": "metafield",
+          "label": "Metafield",
+          "info": "namespace.key of a rich text or multi-line text product metafield, e.g. custom.how_to_use.",
+          "default": "custom.how_to_use"
+        },
+        {
+          "type": "richtext",
+          "id": "content",
+          "label": "Text",
+          "info": "Shown when the content is \"Text below\", or when the product's metafield is empty. The accordion is hidden when there is nothing to show."
+        },
+        {
+          "type": "checkbox",
+          "id": "open",
+          "label": "Open by default",
+          "default": false
+        }
+      ]
+    },
+    {
+      "type": "videos",
+      "name": "Popular videos",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "Popular Videos"
+        },
+        {
+          "type": "text",
+          "id": "metafield",
+          "label": "Videos metafield",
+          "info": "namespace.key of a product metafield holding a list of video files, e.g. custom.popular_videos. Hidden when the product has no videos.",
+          "default": "custom.popular_videos"
+        },
+        {
+          "type": "checkbox",
+          "id": "open",
+          "label": "Open by default",
+          "default": true
+        }
+      ]
+    }
+  ],
+  "enabled_on": {
+    "templates": ["product"]
+  },
+  "presets": [
+    {
+      "name": "AB: Product",
+      "blocks": [
+        { "type": "retailer", "settings": { "title": "Walmart", "url_metafield": "custom.walmart_url" } },
+        { "type": "retailer", "settings": { "title": "Target", "url_metafield": "custom.target_url" } },
+        { "type": "accordion", "settings": { "title": "Overview", "source": "description", "open": true } },
+        { "type": "accordion", "settings": { "title": "How to Use", "metafield": "custom.how_to_use" } },
+        { "type": "accordion", "settings": { "title": "Ingredients", "metafield": "custom.ingredients" } },
+        { "type": "videos" }
+      ]
+    }
+  ]
+}
+{% endschema %}
