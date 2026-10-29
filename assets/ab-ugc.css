@@ -1,0 +1,194 @@
+/*
+ * As Seen On You (sections/ab-ugc.liquid)
+ * Loaded by the section only when it is on the page.
+ * Mobile-first: base = 0-767px, then 768px (tablet) and 1024px (desktop).
+ */
+
+.ab-ugc .ab-section-subheading strong {
+  font-weight: inherit;
+}
+
+@media (min-width: 1024px) {
+  .ab-ugc .ab-section-subheading strong {
+    font-weight: var(--ab-font-weight-bold);
+  }
+}
+
+.ab-ugc__carousel {
+  --ab-slide-width-mobile: 180px;
+  --ab-slide-width-tablet: 180px;
+  --ab-slides-desktop: 5;
+  --ab-arrow-top: 40%;
+}
+
+.ab-ugc__slide {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ab-space-2);
+}
+
+.ab-ugc__media {
+  position: relative;
+  aspect-ratio: 9 / 16;
+  overflow: hidden;
+  border-radius: var(--ab-radius-card);
+  background: var(--ab-color-placeholder);
+}
+
+.ab-ugc__poster,
+.ab-ugc__video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: var(--ab-ugc-position, center);
+}
+
+.ab-ugc__play {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--ab-tap-target);
+  height: var(--ab-tap-target);
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--ab-color-white);
+  cursor: pointer;
+}
+
+/* 36px drawn circle inside the 44px tap target */
+.ab-ugc__play::before {
+  content: '';
+  position: absolute;
+  inset: 4px;
+  border-radius: var(--ab-radius-pill);
+  background: rgb(0 0 0 / 0.5);
+  transition: background-color var(--ab-transition-fast);
+}
+
+.ab-ugc__play:hover::before {
+  background: var(--ab-color-button);
+}
+
+.ab-ugc__play .ab-icon {
+  position: relative;
+}
+
+.ab-ugc__play .ab-ugc__icon-pause,
+.ab-ugc__media.is-playing .ab-ugc__icon-play {
+  display: none;
+}
+
+.ab-ugc__media.is-playing .ab-ugc__icon-pause {
+  display: block;
+}
+
+.ab-ugc__tag {
+  display: flex;
+  align-items: center;
+  gap: var(--ab-space-2);
+  height: 48px;
+  padding: 0 var(--ab-space-1) 0 var(--ab-space-2);
+  border-radius: var(--ab-radius-card);
+  background: var(--ab-color-white);
+  color: var(--ab-color-text);
+  text-decoration: none;
+}
+
+.ab-ugc__tag-thumb {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 32px;
+  height: 36px;
+}
+
+.ab-ugc__tag-thumb img {
+  max-width: 32px;
+  max-height: 36px;
+  object-fit: contain;
+}
+
+.ab-ugc__tag-name {
+  display: -webkit-box;
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  font-size: 12px;
+  font-weight: var(--ab-font-weight-semibold);
+  line-height: 1.25;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.ab-ugc__tag-arrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--ab-radius-pill);
+  background: var(--ab-color-primary);
+  color: var(--ab-color-white);
+  transition: background-color var(--ab-transition-fast);
+}
+
+.ab-ugc__tag:hover .ab-ugc__tag-name {
+  color: var(--ab-color-button);
+}
+
+.ab-ugc__tag:hover .ab-ugc__tag-arrow {
+  background: var(--ab-color-button-hover);
+}
+
+@media (min-width: 1024px) {
+  .ab-ugc__slide {
+    gap: var(--ab-space-3);
+  }
+
+  .ab-ugc__play {
+    top: 8px;
+    right: 8px;
+  }
+
+  .ab-ugc__tag {
+    gap: 10px;
+    height: auto;
+    padding: var(--ab-space-2);
+  }
+
+  .ab-ugc__tag-thumb {
+    width: 44px;
+    height: 44px;
+    border-radius: 8px;
+    background: #f7f5f2;
+  }
+
+  .ab-ugc__tag-thumb img {
+    max-width: 34px;
+    max-height: 38px;
+  }
+
+  .ab-ugc__tag-name {
+    font-size: 13px;
+    line-height: 1.3;
+  }
+
+  .ab-ugc__tag-arrow {
+    width: 32px;
+    height: 32px;
+    background: var(--ab-color-button);
+  }
+
+  /* 32px drawn, but the whole tag card is the link, so the target is larger */
+  .ab-ugc__tag:hover .ab-ugc__tag-arrow {
+    background: var(--ab-color-button-hover);
+  }
+}

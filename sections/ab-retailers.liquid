@@ -6,6 +6,8 @@
   Logos without an image show the retailer's name as a grey wordmark.
 {%- endcomment -%}
 
+{{ 'ab-retailers.css' | asset_url | stylesheet_tag: preload: true }}
+
 {%- liquid
   assign locator_url = section.settings.button_link | default: settings.ab_wtb_url | default: '/pages/where-to-buy'
 -%}

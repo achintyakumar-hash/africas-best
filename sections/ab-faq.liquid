@@ -5,6 +5,8 @@
   Uses native <details>/<summary>, so it works from the keyboard without JavaScript.
 {%- endcomment -%}
 
+{{ 'ab-faq.css' | asset_url | stylesheet_tag: preload: true }}
+
 {%- liquid
   assign faq_heading_id = 'AbFaqHeading-' | append: section.id
 -%}
@@ -66,17 +68,6 @@
   {%- endif -%}
 </section>
 
-{% stylesheet %}
-  .ab-faq__heading {
-    margin-bottom: 24px;
-  }
-
-  @media (min-width: 1024px) {
-    .ab-faq__heading {
-      margin-bottom: 32px;
-    }
-  }
-{% endstylesheet %}
 
 {% schema %}
 {

@@ -102,6 +102,17 @@ body {
   display: block;
 }
 
+.ab-visually-hidden-until-focus:not(:focus):not(:focus-visible) {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0 0 0 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
 .ab-visually-hidden {
   position: absolute !important;
   width: 1px !important;

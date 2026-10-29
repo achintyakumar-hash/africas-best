@@ -3,6 +3,10 @@
   Used by templates/page.ab-components.json. Not meant for customer-facing pages.
 {%- endcomment -%}
 
+{{ 'ab-product-card.css' | asset_url | stylesheet_tag: preload: true }}
+{{ 'ab-component-library.css' | asset_url | stylesheet_tag: preload: true }}
+<script src="{{ 'ab-carousel.js' | asset_url }}" type="module"></script>
+
 {%- liquid
   assign library_collection = section.settings.collection
   if library_collection == blank
@@ -89,29 +93,6 @@
   </section>
 </div>
 
-{% stylesheet %}
-  .ab-library__label {
-    margin: 32px 0 16px;
-    font-size: 13px;
-    font-weight: 800;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--ab-color-muted);
-  }
-
-  .ab-library__row {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 16px;
-  }
-
-  .ab-library__row--dark {
-    padding: 16px;
-    border-radius: var(--ab-radius-card);
-    background: #3a302a;
-  }
-{% endstylesheet %}
 
 {% schema %}
 {

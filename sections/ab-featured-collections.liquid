@@ -8,6 +8,8 @@
   repair-restore and kids (by position), then to all products.
 {%- endcomment -%}
 
+{{ 'ab-featured-collections.css' | asset_url | stylesheet_tag: preload: true }}
+
 {%- assign fallback_handles = 'growth-oils,olive-oil-conditioning,repair-restore,kids' | split: ',' -%}
 
 <section class="ab-scope ab-collections ab-section ab-bg--{{ section.settings.background }}">

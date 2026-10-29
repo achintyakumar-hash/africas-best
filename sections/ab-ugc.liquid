@@ -8,6 +8,10 @@
   An empty product picker falls back to the best-sellers collection, then all products.
 {%- endcomment -%}
 
+{{ 'ab-ugc.css' | asset_url | stylesheet_tag: preload: true }}
+<script src="{{ 'ab-carousel.js' | asset_url }}" type="module"></script>
+<script src="{{ 'ab-video-cards.js' | asset_url }}" type="module"></script>
+
 {%- liquid
   assign tag_source = collections['best-sellers']
   if tag_source == blank or tag_source.products_count == 0

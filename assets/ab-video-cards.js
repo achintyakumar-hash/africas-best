@@ -1,10 +1,11 @@
 /**
- * Section behaviour shared across pages:
- * - Video cards (As Seen On You): play/pause toggle. Videos are muted, inline, never autoplay.
- * - Scrolling text band: pause/resume button (hover pause is CSS).
- * - Theme editor: selecting a block inside a carousel scrolls it into view.
+ * Video cards (As Seen On You): play/pause toggle, one video at a time.
+ * Videos are muted, inline and never autoplay. Loaded as a module by sections/ab-ugc.liquid.
  */
 (() => {
+  if (window.__abVideoCards) return;
+  window.__abVideoCards = true;
+
   /* ---------- Video cards ---------- */
   document.addEventListener('click', (event) => {
     const toggle = event.target.closest('[data-ab-video-toggle]');
@@ -37,22 +38,4 @@
   };
   document.addEventListener('play', syncVideoState, true);
   document.addEventListener('pause', syncVideoState, true);
-
-  /* ---------- Scrolling text band ---------- */
-  document.addEventListener('click', (event) => {
-    const toggle = event.target.closest('[data-ab-marquee-toggle]');
-    if (!toggle) return;
-    const marquee = toggle.closest('[data-ab-marquee]');
-    const paused = toggle.getAttribute('aria-pressed') !== 'true';
-    toggle.setAttribute('aria-pressed', String(paused));
-    toggle.textContent = paused ? 'Play scrolling text' : 'Pause scrolling text';
-    marquee?.classList.toggle('is-paused', paused);
-  });
-
-  /* ---------- Theme editor ---------- */
-  document.addEventListener('shopify:block:select', (event) => {
-    const slide = event.target.closest?.('.ab-carousel__slide') || event.target.querySelector?.('.ab-carousel__slide');
-    const carousel = slide?.closest('ab-carousel');
-    if (carousel && typeof carousel.scrollToSlide === 'function') carousel.scrollToSlide(slide);
-  });
 })();

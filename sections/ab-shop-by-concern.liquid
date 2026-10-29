@@ -6,6 +6,9 @@
   VIEW (36px) under the label, dots below.
 {%- endcomment -%}
 
+{{ 'ab-shop-by-concern.css' | asset_url | stylesheet_tag: preload: true }}
+<script src="{{ 'ab-carousel.js' | asset_url }}" type="module"></script>
+
 <section class="ab-scope ab-concern ab-section ab-bg--{{ section.settings.background }}">
   <div class="ab-container">
     {%- if section.settings.heading != blank -%}

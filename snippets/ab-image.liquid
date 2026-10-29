@@ -13,6 +13,7 @@
   - sizes {String}: sizes attribute (default '100vw')
   - class {String}: classes for the <img>
   - eager {Boolean}: load eagerly with fetchpriority high (above-the-fold only)
+  - preload {Boolean}: also send a preload hint for the image (first hero image only)
   - width / height {Number}: intrinsic size for the fallback image (avoids layout shift)
 
   Usage:
@@ -46,9 +47,13 @@
       sizes: img_sizes,
       loading: img_loading,
       fetchpriority: img_priority,
+      preload: preload,
       alt: img_alt
   }}
 {%- elsif fallback != blank -%}
+  {%- if preload -%}
+    <link rel="preload" as="image" href="{{ fallback }}" fetchpriority="high">
+  {%- endif -%}
   {%- comment -%} If the hotlinked photo fails, hide it so the container's placeholder colour shows. {%- endcomment -%}
   <img
     src="{{ fallback }}"

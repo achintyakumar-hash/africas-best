@@ -6,6 +6,10 @@
   Collection: the picked collection, else the "best-sellers" collection, else all products.
 {%- endcomment -%}
 
+{{ 'ab-product-card.css' | asset_url | stylesheet_tag: preload: true }}
+{{ 'ab-best-sellers.css' | asset_url | stylesheet_tag: preload: true }}
+<script src="{{ 'ab-carousel.js' | asset_url }}" type="module"></script>
+
 {%- liquid
   assign source = section.settings.collection
   if source == blank

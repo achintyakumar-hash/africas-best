@@ -248,4 +248,11 @@
   }
 
   customElements.define('ab-carousel', AbCarousel);
+
+  /* ---------- Theme editor ---------- */
+  document.addEventListener('shopify:block:select', (event) => {
+    const slide = event.target.closest?.('.ab-carousel__slide') || event.target.querySelector?.('.ab-carousel__slide');
+    const carousel = slide?.closest('ab-carousel');
+    if (carousel && typeof carousel.scrollToSlide === 'function') carousel.scrollToSlide(slide);
+  });
 })();

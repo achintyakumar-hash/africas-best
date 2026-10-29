@@ -6,6 +6,9 @@
   The text is repeated for the loop; screen readers hear it once.
 {%- endcomment -%}
 
+{{ 'ab-marquee.css' | asset_url | stylesheet_tag: preload: true }}
+<script src="{{ 'ab-marquee.js' | asset_url }}" type="module"></script>
+
 {%- liquid
   assign marquee_text = section.settings.text | strip
   assign marquee_separator = section.settings.separator | strip

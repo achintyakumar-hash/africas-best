@@ -3,6 +3,8 @@
   where to buy instead. Can also be used on any page that needs the same message.
 {%- endcomment -%}
 
+{{ 'ab-retail-notice.css' | asset_url | stylesheet_tag: preload: true }}
+
 {%- liquid
   assign notice_label = section.settings.button_label | default: settings.ab_wtb_label | default: 'Where to buy'
   assign notice_url = section.settings.button_link | default: settings.ab_wtb_url | default: '/pages/where-to-buy'
@@ -31,36 +33,6 @@
   </div>
 </section>
 
-{% stylesheet %}
-  .ab-retail-notice__inner {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 16px;
-    max-width: calc(720px + 2 * var(--ab-side-padding));
-    text-align: center;
-  }
-
-  .ab-retail-notice__text {
-    font-size: 16px;
-  }
-
-  .ab-retail-notice__actions {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    width: 100%;
-    margin-top: 8px;
-  }
-
-  @media (min-width: 768px) {
-    .ab-retail-notice__actions {
-      flex-direction: row;
-      justify-content: center;
-      width: auto;
-    }
-  }
-{% endstylesheet %}
 
 {% schema %}
 {

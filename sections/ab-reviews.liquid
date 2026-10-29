@@ -9,6 +9,9 @@
   An empty product picker falls back to the best-sellers collection, then all products.
 {%- endcomment -%}
 
+{{ 'ab-reviews.css' | asset_url | stylesheet_tag: preload: true }}
+<script src="{{ 'ab-carousel.js' | asset_url }}" type="module"></script>
+
 {%- liquid
   assign link_source = collections['best-sellers']
   if link_source == blank or link_source.products_count == 0

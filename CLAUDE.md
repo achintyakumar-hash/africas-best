@@ -87,23 +87,48 @@ exist as tokens.
 ## Architecture
 
 ```
-layout/theme.liquid            renders ab-head (CSS/JS/fonts), ab-header-group, ab-footer-group
-snippets/ab-head.liquid        font faces, token/base/component CSS, deferred JS
-assets/ab-tokens.css           design tokens (colors, type scale, spacing, radii, breakpoints)
-assets/ab-base.css             base element styles, layout helpers, Horizon commerce hiding
-assets/ab-components.css       buttons, links, icon buttons, badges, stars, accordions, carousel
-assets/ab-product-card.css     product card
-assets/ab-header.css / .js     announcement bar, header, mega menu, dropdowns, drawer, search
-assets/ab-footer.css           footer
-assets/ab-carousel.js          <ab-carousel> custom element (arrows desktop, swipe + dots below 1024)
-assets/ab-base.js              announcement dismiss, footer accordions, shared focus trap (window.AB)
-snippets/ab-button.liquid      the single button component
-snippets/ab-icon.liquid        inline SVG icon set
-snippets/ab-product-card.liquid the single product card, used everywhere products appear
-snippets/ab-stars.liquid       star rating
-snippets/ab-logo.liquid        logo image, or the text wordmark fallback
-sections/ab-*.liquid           sections
+layout/theme.liquid              renders ab-head (global CSS/JS/fonts), ab-header-group, ab-footer-group
+snippets/ab-head.liquid          font faces, tokens, base/component/header/footer CSS, header JS
+assets/ab-tokens.css             design tokens (colors, placeholders, type scale, spacing, radii)
+assets/ab-base.css               base element styles, layout helpers, empty-state helpers, commerce hiding
+assets/ab-components.css         buttons, text links, arrows, badges, stars, accordions, carousel
+assets/ab-header.css / .js       announcement bar, header, mega menu, dropdowns, drawer, search
+assets/ab-footer.css             footer
+assets/ab-base.js                dialogs (focus trap/Escape), announcement dismiss, footer toggles
+assets/ab-carousel.js            <ab-carousel>: arrows desktop, swipe + dots below 1024, keyboard,
+                                 autoplay with pause, theme-editor block select
+assets/ab-<section>.css          one stylesheet per section, loaded by that section
+assets/ab-video-cards.js         As Seen On You play/pause (loaded by ab-ugc)
+assets/ab-marquee.js             scrolling text pause button (loaded by ab-marquee)
+assets/ab-product-card.css       product card + product grid/carousel (loaded by sections with cards)
+snippets/ab-button.liquid        the single button component (primary/secondary/on-image/link)
+snippets/ab-image.liquid         responsive image + design-photo fallback + empty-state placeholder
+snippets/ab-fallback-url.liquid  placeholder photo URLs used until real images are uploaded
+snippets/ab-icon.liquid          inline SVG icon set
+snippets/ab-product-card.liquid  the single product card, used everywhere products appear
+snippets/ab-stars.liquid         star rating (size from the parent's --ab-star-size)
+snippets/ab-logo.liquid          logo image, or the text wordmark fallback
+sections/ab-*.liquid             sections
 ```
+
+### Loading section assets
+Each section loads only its own assets at the top of its file:
+`{{ 'ab-x.css' | asset_url | stylesheet_tag: preload: true }}` and
+`<script src="{{ 'ab-x.js' | asset_url }}" type="module"></script>`. Module scripts run once even when
+two sections include the same file. Don't add section CSS/JS to `ab-head`, and don't use
+`{% stylesheet %}`, because Shopify bundles that CSS onto every page.
+
+### Images and empty states
+- Render images with `snippets/ab-image.liquid`. Only the first hero image is eager, with
+  `preload`. Everything else is lazy.
+- The image's container sets the size or aspect ratio and a placeholder background
+  (`--ab-color-placeholder`, or `--ab-color-placeholder-dark` behind white text). A missing or
+  failed image then leaves a neutral block instead of a broken icon or a collapsed box.
+
+### Collection and page handles used as defaults
+Collections: best-sellers, growth-oils, olive-oil-conditioning, repair-restore, kids, skin-care,
+bundles, hair-growth, deep-moisture, scalp-care.
+Pages: about-us, where-to-buy, contact, faq, hair-care-guide, accessibility-policy.
 
 ### Breakpoint names
 - `--ab-bp-tablet: 768px`, `--ab-bp-desktop: 1024px`. CSS custom properties can't be used in

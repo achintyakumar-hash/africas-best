@@ -1,0 +1,212 @@
+/*
+ * Reviews (sections/ab-reviews.liquid)
+ * Loaded by the section only when it is on the page.
+ * Mobile-first: base = 0-767px, then 768px (tablet) and 1024px (desktop).
+ */
+
+.ab-reviews__carousel {
+  --ab-slide-width-mobile: 300px;
+  --ab-slide-width-tablet: 300px;
+  --ab-slides-desktop: 2;
+}
+
+.ab-reviews__intro {
+  margin-bottom: var(--ab-heading-gap);
+  text-align: center;
+}
+
+.ab-reviews__arrows {
+  display: none;
+}
+
+.ab-reviews__slide {
+  display: flex;
+}
+
+.ab-review {
+  display: grid;
+  grid-template-columns: 48px minmax(0, 1fr);
+  grid-template-areas:
+    'photo stars'
+    'photo who'
+    'quote quote'
+    'link link';
+  grid-template-rows: auto auto auto 1fr;
+  column-gap: var(--ab-space-3);
+  width: 100%;
+  height: 200px;
+  margin: 0;
+  padding: var(--ab-space-4);
+  border-radius: var(--ab-radius-card);
+  background: var(--ab-color-cream);
+}
+
+.ab-review__photo {
+  grid-area: photo;
+  width: 48px;
+  height: 48px;
+  overflow: hidden;
+  border-radius: var(--ab-radius-pill);
+  background: var(--ab-color-placeholder);
+}
+
+.ab-review__image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: var(--ab-review-position, center);
+}
+
+.ab-review__stars {
+  grid-area: stars;
+  align-self: end;
+  display: flex;
+  line-height: 1;
+  --ab-star-size: 16px;
+}
+
+.ab-review__stars .ab-stars__base {
+  opacity: 0.35;
+}
+
+.ab-review__who {
+  grid-area: who;
+  align-self: start;
+  margin-top: 2px;
+  font-size: 14px;
+  line-height: 1.3;
+}
+
+.ab-review__name {
+  font-weight: var(--ab-font-weight-bold);
+}
+
+.ab-review__source {
+  font-size: 12px;
+  font-weight: var(--ab-font-weight-medium);
+  color: var(--ab-color-muted-strong);
+}
+
+.ab-review__source::before {
+  content: ' · ';
+}
+
+.ab-review__quote {
+  grid-area: quote;
+  margin: 10px 0 0;
+}
+
+.ab-review__quote p {
+  display: -webkit-box;
+  overflow: hidden;
+  font-size: 15px;
+  font-weight: var(--ab-font-weight-medium);
+  line-height: 22px;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+}
+
+.ab-review__product {
+  grid-area: link;
+  align-self: end;
+  justify-self: start;
+  max-width: 100%;
+  overflow: hidden;
+  font-size: 13px;
+  font-weight: var(--ab-font-weight-bold);
+  color: var(--ab-color-text);
+  text-decoration: underline;
+  text-decoration-thickness: 1.5px;
+  text-underline-offset: 4px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ab-review__product:hover {
+  color: var(--ab-color-button);
+}
+
+@media (min-width: 1024px) {
+  .ab-reviews__layout {
+    display: grid;
+    grid-template-columns: 320px minmax(0, 1fr);
+    gap: var(--ab-space-16);
+    align-items: center;
+  }
+
+  .ab-reviews__intro {
+    display: flex;
+    flex-direction: column;
+    gap: var(--ab-space-8);
+    margin-bottom: 0;
+    text-align: left;
+  }
+
+  .ab-reviews__arrows {
+    display: flex;
+    gap: var(--ab-space-3);
+  }
+
+  ab-carousel[data-overflow='false'] .ab-reviews__arrows {
+    visibility: hidden;
+  }
+
+  .ab-review {
+    grid-template-columns: 140px minmax(0, 1fr);
+    grid-template-areas:
+      'photo stars'
+      'photo quote'
+      'photo who'
+      'photo link';
+    grid-template-rows: auto auto 1fr auto;
+    column-gap: var(--ab-space-6);
+    row-gap: var(--ab-space-3);
+    height: auto;
+    min-height: 228px;
+    padding: var(--ab-space-6);
+  }
+
+  .ab-review__photo {
+    width: 140px;
+    height: 180px;
+    border-radius: 8px;
+  }
+
+  .ab-review__stars {
+    align-self: start;
+    --ab-star-size: 20px;
+  }
+
+  .ab-review__quote {
+    margin: 0;
+  }
+
+  .ab-review__quote p {
+    display: block;
+    font-size: 18px;
+    line-height: 1.5;
+  }
+
+  .ab-review__who {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    align-self: end;
+    margin-top: 0;
+    font-size: 15px;
+    line-height: 1.6;
+  }
+
+  .ab-review__source {
+    font-size: 13px;
+    font-weight: var(--ab-font-weight-regular);
+  }
+
+  .ab-review__source::before {
+    content: none;
+  }
+
+  .ab-review__product {
+    font-size: 14px;
+  }
+}

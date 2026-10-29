@@ -6,6 +6,8 @@
   The second photo is hidden.
 {%- endcomment -%}
 
+{{ 'ab-about.css' | asset_url | stylesheet_tag: preload: true }}
+
 {%- liquid
   capture fallback_left
     render 'ab-fallback-url', key: 'lifestyle-1'

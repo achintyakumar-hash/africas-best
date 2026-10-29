@@ -1,0 +1,170 @@
+/*
+ * Retailers: Find Us in Your Local Beauty Aisle (sections/ab-retailers.liquid)
+ * Loaded by the section only when it is on the page.
+ * Mobile-first: base = 0-767px, then 768px (tablet) and 1024px (desktop).
+ */
+
+.ab-retailers__inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.ab-retailers__header {
+  gap: var(--ab-space-4);
+  margin-bottom: var(--ab-space-4);
+}
+
+.ab-retailers__text {
+  font-size: 16px;
+}
+
+.ab-retailers__logos {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--ab-space-3);
+  width: 100%;
+  margin: var(--ab-space-2) 0 var(--ab-space-6);
+  padding: 0;
+  list-style: none;
+}
+
+.ab-retailers__logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 72px;
+}
+
+.ab-retailers__link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  color: inherit;
+  text-decoration: none;
+}
+
+.ab-retailers__image {
+  max-width: 70%;
+  max-height: 40px;
+  object-fit: contain;
+}
+
+.ab-retailers__logos--grey .ab-retailers__image {
+  filter: grayscale(1) contrast(0.9);
+  opacity: 0.75;
+  transition:
+    filter var(--ab-transition-base),
+    opacity var(--ab-transition-base);
+}
+
+.ab-retailers__link:hover .ab-retailers__image {
+  filter: none;
+  opacity: 1;
+}
+
+/* Wordmark fallbacks (no logo uploaded). #66625D on cream is 5.4:1. */
+.ab-retailers__wordmark {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--ab-space-2);
+  font-size: 19px;
+  font-weight: var(--ab-font-weight-extrabold);
+  line-height: 1.1;
+  color: #66625d;
+}
+
+.ab-retailers__wordmark--walmart {
+  font-size: 24px;
+  font-weight: var(--ab-font-weight-bold);
+}
+
+.ab-retailers__wordmark--target {
+  font-size: 21px;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.ab-retailers__ring {
+  flex-shrink: 0;
+  width: 22px;
+  height: 22px;
+  border: 5px solid currentcolor;
+  border-radius: var(--ab-radius-pill);
+}
+
+.ab-retailers__wordmark--family-dollar {
+  font-style: italic;
+}
+
+.ab-retailers__wordmark--local-beauty-supply {
+  flex-direction: column;
+  gap: 0;
+  font-size: 16px;
+  text-transform: uppercase;
+}
+
+.ab-retailers__small {
+  font-size: 11px;
+  font-weight: var(--ab-font-weight-bold);
+  letter-spacing: 0.3em;
+}
+
+@media (min-width: 768px) {
+  .ab-retailers__logos {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1024px) {
+  .ab-retailers__header {
+    gap: var(--ab-space-6);
+    margin-bottom: var(--ab-space-6);
+  }
+
+  .ab-retailers__logos {
+    gap: var(--ab-space-6);
+    margin: var(--ab-space-6) 0 var(--ab-space-12);
+  }
+
+  .ab-retailers__logo {
+    height: 96px;
+  }
+
+  .ab-retailers__image {
+    max-height: 56px;
+  }
+
+  .ab-retailers__wordmark {
+    font-size: 28px;
+  }
+
+  .ab-retailers__wordmark--walmart {
+    font-size: 34px;
+    letter-spacing: -0.01em;
+  }
+
+  .ab-retailers__wordmark--target {
+    gap: var(--ab-space-3);
+    font-size: 30px;
+  }
+
+  .ab-retailers__ring {
+    width: 32px;
+    height: 32px;
+    border-width: 7px;
+  }
+
+  .ab-retailers__wordmark--local-beauty-supply {
+    font-size: 24px;
+    letter-spacing: 0.04em;
+  }
+
+  .ab-retailers__small {
+    font-size: 13px;
+  }
+}

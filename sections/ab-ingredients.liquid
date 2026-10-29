@@ -7,6 +7,8 @@
   ingredient (Olive Oil, Shea Butter, Honey, Castor Oil, Egg Protein, Aloe, Clove).
 {%- endcomment -%}
 
+{{ 'ab-ingredients.css' | asset_url | stylesheet_tag: preload: true }}
+
 <section class="ab-scope ab-ingredients ab-section ab-bg--{{ section.settings.background }}">
   <div class="ab-container ab-ingredients__inner">
     <div class="ab-ingredients__intro">

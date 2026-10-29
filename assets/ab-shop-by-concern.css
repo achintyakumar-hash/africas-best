@@ -1,0 +1,114 @@
+/*
+ * Shop by Concern (sections/ab-shop-by-concern.liquid)
+ * Loaded by the section only when it is on the page.
+ * Mobile-first: base = 0-767px, then 768px (tablet) and 1024px (desktop).
+ */
+
+.ab-concern__carousel {
+  --ab-slide-width-mobile: 260px;
+  --ab-slide-width-tablet: calc((100% - 2 * var(--ab-carousel-gap)) / 3);
+  --ab-slides-desktop: 3;
+}
+
+.ab-concern__tile {
+  position: relative;
+  display: block;
+  height: 340px;
+  overflow: hidden;
+  border-radius: var(--ab-radius-tile);
+  background: var(--ab-color-placeholder-dark);
+  color: var(--ab-color-white);
+  text-decoration: none;
+}
+
+.ab-concern__image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: var(--ab-tile-position, center);
+  transition: transform 400ms ease;
+}
+
+.ab-concern__tile--brighten .ab-concern__image {
+  filter: brightness(1.14) saturate(0.95);
+}
+
+/* Same mint wash and bottom gradient on every tile */
+.ab-concern__overlay {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(180deg, rgb(0 0 0 / 0) 40%, rgb(0 0 0 / 0.72) 100%),
+    rgb(228 236 230 / 0.16);
+}
+
+.ab-concern__content {
+  position: absolute;
+  left: var(--ab-space-4);
+  right: var(--ab-space-4);
+  bottom: var(--ab-space-4);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--ab-space-3);
+}
+
+.ab-concern__label {
+  font-size: 22px;
+  font-weight: var(--ab-font-weight-extrabold);
+  line-height: 1.1;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.ab-concern__view.ab-btn {
+  height: 36px;
+  padding: 0 20px;
+  font-size: 12px;
+}
+
+.ab-concern__tile:hover .ab-concern__view,
+.ab-concern__tile:focus-visible .ab-concern__view {
+  background: var(--ab-color-button);
+  border-color: var(--ab-color-button);
+}
+
+@media (hover: hover) {
+  .ab-concern__tile:hover .ab-concern__image {
+    transform: scale(1.03);
+  }
+}
+
+@media (min-width: 1024px) {
+  .ab-concern__tile {
+    height: 560px;
+  }
+
+  .ab-concern__content {
+    left: var(--ab-space-8);
+    right: var(--ab-space-8);
+    bottom: var(--ab-space-8);
+    flex-direction: row;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: var(--ab-space-4);
+  }
+
+  .ab-concern__label {
+    font-size: 32px;
+  }
+
+  .ab-concern__view.ab-btn {
+    height: var(--ab-button-height-lg);
+    padding: 0 var(--ab-button-padding-lg);
+    font-size: var(--ab-text-button-lg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ab-concern__image {
+    transition: none;
+  }
+}

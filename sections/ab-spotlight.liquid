@@ -8,6 +8,8 @@
   An empty product picker falls back to the olive-oil-conditioning collection, then all products.
 {%- endcomment -%}
 
+{{ 'ab-spotlight.css' | asset_url | stylesheet_tag: preload: true }}
+
 {%- liquid
   assign fallback_source = collections['olive-oil-conditioning']
   if fallback_source == blank or fallback_source.products_count == 0

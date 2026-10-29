@@ -1,0 +1,26 @@
+/*
+ * Best Sellers (sections/ab-best-sellers.liquid)
+ * Loaded by the section only when it is on the page.
+ * Mobile-first: base = 0-767px, then 768px (tablet) and 1024px (desktop).
+ */
+
+.ab-best-sellers__carousel {
+  --ab-arrow-top: 150px;
+}
+
+.ab-best-sellers__footer {
+  display: flex;
+  justify-content: center;
+  margin-top: var(--ab-space-4);
+}
+
+@media (min-width: 1024px) {
+  /* Vertically centered on the square product image: half of one card's width. */
+  .ab-best-sellers__carousel {
+    --ab-arrow-top: calc((min(100vw, 1360px) - 2 * var(--ab-side-padding) - 3 * var(--ab-carousel-gap)) / 8);
+  }
+
+  .ab-best-sellers__footer {
+    margin-top: var(--ab-space-12);
+  }
+}
