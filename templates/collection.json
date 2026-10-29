@@ -9,228 +9,155 @@
  */
 {
   "sections": {
-    "section": {
-      "type": "section",
+    "banner": {
+      "type": "ab-collection-banner",
+      "settings": {
+        "background": "cream"
+      }
+    },
+    "products": {
+      "type": "ab-collection-products",
+      "settings": {
+        "per_page": 24,
+        "columns_desktop": "3",
+        "count_label": "[count] Products",
+        "count_label_one": "[count] Product",
+        "showing_label": "Showing [shown] of [total]",
+        "load_more_label": "Load more",
+        "show_filters": true,
+        "show_sort": true,
+        "show_alphabetical": false,
+        "open_first_group": true,
+        "filter_label_desktop": "Filter and sort",
+        "filter_label_mobile": "Filter & sort",
+        "drawer_title": "Filter & sort",
+        "sort_label": "Sort by",
+        "sort_featured_label": "Featured",
+        "sort_best_label": "Best Selling",
+        "sort_newest_label": "Newest",
+        "clear_label": "Clear all",
+        "apply_label": "Show [count] results",
+        "apply_label_one": "Show [count] result",
+        "empty_heading": "No products here yet",
+        "empty_text": "We're adding products to this collection. In the meantime, browse the full Africa's Best range.",
+        "empty_button": "Shop all products",
+        "no_results_heading": "No products match these filters",
+        "no_results_text": "Try removing a filter or clearing them all.",
+        "no_results_button": "Clear filters",
+        "products_heading": "Products"
+      }
+    },
+    "as-seen-on-you": {
+      "type": "ab-ugc",
+      "settings": {
+        "heading": "As seen on you",
+        "subheading": "Share your look with <strong>@africasbesthaircare</strong>",
+        "background": "cream"
+      },
       "blocks": {
-        "text_tqQTNE": {
-          "type": "text",
-          "name": "t:names.title",
+        "video-1": {
+          "type": "video",
           "settings": {
-            "text": "<h1>{{ closest.collection.title }}</h1>",
-            "width": "fit-content",
-            "max_width": "normal",
-            "alignment": "left",
-            "type_preset": "h2",
-            "font": "var(--font-body--family)",
-            "font_size": "",
-            "line_height": "normal",
-            "letter_spacing": "normal",
-            "case": "none",
-            "wrap": "pretty",
-            "background": false,
-            "background_color": "#00000026",
-            "corner_radius": 0,
-            "padding-block-start": 0,
-            "padding-block-end": 0,
-            "padding-inline-start": 0,
-            "padding-inline-end": 0
-          },
-          "blocks": {}
+            "alt": "Customer showing their hair",
+            "caption": ""
+          }
         },
-        "text_twGGkJ": {
-          "type": "text",
-          "name": "t:names.description",
+        "video-2": {
+          "type": "video",
           "settings": {
-            "text": "{{ closest.collection.description }}",
-            "width": "fit-content",
-            "max_width": "normal",
-            "alignment": "left",
-            "type_preset": "rte",
-            "font": "var(--font-body--family)",
-            "font_size": "",
-            "line_height": "normal",
-            "letter_spacing": "normal",
-            "case": "none",
-            "wrap": "pretty",
-            "background": false,
-            "background_color": "#00000026",
-            "corner_radius": 0,
-            "padding-block-start": 0,
-            "padding-block-end": 0,
-            "padding-inline-start": 0,
-            "padding-inline-end": 0
-          },
-          "blocks": {}
+            "alt": "Customer showing their hair",
+            "caption": ""
+          }
+        },
+        "video-3": {
+          "type": "video",
+          "settings": {
+            "alt": "Customer showing their hair",
+            "caption": ""
+          }
+        },
+        "video-4": {
+          "type": "video",
+          "settings": {
+            "alt": "Customer showing their hair",
+            "caption": ""
+          }
+        },
+        "video-5": {
+          "type": "video",
+          "settings": {
+            "alt": "Customer showing their hair",
+            "caption": ""
+          }
         }
       },
       "block_order": [
-        "text_tqQTNE",
-        "text_twGGkJ"
-      ],
-      "name": "t:names.heading",
-      "settings": {
-        "content_direction": "column",
-        "vertical_on_mobile": true,
-        "horizontal_alignment": "flex-start",
-        "vertical_alignment": "center",
-        "align_baseline": false,
-        "horizontal_alignment_flex_direction_column": "flex-start",
-        "vertical_alignment_flex_direction_column": "center",
-        "gap": 12,
-        "section_width": "page-width",
-        "section_height": "",
-        "section_height_custom": 50,
-        "background_media": "none",
-        "video_position": "cover",
-        "background_image_position": "cover",
-        "toggle_overlay": false,
-        "overlay_color": "#00000026",
-        "overlay_style": "solid",
-        "gradient_direction": "to top",
-        "border": "none",
-        "border_width": 1,
-        "border_opacity": 100,
-        "border_radius": 0,
-        "padding-block-start": 48,
-        "padding-block-end": 48
-      }
+        "video-1",
+        "video-2",
+        "video-3",
+        "video-4",
+        "video-5"
+      ]
     },
-    "main": {
-      "type": "main-collection",
+    "faq": {
+      "type": "ab-faq",
+      "settings": {
+        "heading": "Frequently asked questions",
+        "background": "white",
+        "open_first": true,
+        "use_metafield": true,
+        "structured_data": true
+      },
       "blocks": {
-        "filters": {
-          "type": "filters",
-          "static": true,
+        "q1": {
+          "type": "question",
           "settings": {
-            "enable_filtering": true,
-            "filter_style": "horizontal",
-            "filter_width": "centered",
-            "text_label_case": "default",
-            "show_swatch_label": false,
-            "show_filter_label": false,
-            "enable_sorting": true,
-            "enable_grid_density": true,
-            "padding-block-start": 8,
-            "padding-block-end": 8,
-            "padding-inline-start": 0,
-            "padding-inline-end": 0,
-            "facets_margin_bottom": 8,
-            "facets_margin_right": 20
-          },
-          "blocks": {}
+            "question": "Where can I buy Africa's Best products?",
+            "answer": "<p>Africa's Best is sold at retail partners including Walmart, Target, Family Dollar and local beauty supply stores. Use Where to Buy to find a store near you.</p>"
+          }
         },
-        "product-card": {
-          "type": "_product-card",
-          "static": true,
+        "q2": {
+          "type": "question",
           "settings": {
-            "product_card_gap": 4,
-            "border": "none",
-            "border_width": 1,
-            "border_opacity": 100,
-            "border_radius": 0,
-            "padding-block-start": 0,
-            "padding-block-end": 0,
-            "padding-inline-start": 0,
-            "padding-inline-end": 0
-          },
-          "blocks": {
-            "card-gallery": {
-              "type": "_product-card-gallery",
-              "settings": {
-                "image_ratio": "adapt",
-                "border": "none",
-                "border_width": 1,
-                "border_opacity": 100,
-                "border_radius": 0,
-                "padding-block-start": 0,
-                "padding-block-end": 0,
-                "padding-inline-start": 0,
-                "padding-inline-end": 0
-              },
-              "blocks": {}
-            },
-            "product_title_4nY4eT": {
-              "type": "product-title",
-              "name": "t:names.product_title",
-              "settings": {
-                "width": "100%",
-                "max_width": "normal",
-                "alignment": "left",
-                "type_preset": "paragraph",
-                "font": "var(--font-body--family)",
-                "font_size": "1rem",
-                "line_height": "normal",
-                "letter_spacing": "normal",
-                "case": "none",
-                "wrap": "pretty",
-                "background": false,
-                "background_color": "#00000026",
-                "corner_radius": 0,
-                "padding-block-start": 4,
-                "padding-block-end": 0,
-                "padding-inline-start": 0,
-                "padding-inline-end": 0
-              },
-              "blocks": {}
-            },
-            "price_EzJzMm": {
-              "type": "price",
-              "settings": {
-                "show_sale_price_first": true,
-                "show_installments": false,
-                "show_tax_info": false,
-                "type_preset": "h6",
-                "width": "100%",
-                "alignment": "left",
-                "font": "var(--font-body--family)",
-                "font_size": "1rem",
-                "line_height": "normal",
-                "letter_spacing": "normal",
-                "case": "none",
-                "padding-block-start": 0,
-                "padding-block-end": 0,
-                "padding-inline-start": 0,
-                "padding-inline-end": 0
-              },
-              "blocks": {}
-            },
-            "swatches": {
-              "type": "swatches",
-              "name": "t:names.swatches",
-              "settings": {
-                "product_swatches_alignment": "flex-start",
-                "product_swatches_padding_top": 4,
-                "product_swatches_padding_bottom": 0,
-                "product_swatches_padding_left": 0,
-                "product_swatches_padding_right": 0
-              }
-            }
-          },
-          "block_order": [
-            "card-gallery",
-            "product_title_4nY4eT",
-            "price_EzJzMm",
-            "swatches"
-          ]
+            "question": "Which product is right for my hair?",
+            "answer": "<p>Start with your main goal: growth, moisture, scalp care or repair. Each collection groups products for that need, and every product page explains how to use it.</p>"
+          }
+        },
+        "q3": {
+          "type": "question",
+          "settings": {
+            "question": "How often should I use these products?",
+            "answer": "<p>It depends on the product. You'll find directions on each product page and on the label.</p>"
+          }
+        },
+        "q4": {
+          "type": "question",
+          "settings": {
+            "question": "Can I use these products on protective styles?",
+            "answer": "<p>Many of our oils and moisturizers can be used on the scalp and hair between braids, twists or locs. Check each product page for directions.</p>"
+          }
+        },
+        "q5": {
+          "type": "question",
+          "settings": {
+            "question": "Do you make products for kids?",
+            "answer": "<p>Yes. Our Kids collection has gentle formulas made for little curls and coils.</p>"
+          }
         }
       },
-      "settings": {
-        "layout_type": "grid",
-        "product_card_size": "medium",
-        "mobile_product_card_size": "small",
-        "product_grid_width": "centered",
-        "full_width_on_mobile": true,
-        "columns_gap_horizontal": 16,
-        "columns_gap_vertical": 24,
-        "padding-inline-start": 0,
-        "padding-inline-end": 0,
-        "padding-block-start": 0,
-        "padding-block-end": 32
-      }
+      "block_order": [
+        "q1",
+        "q2",
+        "q3",
+        "q4",
+        "q5"
+      ]
     }
   },
   "order": [
-    "section",
-    "main"
+    "banner",
+    "products",
+    "as-seen-on-you",
+    "faq"
   ]
 }

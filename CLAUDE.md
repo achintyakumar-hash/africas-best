@@ -111,6 +111,7 @@ assets/ab-<section>.css          one stylesheet per section, loaded by that sect
 assets/ab-video-cards.js         As Seen On You play/pause (loaded by ab-ugc)
 assets/ab-marquee.js             scrolling text pause button (loaded by ab-marquee)
 assets/ab-product-card.css       product card + product grid/carousel (loaded by sections with cards)
+assets/ab-collection.js          collection filter/sort/load more via the Section Rendering API (ab-collection-products)
 snippets/ab-button.liquid        the single button component (primary/secondary/on-image/link)
 snippets/ab-image.liquid         responsive image + design-photo fallback + empty-state placeholder
 snippets/ab-fallback-url.liquid  placeholder photo URLs used until real images are uploaded
@@ -143,6 +144,14 @@ Pages: about-us, where-to-buy, contact, faq, hair-care-guide, accessibility-poli
 ### Breakpoint names
 - `--ab-bp-tablet: 768px`, `--ab-bp-desktop: 1024px`. CSS custom properties can't be used in
   media queries, so write the literal values `768px` / `1024px`.
+
+### Collection page
+- `templates/collection.json`: ab-collection-banner, ab-collection-products, ab-ugc, ab-faq.
+- Filters come from Search & Discovery (`collection.filters`). Never render `price_range` filters or
+  price sorts. Filter/sort changes re-render `ab-collection-products` with `?section_id=` and keep
+  the URL in sync.
+- Per-collection FAQ: metafield `custom.faq` (list of `faq` metaobjects with `question` and
+  `answer` fields). `ab-faq` with "Use the page's own FAQ" falls back to its blocks.
 
 ### Product data used by the product card
 - Badge: metafield `custom.badge` (single line text, e.g. "Best Seller" or "New"). Falls back to
