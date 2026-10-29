@@ -1,0 +1,101 @@
+/*
+ * Collection banner (sections/ab-collection-banner.liquid)
+ * Loaded by the section only when it is on the page.
+ * Mobile-first: base = 0-767px, then 768px (tablet) and 1024px (desktop).
+ */
+
+/* Mobile/tablet: white, rounded photo inside the side padding, text below. */
+.ab-collection-banner {
+  padding-top: var(--ab-space-6);
+  background: var(--ab-color-white);
+}
+
+.ab-collection-banner__media {
+  position: relative;
+  height: 280px;
+  margin: 0 var(--ab-side-padding);
+  overflow: hidden;
+  border-radius: var(--ab-radius-tile);
+  background: var(--ab-color-placeholder);
+}
+
+.ab-collection-banner__image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: var(--ab-banner-position, center 40%);
+}
+
+.ab-collection-banner__card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ab-space-2);
+  padding: var(--ab-space-6) 0 var(--ab-space-2);
+}
+
+.ab-collection-banner .ab-collection-banner__title {
+  font-size: 30px;
+  font-weight: var(--ab-font-weight-extrabold);
+  line-height: 1.1;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.ab-collection-banner__text {
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+.ab-collection-banner__text > * + * {
+  margin-top: 0.75em;
+}
+
+@media (min-width: 768px) {
+  .ab-collection-banner__media {
+    height: 360px;
+  }
+
+  .ab-collection-banner__card {
+    max-width: 640px;
+  }
+}
+
+/* Desktop: full-bleed 420px photo, white title block overlapping its bottom-left. */
+@media (min-width: 1024px) {
+  .ab-collection-banner {
+    padding-top: 0;
+  }
+
+  .ab-collection-banner.ab-bg--cream {
+    background: var(--ab-color-cream);
+  }
+
+  .ab-collection-banner__media {
+    height: 420px;
+    margin: 0;
+    border-radius: 0;
+  }
+
+  .ab-collection-banner__card {
+    position: relative;
+    gap: var(--ab-space-4);
+    width: 640px;
+    max-width: 100%;
+    margin-top: -140px;
+    padding: var(--ab-space-12);
+    border-radius: var(--ab-radius-card);
+    background: var(--ab-color-white);
+  }
+
+  .ab-collection-banner .ab-collection-banner__title {
+    font-size: 56px;
+    line-height: 1.05;
+    letter-spacing: 0.03em;
+  }
+
+  .ab-collection-banner__text {
+    font-size: 16px;
+  }
+}
