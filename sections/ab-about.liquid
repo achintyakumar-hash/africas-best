@@ -39,9 +39,10 @@
         <p class="ab-about__text">{{ section.settings.text }}</p>
       {%- endif -%}
       {%- if section.settings.button_label != blank -%}
+        {%- assign about_url = section.settings.button_link | default: '/pages/about-us' -%}
         {%- render 'ab-button',
           label: section.settings.button_label,
-          url: section.settings.button_link,
+          url: about_url,
           style: 'on-image',
           full_width_mobile: true
         -%}
@@ -87,7 +88,7 @@
       "info": "Darkens the photo so the white text stays readable (minimum 55%).",
       "min": 55,
       "max": 80,
-      "step": 2,
+      "step": 1,
       "unit": "%",
       "default": 62
     },
@@ -113,7 +114,7 @@
       "type": "url",
       "id": "button_link",
       "label": "Button link",
-      "default": "/pages/about-us"
+      "info": "Leave empty to link to /pages/about-us."
     }
   ],
   "presets": [
