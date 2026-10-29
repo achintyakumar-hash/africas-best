@@ -1,0 +1,137 @@
+{%- comment -%}
+  Our Best Sellers / You may also like (FINAL / Product Page, below What's Inside).
+  Same layout and product card as the homepage Best Sellers: desktop 4 cards in a row, mobile/
+  tablet a swipe row of 169px (200px tablet) cards with dots.
+  Source: Shopify product recommendations for the current product, loaded after the page
+  through the recommendations endpoint. Until they arrive, or when Shopify has none, the
+  fallback collection is shown (the picked collection, else best-sellers, else all products).
+  The current product is never shown.
+{%- endcomment -%}
+
+{{ 'ab-product-card.css' | asset_url | stylesheet_tag: preload: true }}
+{{ 'ab-best-sellers.css' | asset_url | stylesheet_tag: preload: true }}
+<script src="{{ 'ab-carousel.js' | asset_url }}" type="module"></script>
+<script src="{{ 'ab-recommendations.js' | asset_url }}" type="module"></script>
+
+{%- liquid
+  assign limit = section.settings.limit
+  assign use_recommendations = false
+  if section.settings.source == 'recommendations' and recommendations.performed? and recommendations.products_count > 0
+    assign use_recommendations = true
+  endif
+
+  assign fallback = section.settings.collection
+  if fallback == blank
+    assign fallback = collections['best-sellers']
+  endif
+  if fallback == blank or fallback.products_count == 0
+    assign fallback = collections.all
+  endif
+-%}
+
+<section
+  class="ab-scope ab-best-sellers ab-recommendations ab-section ab-bg--{{ section.settings.background }}"
+  {% if section.settings.source == 'recommendations' and product %}
+    data-ab-recommendations
+    data-url="{{ routes.product_recommendations_url }}?section_id={{ section.id }}&product_id={{ product.id }}&limit={{ limit }}&intent={{ section.settings.intent }}"
+  {% endif %}
+>
+  <div class="ab-container">
+    {%- if section.settings.heading != blank -%}
+      <div class="ab-section-header ab-section-header--center">
+        <h2 class="ab-section-heading">{{ section.settings.heading }}</h2>
+      </div>
+    {%- endif -%}
+
+    <ab-carousel
+      class="ab-carousel--products ab-best-sellers__carousel"
+      data-label="{{ section.settings.heading | escape }}"
+      data-ab-recommendations-carousel
+      {% if use_recommendations %}data-recommended{% endif %}
+    >
+      <ul class="ab-carousel__track" role="list">
+        {%- if use_recommendations -%}
+          {%- for item in recommendations.products limit: limit -%}
+            <li class="ab-carousel__slide">{% render 'ab-product-card', product: item %}</li>
+          {%- endfor -%}
+        {%- else -%}
+          {%- assign shown = 0 -%}
+          {%- for item in fallback.products -%}
+            {%- if product and item.id == product.id -%}{%- continue -%}{%- endif -%}
+            <li class="ab-carousel__slide">{% render 'ab-product-card', product: item %}</li>
+            {%- assign shown = shown | plus: 1 -%}
+            {%- if shown >= limit -%}{%- break -%}{%- endif -%}
+          {%- endfor -%}
+        {%- endif -%}
+      </ul>
+      {%- render 'ab-carousel-controls', label: 'products' -%}
+    </ab-carousel>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "AB: Recommendations",
+  "tag": "div",
+  "class": "ab-product-recommendations-section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Our best sellers"
+    },
+    {
+      "type": "select",
+      "id": "source",
+      "label": "Products",
+      "options": [
+        { "value": "recommendations", "label": "Shopify recommendations for this product" },
+        { "value": "collection", "label": "Collection below" }
+      ],
+      "default": "recommendations"
+    },
+    {
+      "type": "select",
+      "id": "intent",
+      "label": "Recommendation type",
+      "info": "Related: similar products. Complementary: products set in the Search & Discovery app as going well together.",
+      "options": [
+        { "value": "related", "label": "Related" },
+        { "value": "complementary", "label": "Complementary" }
+      ],
+      "default": "related"
+    },
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "Collection",
+      "info": "Shown while recommendations load and when Shopify has none. Leave empty to use the best-sellers collection."
+    },
+    {
+      "type": "range",
+      "id": "limit",
+      "label": "Number of products",
+      "min": 4,
+      "max": 10,
+      "step": 1,
+      "default": 4
+    },
+    {
+      "type": "select",
+      "id": "background",
+      "label": "Background",
+      "options": [
+        { "value": "white", "label": "White" },
+        { "value": "cream", "label": "Cream" }
+      ],
+      "default": "white"
+    }
+  ],
+  "presets": [
+    {
+      "name": "AB: Recommendations"
+    }
+  ]
+}
+{% endschema %}
