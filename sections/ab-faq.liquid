@@ -15,12 +15,15 @@
     a "question" (single line text) and an "answer" (rich text or multi-line text) field.
     Falls back to the section's own question blocks.
   endcomment
-  assign faq_entries = blank
+  assign faq_entries = ''
   if section.settings.use_metafield
-    if collection
-      assign faq_entries = collection.metafields.custom.faq.value
-    elsif product
+    comment
+      Product first: a product opened from a collection URL also has a collection object.
+    endcomment
+    if product
       assign faq_entries = product.metafields.custom.faq.value
+    elsif collection
+      assign faq_entries = collection.metafields.custom.faq.value
     endif
   endif
   assign use_entries = false

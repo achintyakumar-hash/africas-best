@@ -58,7 +58,7 @@
     endfor
   endif
   if card_badge == 'none'
-    assign card_badge = blank
+    assign card_badge = ''
   endif
   assign card_badge_class = 'ab-badge ab-card__badge'
   assign badge_lower = card_badge | downcase
@@ -69,8 +69,8 @@
   comment
     Rating, normalised to a 5-point scale
   endcomment
-  assign card_rating = blank
-  assign card_rating_count = blank
+  assign card_rating = ''
+  assign card_rating_count = ''
   if settings.ab_card_show_rating
     assign rating_metafield = product.metafields.reviews.rating.value
     if rating_metafield != blank
