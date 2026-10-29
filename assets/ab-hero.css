@@ -49,7 +49,7 @@
 }
 
 .ab-hero__overlay {
-  background: linear-gradient(180deg, rgb(0 0 0 / 0) 20%, rgb(0 0 0 / 0.82) 72%);
+  background: linear-gradient(180deg, rgb(0 0 0 / 0) 20%, rgb(0 0 0 / var(--ab-hero-overlay, 0.82)) 72%);
 }
 
 .ab-hero__content-wrap {
@@ -168,10 +168,11 @@
   }
 
   .ab-hero__overlay {
+    /* Design: 0.82 at the left edge, 0.6 at 35%, clear by 68%. The setting scales both stops. */
     background: linear-gradient(
       90deg,
-      rgb(10 8 6 / 0.82) 0%,
-      rgb(10 8 6 / 0.6) 35%,
+      rgb(10 8 6 / var(--ab-hero-overlay, 0.82)) 0%,
+      rgb(10 8 6 / calc(var(--ab-hero-overlay, 0.82) * 0.73)) 35%,
       rgb(10 8 6 / 0) 68%
     );
   }

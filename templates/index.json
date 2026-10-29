@@ -5,7 +5,8 @@
       "settings": {
         "label": "Featured",
         "autoplay": true,
-        "speed": 6
+        "speed": 6,
+        "overlay_opacity": 82
       },
       "blocks": {
         "slide-1": {

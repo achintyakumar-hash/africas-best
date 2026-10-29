@@ -20,10 +20,8 @@
   assign heading_id = 'AbReviewsHeading-' | append: section.id
 -%}
 
-<section
-  class="ab-scope ab-reviews ab-section ab-bg--{{ section.settings.background }}"
-  aria-labelledby="{{ heading_id }}"
->
+{%- comment -%} The carousel inside is the labelled region, so the section itself isn't a second landmark. {%- endcomment -%}
+<section class="ab-scope ab-reviews ab-section ab-bg--{{ section.settings.background }}">
   <div class="ab-container">
     <ab-carousel class="ab-reviews__carousel" data-label="{{ section.settings.heading | escape }}">
       <div class="ab-reviews__layout">

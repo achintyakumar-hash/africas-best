@@ -18,7 +18,7 @@
   endif
 -%}
 
-<section class="ab-scope ab-hero">
+<section class="ab-scope ab-hero ab-on-dark" style="--ab-hero-overlay: {{ section.settings.overlay_opacity | divided_by: 100.0 }};">
   <ab-carousel
     class="ab-hero__carousel ab-carousel--on-image"
     data-label="{{ section.settings.label | escape }}"
@@ -193,6 +193,17 @@
       "id": "label",
       "label": "Slideshow name for screen readers",
       "default": "Featured"
+    },
+    {
+      "type": "range",
+      "id": "overlay_opacity",
+      "label": "Overlay darkness",
+      "info": "Darkens the photo behind the text so white text stays readable. Increase it for light photos.",
+      "min": 60,
+      "max": 95,
+      "step": 1,
+      "unit": "%",
+      "default": 82
     },
     {
       "type": "checkbox",

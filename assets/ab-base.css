@@ -90,8 +90,11 @@ body {
   outline: none;
 }
 
+/* White focus ring on dark green and on photos. --ab-focus-ring is re-declared because a
+   custom property that references another is resolved where it is declared (:root). */
 .ab-on-dark {
   --ab-color-focus: var(--ab-color-white);
+  --ab-focus-ring: 2px solid var(--ab-color-white);
 }
 
 .ab-img--failed {
@@ -186,6 +189,7 @@ html.ab-scroll-locked body {
   background: var(--ab-color-primary);
   color: var(--ab-color-white);
   --ab-color-focus: var(--ab-color-white);
+  --ab-focus-ring: 2px solid var(--ab-color-white);
 }
 
 /* ---------- Shared typography ---------- */
@@ -269,4 +273,19 @@ cart-drawer-component,
 shopify-account,
 .header-actions__cart-icon {
   display: none !important;
+}
+
+/* ---------- Reduced motion ----------
+ * Safety net for every component: no animated transitions or smooth scrolling.
+ * (Autoplay and the scrolling text band are also switched off in their own CSS/JS.)
+ */
+@media (prefers-reduced-motion: reduce) {
+  .ab-scope *,
+  .ab-scope *::before,
+  .ab-scope *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
