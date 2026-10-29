@@ -1,0 +1,543 @@
+{%- comment -%}
+  Collection products (FINAL / Collection Page): toolbar, filter & sort drawer, product grid,
+  "Showing X of Y", load more and the empty states.
+
+  Desktop: toolbar ("Filter and sort" pill + product count, divider below), 3-column grid
+  (48px row / 24px column gaps), "Showing X of Y" centered below.
+  Mobile/tablet: the toolbar sticks under the header; 2-column grid of 169px cards (3 columns on
+  tablet). Filter & sort opens as a bottom sheet (MOBILE STATES: Filter & Sort - Open); on desktop
+  the same panel slides in from the left.
+
+  Filters come from Shopify Search & Discovery (collection.filters); price filters and price
+  sorting are never shown. Changing a filter or sort updates the grid through the Section
+  Rendering API and keeps the URL in sync (assets/ab-collection.js). Without JavaScript the form
+  submits normally.
+{%- endcomment -%}
+
+{{ 'ab-product-card.css' | asset_url | stylesheet_tag: preload: true }}
+{{ 'ab-collection-products.css' | asset_url | stylesheet_tag: preload: true }}
+<script src="{{ 'ab-collection.js' | asset_url }}" type="module"></script>
+
+{%- paginate collection.products by section.settings.per_page -%}
+  {%- liquid
+    assign drawer_id = 'AbFilters-' | append: section.id
+    assign results_id = 'AbResults-' | append: section.id
+
+    comment
+      Retail-only: drop price filters and price sorts.
+    endcomment
+    assign active_filter_count = 0
+    assign has_filters = false
+    for filter in collection.filters
+      if filter.type != 'price_range'
+        assign has_filters = true
+        assign active_filter_count = active_filter_count | plus: filter.active_values.size
+      endif
+    endfor
+
+    comment
+      No toolbar for a collection without any products (nothing to filter or sort).
+    endcomment
+    assign show_toolbar = false
+    if section.settings.show_filters or section.settings.show_sort
+      if collection.all_products_count > 0
+        assign show_toolbar = true
+      endif
+    endif
+
+    assign current_sort = collection.sort_by | default: collection.default_sort_by
+    assign shown_count = paginate.current_offset | plus: collection.products.size
+    assign total_count = collection.products_count
+
+    if total_count == 1
+      assign count_label = section.settings.count_label_one | replace: '[count]', total_count
+    else
+      assign count_label = section.settings.count_label | replace: '[count]', total_count
+    endif
+
+    assign clear_url = collection.url
+    if collection.sort_by != blank and collection.sort_by != collection.default_sort_by
+      assign clear_url = collection.url | append: '?sort_by=' | append: collection.sort_by
+    endif
+  -%}
+
+  <section
+    class="ab-scope ab-collection"
+    data-ab-collection
+    data-section-id="{{ section.id }}"
+    data-url="{{ collection.url }}"
+  >
+    {%- if show_toolbar -%}
+      <div class="ab-collection__toolbar-wrap">
+        <div class="ab-container">
+          <div class="ab-collection__toolbar">
+          <button
+            type="button"
+            class="ab-btn ab-btn--secondary ab-btn--sm ab-collection__filter-button"
+            data-ab-open="{{ drawer_id }}"
+            aria-controls="{{ drawer_id }}"
+            aria-expanded="false"
+            aria-haspopup="dialog"
+          >
+            {%- render 'ab-icon', name: 'tune', size: 20 -%}
+            <span class="ab-collection__filter-label ab-collection__filter-label--desktop">{{ section.settings.filter_label_desktop }}</span>
+            <span class="ab-collection__filter-label ab-collection__filter-label--mobile">{{ section.settings.filter_label_mobile }}</span>
+            {%- if active_filter_count > 0 -%}
+              <span class="ab-collection__filter-count" data-ab-active-count>
+                <span class="ab-visually-hidden">, </span>{{ active_filter_count }}<span class="ab-visually-hidden"> active</span>
+              </span>
+            {%- endif -%}
+          </button>
+          <p class="ab-collection__count" data-ab-count aria-live="polite">{{ count_label }}</p>
+          </div>
+        </div>
+      </div>
+    {%- endif -%}
+
+    <div id="{{ results_id }}" class="ab-collection__results" data-ab-results>
+      <div class="ab-container">
+        <h2 class="ab-visually-hidden">{{ section.settings.products_heading | default: 'Products' }}</h2>
+        {%- if collection.products.size > 0 -%}
+          <ul
+            class="ab-product-grid ab-collection__grid"
+            role="list"
+            style="--ab-grid-columns-desktop: {{ section.settings.columns_desktop }};"
+            data-ab-grid
+          >
+            {%- for product in collection.products -%}
+              {%- liquid
+                assign card_lazy = true
+                if paginate.current_page == 1 and forloop.index <= 3
+                  assign card_lazy = false
+                endif
+              -%}
+              <li class="ab-collection__item">
+                {%- render 'ab-product-card', product: product, lazy: card_lazy, sizes: '(min-width: 1024px) 300px, (min-width: 768px) 30vw, 169px' -%}
+              </li>
+            {%- endfor -%}
+          </ul>
+
+          <div class="ab-collection__footer" data-ab-pagination>
+            <p class="ab-collection__showing">
+              {{- section.settings.showing_label | replace: '[shown]', shown_count | replace: '[total]', total_count -}}
+            </p>
+            {%- if paginate.next -%}
+              {%- render 'ab-button',
+                label: section.settings.load_more_label,
+                url: paginate.next.url,
+                style: 'secondary',
+                attributes: 'data-ab-load-more',
+                full_width_mobile: true
+              -%}
+            {%- endif -%}
+          </div>
+        {%- elsif active_filter_count > 0 -%}
+          <div class="ab-collection__empty" data-ab-empty>
+            <h2 class="ab-collection__empty-heading">{{ section.settings.no_results_heading }}</h2>
+            {%- if section.settings.no_results_text != blank -%}
+              <p class="ab-collection__empty-text">{{ section.settings.no_results_text }}</p>
+            {%- endif -%}
+            {%- render 'ab-button',
+              label: section.settings.no_results_button,
+              url: clear_url,
+              style: 'secondary',
+              attributes: 'data-ab-clear-filters'
+            -%}
+          </div>
+        {%- else -%}
+          <div class="ab-collection__empty" data-ab-empty>
+            <h2 class="ab-collection__empty-heading">{{ section.settings.empty_heading }}</h2>
+            {%- if section.settings.empty_text != blank -%}
+              <p class="ab-collection__empty-text">{{ section.settings.empty_text }}</p>
+            {%- endif -%}
+            {%- assign all_url = section.settings.empty_link | default: '/collections/all' -%}
+            {%- render 'ab-button', label: section.settings.empty_button, url: all_url, style: 'primary' -%}
+          </div>
+        {%- endif -%}
+      </div>
+    </div>
+
+    {%- if show_toolbar -%}
+      {%- comment -%} Filter & sort drawer: bottom sheet on mobile/tablet, side panel on desktop {%- endcomment -%}
+      <div
+        id="{{ drawer_id }}"
+        class="ab-filters"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="{{ drawer_id }}-title"
+        hidden
+        data-ab-filters
+      >
+        <div class="ab-filters__backdrop" data-ab-close></div>
+        <form
+          class="ab-filters__panel"
+          action="{{ collection.url }}"
+          method="get"
+          data-ab-filter-form
+          data-default-sort="{{ collection.default_sort_by }}"
+        >
+          <div class="ab-filters__handle" aria-hidden="true"><span></span></div>
+          <div class="ab-filters__header">
+            <h2 id="{{ drawer_id }}-title" class="ab-filters__title">{{ section.settings.drawer_title }}</h2>
+            <button type="button" class="ab-icon-btn" data-ab-close aria-label="Close {{ section.settings.drawer_title | escape }}">
+              {%- render 'ab-icon', name: 'close', size: 26 -%}
+            </button>
+          </div>
+
+          <div class="ab-filters__body" data-ab-filter-body>
+            {%- if section.settings.show_sort -%}
+              <fieldset class="ab-filters__sort">
+                <legend class="ab-filters__label">{{ section.settings.sort_label }}</legend>
+                {%- for option in collection.sort_options -%}
+                  {%- liquid
+                    if option.value contains 'price'
+                      continue
+                    endif
+                    if option.value contains 'title' and section.settings.show_alphabetical == false
+                      continue
+                    endif
+                    if option.value == 'created-ascending'
+                      continue
+                    endif
+                    case option.value
+                      when 'manual'
+                        assign sort_name = section.settings.sort_featured_label | default: option.name
+                      when 'best-selling'
+                        assign sort_name = section.settings.sort_best_label | default: option.name
+                      when 'created-descending'
+                        assign sort_name = section.settings.sort_newest_label | default: option.name
+                      else
+                        assign sort_name = option.name
+                    endcase
+                    assign sort_id = drawer_id | append: '-sort-' | append: option.value
+                  -%}
+                  <label class="ab-filters__option" for="{{ sort_id }}">
+                    <input
+                      type="radio"
+                      id="{{ sort_id }}"
+                      class="ab-filters__radio"
+                      name="sort_by"
+                      value="{{ option.value }}"
+                      {% if option.value == current_sort %}
+                        checked
+                      {% endif %}
+                    >
+                    <span class="ab-filters__radio-mark" aria-hidden="true"></span>
+                    <span class="ab-filters__option-label">{{ sort_name }}</span>
+                  </label>
+                {%- endfor -%}
+              </fieldset>
+            {%- endif -%}
+
+            {%- unless section.settings.show_filters -%}
+              {%- comment -%} Filters hidden: keep any active ones from the URL when the sort changes {%- endcomment -%}
+              {%- for filter in collection.filters -%}
+                {%- for value in filter.active_values -%}
+                  <input type="hidden" name="{{ value.param_name }}" value="{{ value.value }}">
+                {%- endfor -%}
+              {%- endfor -%}
+            {%- endunless -%}
+
+            {%- if section.settings.show_filters and has_filters -%}
+              <div class="ab-filters__groups">
+                {%- assign first_group = true -%}
+                {%- for filter in collection.filters -%}
+                  {%- if filter.type == 'price_range' -%}{%- continue -%}{%- endif -%}
+                  {%- liquid
+                    assign group_id = drawer_id | append: '-' | append: filter.param_name | handleize
+                    assign group_open = false
+                    if filter.active_values.size > 0
+                      assign group_open = true
+                    elsif first_group and section.settings.open_first_group
+                      assign group_open = true
+                    endif
+                    assign first_group = false
+                  -%}
+                  <details
+                    class="ab-filters__group"
+                    id="{{ group_id }}"
+                    {% if group_open %}
+                      open
+                    {% endif %}
+                  >
+                    <summary class="ab-filters__group-title">
+                      <span>{{ filter.label }}</span>
+                      <span class="ab-accordion__icon">
+                        {%- render 'ab-icon', name: 'add', size: 22 -%}
+                        {%- render 'ab-icon', name: 'remove', size: 22 -%}
+                      </span>
+                    </summary>
+                    <fieldset class="ab-filters__values">
+                      <legend class="ab-visually-hidden">{{ filter.label }}</legend>
+                      {%- for value in filter.values -%}
+                        {%- assign value_id = group_id | append: '-' | append: value.value | handleize -%}
+                        {%- assign value_disabled = false -%}
+                        {%- if value.count == 0 and value.active == false -%}{%- assign value_disabled = true -%}{%- endif -%}
+                        <label class="ab-filters__option{% if value_disabled %} is-disabled{% endif %}" for="{{ value_id }}">
+                          <input
+                            type="checkbox"
+                            id="{{ value_id }}"
+                            class="ab-filters__checkbox"
+                            name="{{ value.param_name }}"
+                            value="{{ value.value }}"
+                            {% if value.active %}
+                              checked
+                            {% endif %}
+                            {% if value_disabled %}
+                              disabled
+                            {% endif %}
+                          >
+                          <span class="ab-filters__check-mark" aria-hidden="true">
+                            {%- render 'ab-icon', name: 'check', size: 16 -%}
+                          </span>
+                          <span class="ab-filters__option-label">{{ value.label }}</span>
+                          <span class="ab-filters__option-count">
+                            <span class="ab-visually-hidden">, </span>({{ value.count }})<span class="ab-visually-hidden"> products</span>
+                          </span>
+                        </label>
+                      {%- endfor -%}
+                    </fieldset>
+                  </details>
+                {%- endfor -%}
+              </div>
+            {%- endif -%}
+          </div>
+
+          <div class="ab-filters__footer">
+            <a href="{{ clear_url }}" class="ab-link ab-filters__clear" data-ab-clear-filters>
+              <span class="ab-link__inner">{{ section.settings.clear_label }}</span>
+            </a>
+            <button type="submit" class="ab-btn ab-btn--primary ab-filters__apply" data-ab-apply>
+              <span data-ab-apply-label>
+                {%- if total_count == 1 -%}
+                  {{- section.settings.apply_label_one | replace: '[count]', total_count -}}
+                {%- else -%}
+                  {{- section.settings.apply_label | replace: '[count]', total_count -}}
+                {%- endif -%}
+              </span>
+            </button>
+          </div>
+        </form>
+      </div>
+    {%- endif -%}
+  </section>
+{%- endpaginate -%}
+
+{% schema %}
+{
+  "name": "AB: Collection products",
+  "tag": "div",
+  "class": "ab-collection-section",
+  "enabled_on": {
+    "templates": ["collection"]
+  },
+  "settings": [
+    {
+      "type": "header",
+      "content": "Grid"
+    },
+    {
+      "type": "range",
+      "id": "per_page",
+      "label": "Products per page",
+      "info": "More products load with the Load more button.",
+      "min": 8,
+      "max": 48,
+      "step": 4,
+      "default": 24
+    },
+    {
+      "type": "select",
+      "id": "columns_desktop",
+      "label": "Columns on desktop",
+      "info": "Mobile shows 2 columns and tablet 3.",
+      "options": [
+        { "value": "3", "label": "3" },
+        { "value": "4", "label": "4" }
+      ],
+      "default": "3"
+    },
+    {
+      "type": "text",
+      "id": "products_heading",
+      "label": "Grid heading for screen readers",
+      "info": "Not shown on screen. Keeps the heading order H1 > H2 > product names.",
+      "default": "Products"
+    },
+    {
+      "type": "text",
+      "id": "count_label",
+      "label": "Product count",
+      "info": "[count] is replaced with the number of products.",
+      "default": "[count] Products"
+    },
+    {
+      "type": "text",
+      "id": "count_label_one",
+      "label": "Product count (1 product)",
+      "default": "[count] Product"
+    },
+    {
+      "type": "text",
+      "id": "showing_label",
+      "label": "Showing text",
+      "info": "[shown] and [total] are replaced with numbers.",
+      "default": "Showing [shown] of [total]"
+    },
+    {
+      "type": "text",
+      "id": "load_more_label",
+      "label": "Load more button",
+      "default": "Load more"
+    },
+    {
+      "type": "header",
+      "content": "Filter and sort"
+    },
+    {
+      "type": "paragraph",
+      "content": "Filters come from Search & Discovery (Apps > Search & Discovery > Filters). Price filters and price sorting are never shown."
+    },
+    {
+      "type": "checkbox",
+      "id": "show_filters",
+      "label": "Show filters",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_sort",
+      "label": "Show sorting",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_alphabetical",
+      "label": "Include A-Z and Z-A sorting",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "open_first_group",
+      "label": "Open the first filter group",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "filter_label_desktop",
+      "label": "Button label (desktop)",
+      "default": "Filter and sort"
+    },
+    {
+      "type": "text",
+      "id": "filter_label_mobile",
+      "label": "Button label (mobile and tablet)",
+      "default": "Filter & sort"
+    },
+    {
+      "type": "text",
+      "id": "drawer_title",
+      "label": "Panel title",
+      "default": "Filter & sort"
+    },
+    {
+      "type": "text",
+      "id": "sort_label",
+      "label": "Sort heading",
+      "default": "Sort by"
+    },
+    {
+      "type": "text",
+      "id": "sort_featured_label",
+      "label": "Featured sort label",
+      "default": "Featured"
+    },
+    {
+      "type": "text",
+      "id": "sort_best_label",
+      "label": "Best selling sort label",
+      "default": "Best Selling"
+    },
+    {
+      "type": "text",
+      "id": "sort_newest_label",
+      "label": "Newest sort label",
+      "default": "Newest"
+    },
+    {
+      "type": "text",
+      "id": "clear_label",
+      "label": "Clear button",
+      "default": "Clear all"
+    },
+    {
+      "type": "text",
+      "id": "apply_label",
+      "label": "Show results button",
+      "info": "[count] is replaced with the number of matching products.",
+      "default": "Show [count] results"
+    },
+    {
+      "type": "text",
+      "id": "apply_label_one",
+      "label": "Show results button (1 product)",
+      "default": "Show [count] result"
+    },
+    {
+      "type": "header",
+      "content": "Empty collection"
+    },
+    {
+      "type": "text",
+      "id": "empty_heading",
+      "label": "Heading",
+      "default": "No products here yet"
+    },
+    {
+      "type": "textarea",
+      "id": "empty_text",
+      "label": "Text",
+      "default": "We're adding products to this collection. In the meantime, browse the full Africa's Best range."
+    },
+    {
+      "type": "text",
+      "id": "empty_button",
+      "label": "Button label",
+      "default": "Shop all products"
+    },
+    {
+      "type": "url",
+      "id": "empty_link",
+      "label": "Button link",
+      "info": "Leave empty to link to all products."
+    },
+    {
+      "type": "header",
+      "content": "No filter results"
+    },
+    {
+      "type": "text",
+      "id": "no_results_heading",
+      "label": "Heading",
+      "default": "No products match these filters"
+    },
+    {
+      "type": "textarea",
+      "id": "no_results_text",
+      "label": "Text",
+      "default": "Try removing a filter or clearing them all."
+    },
+    {
+      "type": "text",
+      "id": "no_results_button",
+      "label": "Button label",
+      "default": "Clear filters"
+    }
+  ],
+  "presets": [
+    {
+      "name": "AB: Collection products"
+    }
+  ]
+}
+{% endschema %}
