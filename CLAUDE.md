@@ -112,6 +112,11 @@ assets/ab-video-cards.js         As Seen On You play/pause (loaded by ab-ugc)
 assets/ab-marquee.js             scrolling text pause button (loaded by ab-marquee)
 assets/ab-product-card.css       product card + product grid/carousel (loaded by sections with cards)
 assets/ab-collection.js          collection filter/sort/load more via the Section Rendering API (ab-collection-products)
+assets/ab-product.js             <ab-product-gallery>, deferred video/3D, size pills (Section Rendering API swap of
+                                 [data-ab-swap] regions), mobile sticky Where to Buy bar (ab-main-product)
+assets/ab-recommendations.js     loads Shopify product recommendations into ab-product-recommendations
+assets/ab-product-reviews.js     <ab-review-pages>: review list pagination (ab-product-reviews)
+snippets/ab-wtb-retailers.liquid retailer rows of the Where to Buy modal / bottom sheet
 snippets/ab-button.liquid        the single button component (primary/secondary/on-image/link)
 snippets/ab-image.liquid         responsive image + design-photo fallback + empty-state placeholder
 snippets/ab-fallback-url.liquid  placeholder photo URLs used until real images are uploaded
@@ -153,6 +158,22 @@ Pages: about-us, where-to-buy, contact, faq, hair-care-guide, accessibility-poli
 - Per-collection FAQ: metafield `custom.faq` (list of `faq` metaobjects with `question` and
   `answer` fields). `ab-faq` with "Use the page's own FAQ" falls back to its blocks.
 
+### Product page
+- `templates/product.json`: ab-main-product, ab-ingredients (What's Inside, product mode), ab-product-recommendations,
+  ab-product-reviews (id `reviews`), ab-faq (product `custom.faq`, falls back to its blocks).
+- Retail-only: no price, quantity, add to cart, payment buttons, or JSON-LD offers. Product JSON-LD has brand,
+  image, sku and aggregateRating (only with reviews).
+- Retailers are `retailer` blocks of ab-main-product (name + logo set once). Each reads its link from a
+  metafield named in the block (`custom.walmart_url`, `custom.target_url`, `custom.family_dollar_url`,
+  `custom.dollar_general_url`, `custom.cvs_url`), on the variant first, then the product. Retailers without a
+  link are hidden. With no links at all, WHERE TO BUY goes to the global Where to Buy page.
+- Other product metafields: `custom.short_description`, `custom.highlights` (list of single line text),
+  `custom.how_to_use` / `custom.ingredients` (rich or multi-line text), `custom.popular_videos` (list of videos),
+  `custom.out_of_stock_at` (list of retailer names), `custom.<retailer>_rating` (text like "4.5 (2,140)"),
+  `custom.key_ingredients` (list of `ingredient` metaobjects: name, image), `custom.whats_inside` (text),
+  `custom.reviews` (list of `product_review` metaobjects: author, date, title, body, rating, verified, helpful,
+  photo), `custom.review_photos` (list of images).
+
 ### Product data used by the product card
 - Badge: metafield `custom.badge` (single line text, e.g. "Best Seller" or "New"). Falls back to
   a product tag `badge:Best Seller` / `badge:New`.
@@ -171,6 +192,9 @@ Pages: about-us, where-to-buy, contact, faq, hair-care-guide, accessibility-poli
     (`<p>`, `<ul>` …).
   - Every setting/block id saved in `templates/*.json` and `sections/*-group.json` must exist in
     the section schema, and blocks must not exceed `max_blocks`.
+  - Section, block and preset `name`s are at most 25 characters.
+- Liquid: to reset a variable use `assign x = ''`, not `blank` or `nil` (the local liquidjs harness treats an
+  assigned `nil` as not blank).
 - Run Shopify theme-check on the repo before you push. It is not committed here; install it
   outside the repo with `npm i @shopify/theme-check-node` and run it through its `check()` API.
   Only fix offenses in `ab-*` files.

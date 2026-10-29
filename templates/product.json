@@ -10,406 +10,245 @@
 {
   "sections": {
     "main": {
-      "type": "product-information",
+      "type": "ab-main-product",
+      "settings": {
+        "show_breadcrumb": true,
+        "summary_from_description": true,
+        "show_rating": true,
+        "reviews_anchor": "reviews",
+        "wtb_label": "Where to buy",
+        "local_label": "Available at Local Beauty Supply Stores",
+        "store_link": "/pages/where-to-buy",
+        "modal_heading": "Where to buy",
+        "buy_label": "Buy now",
+        "view_label": "View",
+        "show_stock": true,
+        "in_stock_label": "In Stock",
+        "out_of_stock_label": "Out of Stock",
+        "local_row_label": "Local Beauty Supply Stores",
+        "find_store_label": "Find a store",
+        "show_sticky_bar": true
+      },
       "blocks": {
-        "media-gallery": {
-          "type": "_product-media-gallery",
-          "static": true,
+        "walmart": {
+          "type": "retailer",
           "settings": {
-            "media_presentation": "grid",
-            "media_columns": "two",
-            "image_gap": 4,
-            "large_first_image": false,
-            "icons_style": "arrow",
-            "slideshow_controls_style": "counter",
-            "slideshow_mobile_controls_style": "dots",
-            "thumbnail_position": "right",
-            "thumbnail_width": 44,
-            "aspect_ratio": "adapt",
-            "constrain_to_viewport": true,
-            "media_fit": "contain",
-            "media_radius": 0,
-            "extend_media": false,
-            "zoom": true,
-            "video_loop": false,
-            "hide_variants": true,
-            "padding-block-start": 0,
-            "padding-block-end": 0,
-            "padding-inline-start": 0,
-            "padding-inline-end": 0
-          },
-          "blocks": {}
+            "title": "Walmart",
+            "logo_height": 24,
+            "url_metafield": "custom.walmart_url",
+            "rating_metafield": "custom.walmart_rating"
+          }
         },
-        "product-details": {
-          "type": "_product-details",
-          "static": true,
+        "target": {
+          "type": "retailer",
           "settings": {
-            "width": "fill",
-            "custom_width": 100,
-            "width_mobile": "fill",
-            "custom_width_mobile": 100,
-            "height": "fit",
-            "details_position": "flex-start",
-            "gap": 28,
-            "sticky_details_desktop": true,
-            "background_media": "none",
-            "video_position": "cover",
-            "background_image_position": "cover",
-            "border": "none",
-            "border_width": 1,
-            "border_opacity": 100,
-            "border_radius": 0,
-            "padding-block-start": 24,
-            "padding-block-end": 24,
-            "padding-inline-start": 0,
-            "padding-inline-end": 0
-          },
-          "blocks": {
-            "group_icgrde": {
-              "type": "group",
-              "name": "t:names.header",
-              "settings": {
-                "content_direction": "column",
-                "vertical_on_mobile": true,
-                "horizontal_alignment": "flex-start",
-                "vertical_alignment": "center",
-                "align_baseline": false,
-                "horizontal_alignment_flex_direction_column": "flex-start",
-                "vertical_alignment_flex_direction_column": "center",
-                "gap": 12,
-                "width": "fill",
-                "custom_width": 100,
-                "width_mobile": "fill",
-                "custom_width_mobile": 100,
-                "height": "fit",
-                "custom_height": 100,
-                "background_media": "none",
-                "video_position": "cover",
-                "background_image_position": "cover",
-                "toggle_overlay": false,
-                "overlay_color": "#00000026",
-                "overlay_style": "solid",
-                "gradient_direction": "to top",
-                "border": "none",
-                "border_width": 1,
-                "border_opacity": 100,
-                "border_radius": 0,
-                "link": "",
-                "open_in_new_tab": false,
-                "placeholder": "",
-                "padding-block-start": 0,
-                "padding-block-end": 0,
-                "padding-inline-start": 0,
-                "padding-inline-end": 0
-              },
-              "blocks": {
-                "text_xpVMaM": {
-                  "type": "text",
-                  "name": "t:names.title",
-                  "settings": {
-                    "text": "<h1>{{ closest.product.title }}</h1>",
-                    "width": "fit-content",
-                    "max_width": "normal",
-                    "alignment": "left",
-                    "type_preset": "h3",
-                    "font": "var(--font-body--family)",
-                    "font_size": "1rem",
-                    "line_height": "normal",
-                    "letter_spacing": "normal",
-                    "case": "none",
-                    "wrap": "pretty",
-                    "background": false,
-                    "background_color": "#00000026",
-                    "corner_radius": 0,
-                    "padding-block-start": 0,
-                    "padding-block-end": 0,
-                    "padding-inline-start": 0,
-                    "padding-inline-end": 0
-                  },
-                  "blocks": {}
-                },
-                "price_tVjtKg": {
-                  "type": "price",
-                  "settings": {
-                    "show_sale_price_first": true,
-                    "show_installments": true,
-                    "show_tax_info": true,
-                    "type_preset": "paragraph",
-                    "width": "100%",
-                    "alignment": "left",
-                    "font": "var(--font-body--family)",
-                    "font_size": "1rem",
-                    "line_height": "normal",
-                    "letter_spacing": "normal",
-                    "case": "none",
-                    "padding-block-start": 4,
-                    "padding-block-end": 0,
-                    "padding-inline-start": 0,
-                    "padding-inline-end": 0
-                  },
-                  "blocks": {}
-                }
-              },
-              "block_order": [
-                "text_xpVMaM",
-                "price_tVjtKg"
-              ]
-            },
-            "divider_VJhene": {
-              "type": "_divider",
-              "name": "t:names.divider",
-              "settings": {
-                "thickness": 1,
-                "corner_radius": "square",
-                "divider_color": "{{ settings.color_palette.color3 }}",
-                "width_percent": 100,
-                "padding-block-start": 0,
-                "padding-block-end": 0
-              },
-              "blocks": {}
-            },
-            "variant_picker_R3rGDr": {
-              "type": "variant-picker",
-              "settings": {
-                "variant_style": "buttons",
-                "show_swatches": false,
-                "alignment": "left",
-                "padding-block-start": 0,
-                "padding-block-end": 0,
-                "padding-inline-start": 0,
-                "padding-inline-end": 0
-              },
-              "blocks": {}
-            },
-            "buy_buttons_eYQEYi": {
-              "type": "buy-buttons",
-              "settings": {
-                "stacking": true,
-                "show_pickup_availability": false,
-                "gift_card_form": true,
-                "padding-block-start": 0,
-                "padding-block-end": 0,
-                "padding-inline-start": 0,
-                "padding-inline-end": 0
-              },
-              "blocks": {
-                "quantity": {
-                  "type": "quantity",
-                  "static": true,
-                  "settings": {},
-                  "blocks": {}
-                },
-                "add-to-cart": {
-                  "type": "add-to-cart",
-                  "static": true,
-                  "settings": {
-                    "style_class": "button"
-                  },
-                  "blocks": {}
-                },
-                "accelerated-checkout": {
-                  "type": "accelerated-checkout",
-                  "static": true,
-                  "settings": {},
-                  "blocks": {}
-                }
-              },
-              "block_order": []
-            },
-            "text_aEtTtq": {
-              "type": "text",
-              "name": "t:names.product_description",
-              "settings": {
-                "text": "{{ closest.product.description }}",
-                "width": "100%",
-                "max_width": "normal",
-                "alignment": "left",
-                "type_preset": "rte",
-                "font": "var(--font-body--family)",
-                "font_size": "",
-                "line_height": "normal",
-                "letter_spacing": "normal",
-                "case": "none",
-                "wrap": "pretty",
-                "background": false,
-                "background_color": "#00000026",
-                "corner_radius": 0,
-                "padding-block-start": 0,
-                "padding-block-end": 0,
-                "padding-inline-start": 0,
-                "padding-inline-end": 0
-              },
-              "blocks": {}
-            }
-          },
-          "block_order": [
-            "group_icgrde",
-            "divider_VJhene",
-            "variant_picker_R3rGDr",
-            "buy_buttons_eYQEYi",
-            "text_aEtTtq"
-          ]
+            "title": "Target",
+            "logo_height": 24,
+            "url_metafield": "custom.target_url",
+            "rating_metafield": "custom.target_rating"
+          }
         },
-        "disclosures": {
-          "type": "disclosures",
+        "family-dollar": {
+          "type": "retailer",
           "settings": {
-            "padding-block-start": 0,
-            "padding-block-end": 0
-          },
-          "blocks": {}
+            "title": "Family Dollar",
+            "logo_height": 24,
+            "url_metafield": "custom.family_dollar_url",
+            "rating_metafield": "custom.family_dollar_rating"
+          }
+        },
+        "dollar-general": {
+          "type": "retailer",
+          "settings": {
+            "title": "Dollar General",
+            "logo_height": 22,
+            "url_metafield": "custom.dollar_general_url",
+            "rating_metafield": "custom.dollar_general_rating"
+          }
+        },
+        "cvs": {
+          "type": "retailer",
+          "settings": {
+            "title": "CVS",
+            "logo_height": 18,
+            "url_metafield": "custom.cvs_url",
+            "rating_metafield": "custom.cvs_rating"
+          }
+        },
+        "overview": {
+          "type": "accordion",
+          "settings": {
+            "title": "Overview",
+            "source": "description",
+            "metafield": "",
+            "open": true
+          }
+        },
+        "how-to-use": {
+          "type": "accordion",
+          "settings": {
+            "title": "How to Use",
+            "source": "metafield",
+            "metafield": "custom.how_to_use",
+            "open": false
+          }
+        },
+        "ingredients": {
+          "type": "accordion",
+          "settings": {
+            "title": "Ingredients",
+            "source": "metafield",
+            "metafield": "custom.ingredients",
+            "open": false
+          }
+        },
+        "videos": {
+          "type": "videos",
+          "settings": {
+            "title": "Popular Videos",
+            "metafield": "custom.popular_videos",
+            "open": true
+          }
         }
       },
       "block_order": [
-        "disclosures"
-      ],
+        "walmart",
+        "target",
+        "family-dollar",
+        "dollar-general",
+        "cvs",
+        "overview",
+        "how-to-use",
+        "ingredients",
+        "videos"
+      ]
+    },
+    "whats-inside": {
+      "type": "ab-ingredients",
       "settings": {
-        "content_width": "content-center-aligned",
-        "desktop_media_position": "left",
-        "equal_columns": false,
-        "limit_details_width": false,
-        "gap": 48,
-        "padding-block-start": 0,
-        "padding-block-end": 0
+        "heading": "What's inside",
+        "text": "<p>For over 20 years, Africa's Best has made moisturizing, nourishing hair care with natural ingredients like olive oil, shea butter, honey, castor oil, egg protein, aloe and clove.</p>",
+        "button_label": "",
+        "background": "cream",
+        "mobile_layout": "grid",
+        "use_metafield": true
+      },
+      "blocks": {
+        "egg-protein": {
+          "type": "ingredient",
+          "settings": {
+            "title": "Egg Protein"
+          }
+        },
+        "olive-oil": {
+          "type": "ingredient",
+          "settings": {
+            "title": "Olive Oil"
+          }
+        },
+        "shea-butter": {
+          "type": "ingredient",
+          "settings": {
+            "title": "Shea Butter"
+          }
+        },
+        "honey": {
+          "type": "ingredient",
+          "settings": {
+            "title": "Honey"
+          }
+        }
+      },
+      "block_order": [
+        "egg-protein",
+        "olive-oil",
+        "shea-butter",
+        "honey"
+      ]
+    },
+    "recommendations": {
+      "type": "ab-product-recommendations",
+      "settings": {
+        "heading": "Our best sellers",
+        "source": "recommendations",
+        "intent": "related",
+        "limit": 4,
+        "background": "white"
       }
     },
-    "product_recommendations_qggXJq": {
-      "type": "product-recommendations",
+    "reviews": {
+      "type": "ab-product-reviews",
+      "settings": {
+        "heading": "Customer reviews",
+        "button_label": "Write a review",
+        "button_link": "/pages/contact",
+        "empty_text": "No reviews yet. Be the first to share how it worked for you.",
+        "verified_label": "Verified Buyer",
+        "per_page": 4,
+        "anchor": "reviews",
+        "background": "cream"
+      }
+    },
+    "faq": {
+      "type": "ab-faq",
+      "settings": {
+        "heading": "Frequently asked questions",
+        "background": "white",
+        "open_first": true,
+        "use_metafield": true,
+        "structured_data": true
+      },
       "blocks": {
-        "text_cbcgyb": {
-          "type": "text",
-          "name": "t:names.header",
+        "q1": {
+          "type": "question",
           "settings": {
-            "text": "<h2>You may also like </h2>",
-            "width": "fit-content",
-            "max_width": "normal",
-            "alignment": "left",
-            "type_preset": "h4",
-            "font": "var(--font-body--family)",
-            "font_size": "",
-            "line_height": "normal",
-            "letter_spacing": "normal",
-            "case": "none",
-            "wrap": "pretty",
-            "background": false,
-            "background_color": "#00000026",
-            "corner_radius": 0,
-            "padding-block-start": 0,
-            "padding-block-end": 0,
-            "padding-inline-start": 0,
-            "padding-inline-end": 0
-          },
-          "blocks": {}
+            "question": "How often should I use it?",
+            "answer": "<p>Follow the directions on the label and in How to Use above. Most of our conditioners and treatments can be used every wash day.</p>"
+          }
         },
-        "static-product-card": {
-          "type": "_product-card",
-          "name": "t:names.product_card",
-          "static": true,
+        "q2": {
+          "type": "question",
           "settings": {
-            "product_card_gap": 8,
-            "border": "none",
-            "border_width": 1,
-            "border_opacity": 100,
-            "border_radius": 0,
-            "padding-block-start": 0,
-            "padding-block-end": 8,
-            "padding-inline-start": 0,
-            "padding-inline-end": 0
-          },
-          "blocks": {
-            "product_card_gallery_DNizbJ": {
-              "type": "_product-card-gallery",
-              "name": "t:names.product_card_media",
-              "settings": {
-                "image_ratio": "adapt",
-                "border": "none",
-                "border_width": 1,
-                "border_opacity": 100,
-                "border_radius": 0,
-                "padding-block-start": 0,
-                "padding-block-end": 0,
-                "padding-inline-start": 0,
-                "padding-inline-end": 0
-              },
-              "blocks": {}
-            },
-            "product_title_M7MJkb": {
-              "type": "product-title",
-              "name": "t:names.product_title",
-              "settings": {
-                "width": "100%",
-                "max_width": "normal",
-                "alignment": "left",
-                "type_preset": "paragraph",
-                "font": "var(--font-body--family)",
-                "font_size": "1rem",
-                "line_height": "normal",
-                "letter_spacing": "normal",
-                "case": "none",
-                "wrap": "pretty",
-                "background": false,
-                "background_color": "#00000026",
-                "corner_radius": 0,
-                "padding-block-start": 4,
-                "padding-block-end": 0,
-                "padding-inline-start": 0,
-                "padding-inline-end": 0
-              },
-              "blocks": {}
-            },
-            "price_gLWgA6": {
-              "type": "price",
-              "settings": {
-                "show_sale_price_first": true,
-                "show_installments": false,
-                "show_tax_info": false,
-                "type_preset": "h6",
-                "width": "100%",
-                "alignment": "left",
-                "font": "var(--font-body--family)",
-                "font_size": "1rem",
-                "line_height": "normal",
-                "letter_spacing": "normal",
-                "case": "none",
-                "padding-block-start": 0,
-                "padding-block-end": 0,
-                "padding-inline-start": 0,
-                "padding-inline-end": 0
-              },
-              "blocks": {}
-            }
-          },
-          "block_order": [
-            "product_card_gallery_DNizbJ",
-            "product_title_M7MJkb",
-            "price_gLWgA6"
-          ]
+            "question": "Is it safe for color-treated hair?",
+            "answer": "<p>Our formulas are gentle and suitable for color-treated hair. If your hair is freshly colored, wait until after your first wash.</p>"
+          }
+        },
+        "q3": {
+          "type": "question",
+          "settings": {
+            "question": "Does it work on relaxed and natural hair?",
+            "answer": "<p>Yes. Africa's Best products are made for relaxed, natural and transitioning hair.</p>"
+          }
+        },
+        "q4": {
+          "type": "question",
+          "settings": {
+            "question": "Can I use it on protective styles?",
+            "answer": "<p>Many of our products can be used on the scalp and hair between braids, twists or locs. Check How to Use for directions.</p>"
+          }
+        },
+        "q5": {
+          "type": "question",
+          "settings": {
+            "question": "Where can I buy it?",
+            "answer": "<p>Tap Where to Buy to shop this product at our retail partners, or find it at your local beauty supply store.</p>"
+          }
         }
       },
       "block_order": [
-        "text_cbcgyb"
-      ],
-      "name": "t:names.product_recommendations",
-      "settings": {
-        "product": "{{ closest.product }}",
-        "recommendation_type": "related",
-        "layout_type": "grid",
-        "carousel_on_mobile": false,
-        "max_products": 4,
-        "columns": 4,
-        "mobile_columns": "2",
-        "columns_gap": 12,
-        "rows_gap": 24,
-        "icons_style": "arrow",
-        "icons_shape": "none",
-        "section_width": "page-width",
-        "gap": 28,
-        "padding-block-start": 48,
-        "padding-block-end": 48
-      }
+        "q1",
+        "q2",
+        "q3",
+        "q4",
+        "q5"
+      ]
     }
   },
   "order": [
     "main",
-    "product_recommendations_qggXJq"
+    "whats-inside",
+    "recommendations",
+    "reviews",
+    "faq"
   ]
 }
