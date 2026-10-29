@@ -14,10 +14,20 @@ Every other artboard, and every earlier iteration in the design chat, is superse
 ## Working rules (every session follows these)
 
 ### 1. Branch and deploys
-- Work on the `dev` branch. Run `git pull --rebase origin dev` before you start: Shopify's
-  GitHub integration commits theme editor changes back to this branch.
+- Work on the `dev` branch. **Always `git pull --rebase origin dev` before starting any work.**
+  Shopify's GitHub integration commits theme editor changes back to this branch.
+- **Before every push, check for Shopify editor commits:**
+  `git fetch origin dev && git log --format='%h %an <%ae> %s' HEAD..origin/dev`.
+  If there are commits you didn't make (Shopify's integration, or the client in the editor),
+  rebase onto them and look at what they changed. That is usually `config/settings_data.json`,
+  `templates/*.json` or `sections/*-group.json`. Keep their setting changes; never overwrite
+  them with an older copy. Mention them in your report.
 - Commit in small, logical steps with clear messages. Push after each completed component.
   Shopify deploys `dev` to an unpublished theme for review.
+- Shopify silently rejects a file it considers invalid, and keeps the previous version on the
+  theme. A template that references a rejected section is rejected too. If the store doesn't
+  show a change you pushed, check Online Store > Themes > the dev theme for sync errors before
+  assuming it was overwritten.
 
 ### 2. Horizon is the base, the design is fully custom
 - New sections go in `sections/ab-*.liquid`, snippets in `snippets/ab-*.liquid`, blocks in
@@ -142,6 +152,16 @@ Pages: about-us, where-to-buy, contact, faq, hair-care-guide, accessibility-poli
 - Rating: standard metafields `reviews.rating` / `reviews.rating_count` (written by review apps).
 
 ## Checking your work
+- Validate every section schema and JSON template against the Shopify rules that theme-check
+  does **not** catch. Any of these makes Shopify reject the file:
+  - `url` setting defaults may only be `/collections` or `/collections/all`. Put real links in
+    the template JSON or in a Liquid `default:` fallback.
+  - `range` defaults and saved values must sit on a step: `(value - min) % step == 0`.
+    Each range has at most 101 steps.
+  - `select` values must be one of the options. `richtext` defaults must start with a block tag
+    (`<p>`, `<ul>` …).
+  - Every setting/block id saved in `templates/*.json` and `sections/*-group.json` must exist in
+    the section schema, and blocks must not exceed `max_blocks`.
 - Run Shopify theme-check on the repo before you push. It is not committed here; install it
   outside the repo with `npm i @shopify/theme-check-node` and run it through its `check()` API.
   Only fix offenses in `ab-*` files.
